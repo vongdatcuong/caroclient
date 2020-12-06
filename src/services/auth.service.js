@@ -97,21 +97,24 @@ class AuthService {
     }
 
     signUp(username, password, name, email) {
+        const data = {
+            username: username,
+            password: password,
+            name: name,
+            email: email
+        };
         const requestOptions = {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
-                username: username,
-                password: password,
-                name: name,
-                email: email
-            })
+            body: JSON.stringify({
+                data: Buffer.from(JSON.stringify(data)).toString("base64"),
+            }),
         };
         return fetch(constant.api + constant.userPath + constant.signUpPath, requestOptions)
             .then(response => response.json())
             .then(result => {
                 return {
-                    isSuccess: result.isSuccess,
+                    isSuccess: result.success,
                     message: result.message
                 };
                 

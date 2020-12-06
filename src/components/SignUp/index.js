@@ -104,6 +104,13 @@ export default function SignUp(props) {
     props.setIsLoading(true);
     const fetch = AuthService.signUp(username, password, name, email).then(result => {
         setIsSuccess(result.isSuccess);
+        if (result.isSuccess){
+          setUsername("");
+          setPassword("");
+          setRePassword("");
+          setName("");
+          setEmail("");
+        }
         setErrMsg(result.message);
         props.setIsLoading(false);
     }, (error) => {
@@ -137,8 +144,7 @@ export default function SignUp(props) {
                   id="username"
                   label="Username"
                   autoFocus
-                  error={username === ""}
-                  helperText={username === "" ? 'Enter Username' : ' '}
+                  value={username}
                   onChange={(evt) => handleUsernameChange(evt)}
                 />
               </Grid>
@@ -152,6 +158,7 @@ export default function SignUp(props) {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  value={password}
                   error={(password === "" || repassword === "" || password !== repassword)}
                   helperText={(password === "" || repassword === "" || password !== repassword)? 'Confirm Password incorrect' : ' '}
                   onChange={(evt) => handlePasswordChange(evt)}
@@ -167,6 +174,7 @@ export default function SignUp(props) {
                   type="password"
                   id="re-password"
                   autoComplete="re-password"
+                  value={repassword}
                   error={(password === "" || repassword === "" || password !== repassword)}
                   helperText={(password === "" || repassword === "" || password !== repassword)? 'Confirm Password incorrect' : ' '}
                   onChange={(evt) => handleRePasswordChange(evt)}
@@ -181,8 +189,7 @@ export default function SignUp(props) {
                   fullWidth
                   id="fullName"
                   label="Full name"
-                  error={name === ""}
-                  helperText={name === "" ? 'Enter Name' : ' '}
+                  value={name}
                   onChange={(evt) => handleNameChange(evt)}
                 />
               </Grid>
@@ -196,8 +203,7 @@ export default function SignUp(props) {
                   fullWidth
                   id="email"
                   label="Email"
-                  error={email === ""}
-                  helperText={email === "" ? 'Enter Email' : ' '}
+                  value={email}
                   onChange={(evt) => handleEmailChange(evt)}
                 />
               </Grid>
