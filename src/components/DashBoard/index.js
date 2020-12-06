@@ -31,7 +31,7 @@ const useStyles = makeStyles((theme) => ({
 const DashBoard = (props) => {
   const history = useHistory();
   if (!AuthService.getCurrentUser()){
-      //history.push('/logIn');
+      history.push('/logIn');
   }
 
   const classes = useStyles();

@@ -31,7 +31,7 @@ export default function StickyFooter() {
     <div className={classes.root}>
       <footer className={classes.footer}>
         <Container maxWidth="sm">
-          <Typography variant="body1"  align="center">Build your Agile/Scrum.</Typography>
+          <Typography variant="body1"  align="center">Solo daxua ???.</Typography>
           <Copyright />
         </Container>
       </footer>

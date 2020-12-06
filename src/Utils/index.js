@@ -1,9 +1,10 @@
-const api = 'http://localhost:8080';
+const api = 'http://localhost:8080/api';
 
 
 // User
-const logInPath = '/logIn';
-const signUpPath = '/signUp';
+const userPath = "/user"
+const logInPath = '/login';
+const signUpPath = '/signup';
 
 function queryParams(params) {
     return Object.keys(params)
@@ -14,6 +15,7 @@ function queryParams(params) {
 export default {
     api,
     // User
+    userPath,
     logInPath,
     signUpPath,
     // 
