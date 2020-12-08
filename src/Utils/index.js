@@ -1,4 +1,5 @@
-const api = "http://localhost:4000/api";
+const SERVER = "https://caro-client-backend.herokuapp.com/";
+const api = `${SERVER}/api`;
 
 // User
 const userPath = "/user";
@@ -13,6 +14,7 @@ function queryParams(params) {
 
 export default {
   api,
+  SERVER,
   // User
   userPath,
   logInPath,
