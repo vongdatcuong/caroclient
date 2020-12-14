@@ -16,7 +16,6 @@ import constant from "../../../Utils/index";
 
 import { store } from "../../../context/socket-context";
 import socketIOClient from "socket.io-client";
-const SERVER = "http://localhost:4001";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -42,7 +41,7 @@ const DashBoard = (props) => {
   const user = AuthService.getCurrentUser();
 
   useEffect(() => {
-    const socket = socketIOClient(SERVER);
+    const socket = socketIOClient(constant.SERVER);
     if (state === "") dispatch({ type: "connect", payload: socket });
     socket.emit("user", { socketID: state.id, username: user.username });
     socket.on("list-user", (data) => {
