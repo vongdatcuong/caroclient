@@ -14,7 +14,7 @@ import authHeader from "../../services/auth-header.js";
 import AuthService from "../../services/auth.service";
 import constant from "../../Utils";
 
-import { store } from "../../context/socket-context";
+import { store } from "../../../context/socket-context";
 import socketIOClient from "socket.io-client";
 
 const useStyles = makeStyles((theme) => ({
