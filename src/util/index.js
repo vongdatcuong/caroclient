@@ -1,23 +1,24 @@
-const api = 'http://localhost:8080/api';
-
+const SERVER = "localhost:8080";
+const api = `${SERVER}/api`;
 
 // User
-const userPath = "/user"
-const logInPath = '/login';
-const signUpPath = '/signup';
+const userPath = "/user";
+const logInPath = "/login";
+const signUpPath = "/signup";
 
 function queryParams(params) {
-    return Object.keys(params)
-        .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params[k]))
-        .join('&');
+  return Object.keys(params)
+    .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
+    .join("&");
 }
 
 export default {
-    api,
-    // User
-    userPath,
-    logInPath,
-    signUpPath,
-    // 
-    queryParams
-}
+  api,
+  SERVER,
+  // User
+  userPath,
+  logInPath,
+  signUpPath,
+  //
+  queryParams,
+};
