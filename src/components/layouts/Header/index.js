@@ -12,8 +12,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import Link from "@material-ui/core/Link";
 
 // Constant && Services
-import AuthService from "../../services/auth.service";
-import { store } from "../../context/socket-context";
+import AuthService from "../../../services/auth.service";
+import { store } from "../../../context/socket-context";
 
 const useStyles = makeStyles((theme) => ({
   logo: {

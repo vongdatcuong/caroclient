@@ -7,14 +7,14 @@ import { makeStyles, rgbToHex } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 
 // Components
-import ConfirmDialog from "../../dialogs/ConfirmDialog";
+import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
 
 // Service
-import authHeader from "../../services/auth-header.js";
-import AuthService from "../../services/auth.service";
-import constant from "../../Utils";
+import authHeader from "../../../services/auth-header";
+import AuthService from "../../../services/auth.service";
+import constant from "../../../Utils/index";
 
-import { store } from "../../context/socket-context";
+import { store } from "../../../context/socket-context";
 import socketIOClient from "socket.io-client";
 const SERVER = "http://localhost:4001";
 

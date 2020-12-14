@@ -13,13 +13,13 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 // Components
 import Header from "../Header";
 import Footer from "../Footer";
-import DashBoard from "../../components/DashBoard";
-import LogIn from "../../components/LogIn";
-import SignUp from "../../components/SignUp";
-import Profile from "../../components/Profile";
-import Loading from "../../layouts/Loading";
+import DashBoard from "../../../feature/Main/DashBoard/index";
+import LogIn from "../../../feature/Authentication/LogIn/index";
+import SignUp from "../../../feature/Authentication/SignUp/index";
+import Profile from "../../../feature/Profile/index";
+import Loading from "../Loading";
 import createHashHistory from "history/createHashHistory";
-import { SocketStateProvider } from "../../context/socket-context";
+import { SocketStateProvider } from "../../../context/socket-context";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
