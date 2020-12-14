@@ -1,4 +1,4 @@
-const SERVER = "localhost:8080";
+const SERVER = "https://caro-client-backend.herokuapp.com/";
 const api = `${SERVER}/api`;
 
 // User
