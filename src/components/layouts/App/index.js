@@ -59,7 +59,7 @@ function App() {
             {/* End footer */}
           </Route>
           <Route path="/">
-            <Redirect to="/logIn" />
+            <Redirect to="/dashboard" />
           </Route>
         </Switch>
       </Router>
