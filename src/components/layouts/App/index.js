@@ -20,6 +20,7 @@ import Profile from "../../../feature/Profile/index";
 import Loading from "../Loading";
 import createHashHistory from "history/createHashHistory";
 import { SocketStateProvider } from "../../../context/socket-context";
+import Game from "../../../feature/Main/Game";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
@@ -57,6 +58,10 @@ function App() {
             {/* Footer */}
             <Footer />
             {/* End footer */}
+          </Route>
+          <Route path="/game">
+            <Header />
+            <Game/>
           </Route>
           <Route path="/">
             <Redirect to="/dashboard" />
