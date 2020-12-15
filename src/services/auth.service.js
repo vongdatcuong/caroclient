@@ -1,135 +1,143 @@
-import constant from '../Utils';
+import constant from "../Utils";
 
 class AuthService {
-    logIn(username, password) {
-        const data = {
-          username: username,
-          password: password,
-        };
-        const requestOptions = {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            data: Buffer.from(JSON.stringify(data)).toString("base64"),
-          }),
-        };
-        return fetch(
-          constant.api + constant.userPath + constant.logInPath,
-          requestOptions
-        )
-          .then((response) => response.json())
-          .then((result) => {
-            if (result.success) {
-              localStorage.setItem("user", JSON.stringify(result.user));
-              return {
-                isSuccess: true,
-                user: result.user,
-              };
-            } else {
-              return {
-                isSuccess: false,
-                message: result.message,
-              };
-            }
-        });
-    }
-
-    logInWithGoogle(googleID) {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json' ,
-            },
-            body: JSON.stringify({ 
-                googleID: googleID
-            })
-        };
-        return fetch(constant.api + constant.userPath + constant.logInWithGoogle, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                if (result.isSuccess){
-                    localStorage.setItem("user", JSON.stringify(result.user));
-                    return {
-                        isSuccess: true,
-                        user: result.user
-                    };
-                } else {
-                    return {
-                        isSuccess: false,
-                        message: result.message
-                    }
-                }
-                
-            })
-    }
-
-    logInWithFacebook(facebookID) {
-        const requestOptions = {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json' ,
-            },
-            body: JSON.stringify({ 
-                facebookID: facebookID
-            })
-        };
-        return fetch(constant.api + constant.userPath + constant.logInWithFacebook, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                if (result.isSuccess){
-                    localStorage.setItem("user", JSON.stringify(result.user));
-                    return {
-                        isSuccess: true,
-                        user: result.user
-                    };
-                } else {
-                    return {
-                        isSuccess: false,
-                        message: result.message
-                    }
-                }
-                
-            })
-    }
-
-    logOut(){
-        localStorage.removeItem("user");
-    }
-
-    signUp(username, password, name, email) {
-        const data = {
-            username: username,
-            password: password,
-            name: name,
-            email: email
-        };
-        const requestOptions = {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                data: Buffer.from(JSON.stringify(data)).toString("base64"),
-            }),
-        };
-        return fetch(constant.api + constant.userPath + constant.signUpPath, requestOptions)
-            .then(response => response.json())
-            .then(result => {
-                return {
-                    isSuccess: result.success,
-                    message: result.message
-                };
-                
-            })
-    }
-
-    getCurrentUser() {
-        return JSON.parse(localStorage.getItem('user'));
-    }
-
-    updateCurrentUser(newUser){
-        const user = Object.assign({}, JSON.parse(localStorage.getItem('user')), newUser);
-        localStorage.removeItem("user");
-        localStorage.setItem("user", JSON.stringify(user));
-    }
+  logIn(username, password) {
+    const data = {
+      username: username,
+      password: password,
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    };
+    return fetch(
+      constant.api + constant.userPath + constant.logInPath,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.success) {
+          localStorage.setItem("user", JSON.stringify(result.user));
+          return {
+            isSuccess: true,
+            user: result.user,
+          };
+        } else {
+          return {
+            isSuccess: false,
+            message: result.message,
+          };
+        }
+      });
   }
-  
-  export default new AuthService();
+
+  logInWithGoogle(googleID) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        googleID: googleID,
+      }),
+    };
+    return fetch(
+      constant.api + constant.userPath + constant.logInWithGoogle,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.isSuccess) {
+          localStorage.setItem("user", JSON.stringify(result.user));
+          return {
+            isSuccess: true,
+            user: result.user,
+          };
+        } else {
+          return {
+            isSuccess: false,
+            message: result.message,
+          };
+        }
+      });
+  }
+
+  logInWithFacebook(facebookID) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        facebookID: facebookID,
+      }),
+    };
+    return fetch(
+      constant.api + constant.userPath + constant.logInWithFacebook,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        if (result.isSuccess) {
+          localStorage.setItem("user", JSON.stringify(result.user));
+          return {
+            isSuccess: true,
+            user: result.user,
+          };
+        } else {
+          return {
+            isSuccess: false,
+            message: result.message,
+          };
+        }
+      });
+  }
+
+  logOut() {
+    localStorage.removeItem("user");
+  }
+
+  signUp(username, password, name, email) {
+    const data = {
+      username: username,
+      password: password,
+      name: name,
+      email: email,
+    };
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        data: Buffer.from(JSON.stringify(data)).toString("base64"),
+      }),
+    };
+    return fetch(
+      constant.api + constant.userPath + constant.signUpPath,
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => {
+        return {
+          isSuccess: result.success,
+          message: result.message,
+        };
+      });
+  }
+
+  getCurrentUser() {
+    return JSON.parse(localStorage.getItem("user"));
+  }
+
+  updateCurrentUser(newUser) {
+    const user = Object.assign(
+      {},
+      JSON.parse(localStorage.getItem("user")),
+      newUser
+    );
+    localStorage.removeItem("user");
+    localStorage.setItem("user", JSON.stringify(user));
+  }
+}
+
+export default new AuthService();

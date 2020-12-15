@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, useLocation } from "react-router-dom";
 
 // Material UI Core
 import Typography from "@material-ui/core/Typography";
@@ -10,12 +10,14 @@ import Container from "@material-ui/core/Container";
 import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
 
 // Service
-import authHeader from "../../../services/auth-header";
 import AuthService from "../../../services/auth.service";
-import constant from "../../../Utils/index";
-
 import { store } from "../../../context/socket-context";
-import socketIOClient from "socket.io-client";
+import {
+  GetGlobalUsers,
+  JoinGlobalRoom,
+  ChatGlobalRoom,
+  GetChatGlobalRoom,
+} from "../../../services/socket/base-socket";
 
 const useStyles = makeStyles((theme) => ({
   icon: {
@@ -31,23 +33,28 @@ const useStyles = makeStyles((theme) => ({
 const DashBoard = (props) => {
   const history = useHistory();
   const { state, dispatch } = useContext(store);
-  const [socket, setSocket] = useState(state);
-  const [listUser, setListUser] = useState([]);
+  const [socket, setSocket] = useState(state.socket);
+  const [chat, setChat] = useState("");
   if (!AuthService.getCurrentUser()) {
     history.push("/logIn");
   }
-
   const classes = useStyles();
   const user = AuthService.getCurrentUser();
 
   useEffect(() => {
-    const socket = socketIOClient(constant.SERVER);
-    if (state === "") dispatch({ type: "connect", payload: socket });
-    socket.emit("user", { socketID: state.id, username: user.username });
-    socket.on("list-user", (data) => {
-      setListUser(data);
-    });
+    JoinGlobalRoom(socket, { id: socket.id, username: user.username });
+    GetGlobalUsers(socket, dispatch);
+    GetChatGlobalRoom(socket, dispatch);
   }, []);
+
+  const handleChange = (event) => {
+    setChat(event.target.value);
+  };
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    ChatGlobalRoom(socket, { username: user.username, msg: chat });
+    setChat("");
+  };
 
   return (
     <main>
@@ -62,11 +69,24 @@ const DashBoard = (props) => {
           Go Go Go !!!
         </Typography>
         <ul>
-          {listUser.length > 0 &&
-            listUser.map((value, index) => {
-              return <li>{value.username}</li>;
+          {state.globalUsers.length > 0 &&
+            state.globalUsers.map((value, index) => {
+              return <li key={index}>{value.username}</li>;
             })}
         </ul>
+        <ul>
+          {state.globalChat.length > 0 &&
+            state.globalChat.map((value, index) => {
+              return <li key={index}>{value.username + ": " + value.msg}</li>;
+            })}
+        </ul>
+        <form onSubmit={handleSubmit}>
+          <label>
+            Chat:
+            <input type="text" value={chat} onChange={handleChange} />
+          </label>
+          <input type="submit" value="Submit" />
+        </form>
       </Container>
     </main>
   );

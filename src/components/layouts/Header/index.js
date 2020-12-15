@@ -78,7 +78,8 @@ function Header() {
   function handleLogOut() {
     AuthService.logOut();
     handleClose();
-    state.disconnect();
+    state.socket.disconnect();
+    dispatch({ type: "Log-out" });
     history.push("/logIn");
   }
 

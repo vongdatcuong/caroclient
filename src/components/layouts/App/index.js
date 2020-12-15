@@ -27,43 +27,44 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <React.Fragment>
-      <CssBaseline />
-      <Loading loading={isLoading} />
-      <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
-        <Switch>
-          <Route path="/logIn">
-            {/* Header */}
-            <Header />
-            <LogIn setIsLoading={setIsLoading} />
-          </Route>
-          <Route path="/signUp">
-            {/* Header */}
-            <Header />
-            <SignUp setIsLoading={setIsLoading} />
-          </Route>
-          <Route path="/profile">
-            {/* Header */}
-            <Header />
-            <Profile setIsLoading={setIsLoading} />
-          </Route>
-          <Route path="/dashboard">
-            {/* Header */}
-            {/* End Header */}
-            <SocketStateProvider>
+    <SocketStateProvider>
+      <React.Fragment>
+        <CssBaseline />
+        <Loading loading={isLoading} />
+        <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
+          <Switch>
+            <Route path="/logIn">
+              {/* Header */}
+              <Header />
+              <LogIn setIsLoading={setIsLoading} />
+            </Route>
+            <Route path="/signUp">
+              {/* Header */}
+              <Header />
+              <SignUp setIsLoading={setIsLoading} />
+            </Route>
+            <Route path="/profile">
+              {/* Header */}
+              <Header />
+              <Profile setIsLoading={setIsLoading} />
+            </Route>
+            <Route path="/dashboard">
+              {/* Header */}
+              {/* End Header */}
               <Header />
               <DashBoard setIsLoading={setIsLoading} />
-            </SocketStateProvider>
-            {/* Footer */}
-            <Footer />
-            {/* End footer */}
-          </Route>
-          <Route path="/">
-            <Redirect to="/logIn" />
-          </Route>
-        </Switch>
-      </Router>
-    </React.Fragment>
+
+              {/* Footer */}
+              <Footer />
+              {/* End footer */}
+            </Route>
+            <Route path="/">
+              <Redirect to="/logIn" />
+            </Route>
+          </Switch>
+        </Router>
+      </React.Fragment>
+    </SocketStateProvider>
   );
 }
 

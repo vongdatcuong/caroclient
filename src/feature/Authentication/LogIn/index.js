@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -23,6 +23,11 @@ import Footer from "../../../components/layouts/Footer/index";
 // Constant && Services
 import AuthService from "../../../services/auth.service";
 import constant from "../../../Utils/index";
+import { store } from "../../../context/socket-context";
+import {
+  JoinGlobalRoom,
+  GetGlobalUsers,
+} from "../../../services/socket/base-socket";
 
 const useStyles = makeStyles((theme) => ({
   bgImg: {
@@ -87,6 +92,8 @@ export default function LogIn(props) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [errorMsg, setErrMsg] = useState("");
+  const { state, dispatch } = useContext(store);
+  const [socket, setSocket] = useState(state.socket);
 
   function handleLogIn(event) {
     event.preventDefault();
@@ -97,7 +104,7 @@ export default function LogIn(props) {
     const fetch = AuthService.logIn(username, password).then(
       (result) => {
         if (result.isSuccess) {
-          history.push("/dashboard");
+          history.push({ pathname: "/dashboard" });
         } else {
           setPassword("");
           // Error message
