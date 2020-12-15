@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { useHistory } from "react-router-dom";
 import "./Header.css";
 // Material UI Core
@@ -14,6 +14,8 @@ import Link from "@material-ui/core/Link";
 // Constant && Services
 import AuthService from "../../../services/auth.service";
 import { store } from "../../../context/socket-context";
+
+import { LogOut } from "../../../services/socket/base-socket";
 
 const useStyles = makeStyles((theme) => ({
   logo: {
@@ -63,6 +65,7 @@ function Header() {
   const history = useHistory();
   const user = AuthService.getCurrentUser();
   const { state, dispatch } = useContext(store);
+  const [socket, setSocket] = useState(state.socket);
   const navHeadings = [];
 
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -78,8 +81,8 @@ function Header() {
   function handleLogOut() {
     AuthService.logOut();
     handleClose();
-    state.socket.disconnect();
     dispatch({ type: "Log-out" });
+    LogOut(socket);
     history.push("/logIn");
   }
 
