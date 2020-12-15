@@ -39,50 +39,61 @@ export default function UserInfo(props) {
   const classes = useStyles();
   return (
     <Card className={classes.root}>
-      <CardContent className={classes.media}>
-        <CardMedia
-          className={classes.avatar}
-          component="img"
-          alt="Contemplative Reptile"
-          image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
-          title={props.user.username}
-        />
-      </CardContent>
-      <CardContent style={{ justifyContent: "center" }}>
-        <Typography
-          gutterBottom
-          variant="h5"
-          component="h2"
-          style={{ textAlign: "center" }}
-        >
-          {props.user.username}
-        </Typography>
-        <Typography variant="body" color="textSecondary" component="p">
-          <Typography style={{ fontSize: 18 }}>
-            Rank: {props.user.rank}
-          </Typography>
-          <Typography style={{ fontSize: 18 }}>
-            Point: {props.user.point}
-          </Typography>
-          <Typography style={{ fontSize: 18 }}>
-            Win: {props.user.win}
-          </Typography>
-          <Typography style={{ fontSize: 18 }}>
-            Lose: {props.user.lose}
-          </Typography>
-        </Typography>
-      </CardContent>
-      <CardActions style={{ alignSelf: "flex-end" }}>
-        <Button className={classes.timeButton} endIcon={<QueryBuilderIcon />}>
-          20:00
-        </Button>
-        <IconButton
-          children={
-            props.type === "X" ? <CloseIcon /> : <RadioButtonUncheckedIcon />
-          }
-          color="primary"
-        />
-      </CardActions>
+      {props.user !== null ? (
+        <div>
+          <CardContent className={classes.media}>
+            <CardMedia
+              className={classes.avatar}
+              component="img"
+              alt="Contemplative Reptile"
+              image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
+              title={props.user.username}
+            />
+          </CardContent>
+          <CardContent style={{ justifyContent: "center" }}>
+            <Typography
+              gutterBottom
+              variant="h5"
+              component="h2"
+              style={{ textAlign: "center" }}
+            >
+              {props.user.username}
+            </Typography>
+            <Typography variant="body" color="textSecondary" component="p">
+              <Typography style={{ fontSize: 18 }}>
+                Rank: {props.user.rank}
+              </Typography>
+              <Typography style={{ fontSize: 18 }}>
+                Point: {props.user.point}
+              </Typography>
+              <Typography style={{ fontSize: 18 }}>
+                Win: {props.user.win}
+              </Typography>
+              <Typography style={{ fontSize: 18 }}>
+                Lose: {props.user.lose}
+              </Typography>
+            </Typography>
+          </CardContent>
+          <CardActions style={{ alignSelf: "flex-end" }}>
+            <Button
+              className={classes.timeButton}
+              endIcon={<QueryBuilderIcon />}
+            >
+              20:00
+            </Button>
+            <IconButton
+              children={
+                props.type === "X" ? (
+                  <CloseIcon />
+                ) : (
+                  <RadioButtonUncheckedIcon />
+                )
+              }
+              color="primary"
+            />
+          </CardActions>
+        </div>
+      ) : null}
     </Card>
   );
 }
