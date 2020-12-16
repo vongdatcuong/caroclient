@@ -17,9 +17,12 @@ import { store } from "../../../context/socket-context";
 // Constant && Services
 import AuthService from "../../../services/auth.service";
 import {
+  GetBoard,
   GetChatPrivateRoom,
   LeaveRoom,
   LeaveRoomPlayer,
+  MakeAMove,
+  DeclareWinner
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
@@ -32,6 +35,7 @@ import {
   ChatPrivateRoom,
 } from "../../../services/socket/base-socket";
 import "./index.css";
+import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -46,6 +50,11 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "60px",
     padding: "5px",
   },
+  winner: {
+    marginTop: theme.spacing(3),
+    textAlign: 'center',
+    color: 'red'
+  }
 }));
 function calculateWinner(squares) {
   const lines = [
@@ -68,6 +77,7 @@ function calculateWinner(squares) {
 }
 
 export default function Game(props) {
+  const boardSize = 15;
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
@@ -89,32 +99,39 @@ export default function Game(props) {
   const [stepNumber, setStepNumber] = useState(0);
   const [xIsNext, setXIsNext] = useState(true);
   const [isAsc, setIsAsc] = useState(true);
+
+  const [board, setBoard] = useState({squares: []});
   const [roomChat, setRoomChat] = useState([]);
   const [secondPlayer, setSecondPlayer] = useState({});
   const [chatText, setChatText] = useState("");
+  const [winner, setWinner] = useState("");
 
   const handleOnLoadSecondPlayer = (value) => {
     setSecondPlayer(value);
   };
 
   const handleOnLeave = () => {
-    LeaveRoom(socket, location.state.roomID);
+    LeaveRoom(socket, location.state.roomID, user);
     historyPages.push("/dashboard");
   };
 
   const handleClick = (i) => {
-    const history_t = history.slice(0, stepNumber + 1);
-    const current = history_t[history_t.length - 1];
-    const squares = current.squares.slice();
-    const col = (i % 3) + 1;
-    const row = Math.floor(i / 3) + 1;
-    const total = current.total;
-    if (calculateWinner(squares) || squares[i]) {
+    if (winner || board.turn != user.username || board.squares[i]) {
       return;
     }
-    squares[i] = xIsNext ? "X" : "O";
+    //const history_t = history.slice(0, stepNumber + 1);
+    //const current = history_t[history_t.length - 1];
+    //const squares = current.squares.slice();
+    const col = (i % boardSize) + 1;
+    const row = Math.floor(i / boardSize) + 1;
+    const total = board.total;
+    MakeAMove(socket, location.state.roomID, user, {idx: i, col: col, row: row});
+    //if (calculateWinner(squares) || squares[i]) {
+    //  return;
+    //}
+    //squares[i] = xIsNext ? "X" : "O";
 
-    setHistory(
+    /*setHistory(
       history_t.concat([
         {
           col: col,
@@ -126,10 +143,10 @@ export default function Game(props) {
     );
     setStepNumber(history_t.length);
     setXIsNext(!xIsNext);
-    setIsAsc(isAsc);
+    setIsAsc(isAsc);*/
   };
   const current = history[stepNumber];
-  const winner = calculateWinner(current.squares);
+  /*const winner = calculateWinner(current.squares);
   const totalMoves = current.total;
   let status;
   if (winner) {
@@ -139,7 +156,7 @@ export default function Game(props) {
     status = "Draw";
   } else {
     status = "Next player: " + (xIsNext ? "X" : "O");
-  }
+  }*/
   const currentLocation = { row: current.row, col: current.col };
 
   useEffect(() => {
@@ -152,6 +169,8 @@ export default function Game(props) {
       location.state.roomID,
       handleOnLeave
     );
+    GetBoard(socket, setBoard);
+    DeclareWinner(socket, handleWinner);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -169,6 +188,10 @@ export default function Game(props) {
     ChatPrivateRoom(socket, location.state.roomID, temp);
     setChatText("");
   };
+
+  const handleWinner = (winner) => { alert(winner)
+    setWinner(winner);
+  }
 
   return (
     <Container component="main" maxWidth="xl">
@@ -204,14 +227,21 @@ export default function Game(props) {
             <div className="game">
               <div className="game-board">
                 <Board
-                  boardSize={15}
-                  squares={current.squares}
+                  boardSize={boardSize}
+                  squares={board.squares}
                   onClick={(i) => handleClick(i)}
                   currentLocation={currentLocation}
                   winnerList={winner}
                 />
               </div>
             </div>
+            {(winner)? 
+              <div className={classes.winner}>
+                <Typography variant="h5" component="h5">Winner {winner}</Typography>
+              </div> 
+              : 
+              ''
+            }
           </Grid>
           <Grid key={2} item>
             <Grid

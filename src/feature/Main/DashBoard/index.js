@@ -151,7 +151,7 @@ const DashBoard = (props) => {
     JoinRoom(socket, roomID, user);
   };
 
-  const handleOnChange = (e) => {
+  const handleOnChatChange = (e) => {
     setChat(e.target.value);
   };
 
@@ -176,7 +176,7 @@ const DashBoard = (props) => {
     history.push({ pathname: "/game", state: { roomID: socket.id, turn: 1 } });
   };
 
-  const handleOnSubmit = (e) => {
+  const handleOnChatSubmit = (e) => {
     e.preventDefault();
     ChatGlobalRoom(socket, { username: user.username, msg: chat });
     setChat("");
@@ -197,7 +197,7 @@ const DashBoard = (props) => {
       <Container className={classes.container} maxWidth="md">
         <Grid container spacing={3}>
           {/* Left */}
-          <Grid item md={3} className={classes.left} spacing={5}>
+          <Grid item md={3} xs={5} className={classes.left} spacing={5}>
             <div className={classes.toolbar}>
               <Button
                 variant="contained"
@@ -260,13 +260,13 @@ const DashBoard = (props) => {
                 title="GLOBAL"
                 data={state.globalChat}
                 value={chat}
-                onType={handleOnChange}
-                onSubmit={handleOnSubmit}
+                onType={handleOnChatChange}
+                onSubmit={handleOnChatSubmit}
               ></BoxChat>
             </div>
           </Grid>
           {/* Right */}
-          <Grid item md={9} className={classes.right}>
+          <Grid item md={9} xs={7} className={classes.right}>
             <div className={classes.toolbar}>
               <Button
                 variant="contained"

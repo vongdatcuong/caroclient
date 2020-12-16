@@ -42,8 +42,8 @@ const GetListRoom = (socket, dispatch) => {
 };
 
 //LEAVE ROOM
-const LeaveRoom = (socket, roomID) => {
-  socket.emit("Leave-Room", roomID);
+const LeaveRoom = (socket, roomID, user) => {
+  socket.emit("Leave-Room", {roomID: roomID, player: user});
 };
 
 //GET LEAVE PLAYER
@@ -90,6 +90,29 @@ const GetChatPrivateRoom = (socket, setState) => {
   });
 };
 
+// GET BOARD
+const GetBoard = (socket, setState) => {
+  socket.on("Board-Response", (board) => {
+    setState(board);
+  });
+}
+
+// MAKE A MOVE
+const MakeAMove = (socket, roomID, user, boardProp) => {
+  socket.emit("Make-a-move", {
+    roomID: roomID,
+    player: { playerID: socket.id, ...user },
+    boardProp: boardProp
+  });
+}
+
+// DECLARE WINNER
+const DeclareWinner = (socket, handleWinner) => {
+  socket.on("Declare-Winner-Response", (winner) => {
+    handleWinner(winner);
+  });
+}
+
 export {
   JoinGlobalRoom,
   GetGlobalUsers,
@@ -105,4 +128,7 @@ export {
   ChatPrivateRoom,
   GetChatPrivateRoom,
   LeaveRoomPlayer,
+  GetBoard,
+  MakeAMove,
+  DeclareWinner
 };
