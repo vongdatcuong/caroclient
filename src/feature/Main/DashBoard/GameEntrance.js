@@ -73,7 +73,7 @@ const GameEntrance = ({ onClick, data }) => {
         </Typography>
         <Typography className={classes.username}>
           <StarsIcon className={classes.icon} />
-          {data.creator}
+          {data.creator.username}
         </Typography>
       </CardContent>
       <CardActions>

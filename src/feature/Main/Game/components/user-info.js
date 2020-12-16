@@ -1,3 +1,4 @@
+import React from "react";
 import { IconButton } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
@@ -9,16 +10,18 @@ import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
-import React from "react";
-import "../index.css";
+import Grid from "@material-ui/core/Grid";
+
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 300,
-    height: 437,
+    height: 320,
     flex: 1,
     justifyContent: "center",
   },
-  media: {},
+  media: {
+    padding: theme.spacing(1),
+  },
   timeButton: {
     flex: 1,
     background: "green",
@@ -32,7 +35,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     height: 130,
     width: 130,
+    margin: '0 auto'
   },
+  content: {
+    padding: theme.spacing(1),
+    justifyContent: "center"
+  }
 }));
 
 export default function UserInfo(props) {
@@ -50,31 +58,50 @@ export default function UserInfo(props) {
               title={props.user.username}
             />
           </CardContent>
-          <CardContent style={{ justifyContent: "center" }}>
+          <CardContent className={classes.content}>
             <Typography
               gutterBottom
               variant="h5"
               component="h2"
-              style={{ textAlign: "center" }}
+              style={{ textAlign: "center", color: '#016310' }}
             >
-              {props.user.username}
+              {props.user.username || '...'}
             </Typography>
-            <Typography variant="body" color="textSecondary" component="p">
-              <Typography style={{ fontSize: 18 }}>
-                Rank: {props.user.rank}
-              </Typography>
-              <Typography style={{ fontSize: 18 }}>
-                Point: {props.user.point}
-              </Typography>
-              <Typography style={{ fontSize: 18 }}>
-                Win: {props.user.win}
-              </Typography>
-              <Typography style={{ fontSize: 18 }}>
-                Lose: {props.user.lose}
-              </Typography>
-            </Typography>
+            <Grid container align="center">
+              <Grid item md={6}>
+                <Typography style={{ fontSize: 18 }}>
+                  Rank: {props.user.rank || 'NA'}
+                </Typography>
+              </Grid>
+              <Grid item md={6}>
+                <Typography style={{ fontSize: 18 }}>
+                  Point: {props.user.point || 0}
+                </Typography>
+              </Grid>
+              <Grid item md={6}>
+                <Typography style={{ fontSize: 18 }}>
+                  Win: {props.user.win || 0}
+                </Typography>
+              </Grid>
+              <Grid item md={6}>
+                <Typography style={{ fontSize: 18 }}>
+                  Lose: {props.user.lose || 0}
+                </Typography>
+              </Grid>
+            </Grid>
           </CardContent>
           <CardActions style={{ alignSelf: "flex-end" }}>
+            <IconButton
+              children={
+                (props.playerNum == 2)? 
+                props.type === "X" ? (
+                  <CloseIcon />
+                ) : (
+                  <RadioButtonUncheckedIcon />
+                ) : ''
+              }
+              color="primary"
+            />
             <Button
               className={classes.timeButton}
               endIcon={<QueryBuilderIcon />}
@@ -83,11 +110,12 @@ export default function UserInfo(props) {
             </Button>
             <IconButton
               children={
+                (props.playerNum == 1)? 
                 props.type === "X" ? (
                   <CloseIcon />
                 ) : (
                   <RadioButtonUncheckedIcon />
-                )
+                ) : ''
               }
               color="primary"
             />

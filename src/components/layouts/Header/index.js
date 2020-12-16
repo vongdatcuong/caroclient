@@ -18,6 +18,9 @@ import { store } from "../../../context/socket-context";
 import { LogOut } from "../../../services/socket/base-socket";
 
 const useStyles = makeStyles((theme) => ({
+  toolbar: {
+    minHeight: '40px',
+  },
   logo: {
     fontSize: "30px",
     fontFamily: "ThirstyScript",
@@ -125,7 +128,7 @@ function Header() {
 
   return (
     <AppBar position="relative" className="main-bg-green">
-      <Toolbar>
+      <Toolbar className={classes.toolbar}>
         <Typography variant="h6" color="inherit" noWrap>
           <Link href="/dashboard" className={classes.logo}>
             Caro Online

@@ -20,12 +20,13 @@ const useStyles = makeStyles((theme) => ({
   box: {
     position: "relative",
     width: "90%",
-    height: "400px",
+    height: "325px",
     backgroundColor: "#F6F6F6",
     border: "2px solid #016310",
     paddingLeft: "5px",
     paddingRight: "5px",
     borderRadius: "5px",
+    margin: '0 auto'
   },
   title: {
     color: "#016310",
@@ -115,6 +116,7 @@ const BoxChat = ({ data, title, value, onType, onSubmit }) => {
           type="submit"
           className={classes.iconButton}
           aria-label="send"
+          onClick={onSubmit}
         >
           <SendIcon className={classes.sendBtn} />
         </IconButton>

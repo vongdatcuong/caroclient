@@ -9,7 +9,7 @@ import "../index.css";
 const useStyles = makeStyles((theme) => ({
   root: {
     width: 300,
-    height: 390,
+    height: 250,
     flex: 1,
   },
   media: {},

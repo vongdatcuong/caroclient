@@ -39,7 +39,7 @@ import { Typography } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(5),
+    marginTop: theme.spacing(2),
     display: "flex",
     alignItems: "center",
   },
@@ -189,7 +189,7 @@ export default function Game(props) {
     setChatText("");
   };
 
-  const handleWinner = (winner) => { alert(winner)
+  const handleWinner = (winner) => {
     setWinner(winner);
   }
 
@@ -209,17 +209,20 @@ export default function Game(props) {
               <Grid item>
                 <UserInfo
                   user={user}
+                  playerNum={1}
                   type={location.state.turn === 1 ? "X" : "O"}
                 />
               </Grid>
               <div className="row" style={{ width: 300 }}>
-                <BoxChat
-                  title="ROOM"
-                  data={roomChat}
-                  value={chatText}
-                  onType={handleOnChangeChat}
-                  onSubmit={handleOnSubmitChat}
-                ></BoxChat>
+                <div className={classes.boxChatWrapper}>
+                  <BoxChat
+                    title="ROOM"
+                    data={roomChat}
+                    value={chatText}
+                    onType={handleOnChangeChat}
+                    onSubmit={handleOnSubmitChat}
+                  ></BoxChat>
+                </div>
               </div>
             </Grid>
           </Grid>
@@ -254,6 +257,7 @@ export default function Game(props) {
               <Grid item>
                 <UserInfo
                   user={secondPlayer}
+                  playerNum={2}
                   type={location.state.turn === 1 ? "O" : "X"}
                 />
               </Grid>

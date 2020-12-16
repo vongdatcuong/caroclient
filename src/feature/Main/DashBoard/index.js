@@ -49,7 +49,7 @@ import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 
 const useStyles = makeStyles((theme) => ({
   container: {
-    paddingTop: theme.spacing(6),
+    paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(6),
     maxWidth: "1400px",
   },
@@ -79,12 +79,13 @@ const useStyles = makeStyles((theme) => ({
   },
   box: {
     width: "90%",
-    height: "300px",
+    height: "250px",
     backgroundColor: "#F6F6F6",
     border: "2px solid #016310",
     paddingLeft: "5px",
     paddingRight: "5px",
     borderRadius: "5px",
+    margin: '0 auto',
   },
   onlineUserWrapper: {
     overflow: "auto",
@@ -172,7 +173,7 @@ const DashBoard = (props) => {
   };
   const handleOnCreateRoom = (title) => {
     handleCloseCreateDialog();
-    CreatePlayingRoom(socket, { title: title, creator: user.username });
+    CreatePlayingRoom(socket, { title: title, creator: user });
     history.push({ pathname: "/game", state: { roomID: socket.id, turn: 1 } });
   };
 
