@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -18,6 +18,7 @@ import Footer from "../../../components/layouts/Footer";
 
 // Constant && Services
 import AuthService from "../../../services/auth.service";
+import { loadingStore } from "../../../context/loading-context";
 
 const useStyles = makeStyles((theme) => ({
   bgImg: {
@@ -67,6 +68,7 @@ export default function SignUp(props) {
   if (AuthService.getCurrentUser()) {
     history.push("/dashboard");
   }
+  const {loadingState, dispatchLoading} = useContext(loadingStore);
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -108,7 +110,7 @@ export default function SignUp(props) {
     ) {
       return;
     }
-    props.setIsLoading(true);
+    dispatchLoading({ type: "Set-Loading", isLoading: true });
     const fetch = AuthService.signUp(username, password, name, email).then(
       (result) => {
         setIsSuccess(result.isSuccess);
@@ -120,11 +122,11 @@ export default function SignUp(props) {
           setEmail("");
         }
         setErrMsg(result.message);
-        props.setIsLoading(false);
+        dispatchLoading({ type: "Set-Loading", isLoading: false });
       },
       (error) => {
         if (error) {
-          props.setIsLoading(false);
+          dispatchLoading({ type: "Set-Loading", isLoading: false });
         }
       }
     );

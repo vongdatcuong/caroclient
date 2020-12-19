@@ -24,6 +24,7 @@ import Footer from "../../../components/layouts/Footer/index";
 import AuthService from "../../../services/auth.service";
 import constant from "../../../Utils/index";
 import { store } from "../../../context/socket-context";
+import { loadingStore } from "../../../context/loading-context";
 import {
   JoinGlobalRoom,
   GetGlobalUsers,
@@ -94,13 +95,14 @@ export default function LogIn(props) {
   const [errorMsg, setErrMsg] = useState("");
   const { state, dispatch } = useContext(store);
   const [socket, setSocket] = useState(state.socket);
+  const {loadingState, dispatchLoading} = useContext(loadingStore);
 
   function handleLogIn(event) {
     event.preventDefault();
     if (!username || !password) {
       return;
     }
-    props.setIsLoading(true);
+    dispatchLoading({ type: "Set-Loading", isLoading: true });
     const fetch = AuthService.logIn(username, password).then(
       (result) => {
         if (result.isSuccess) {
@@ -110,11 +112,11 @@ export default function LogIn(props) {
           // Error message
           setErrMsg(result.message);
         }
-        props.setIsLoading(false);
+        dispatchLoading({ type: "Set-Loading", isLoading: false });
       },
       (error) => {
         if (error) {
-          props.setIsLoading(false);
+          dispatchLoading({ type: "Set-Loading", isLoading: false });
         }
       }
     );

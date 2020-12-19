@@ -20,54 +20,55 @@ import Profile from "../../../feature/Profile/index";
 import Loading from "../Loading";
 import createHashHistory from "history/createHashHistory";
 import { SocketStateProvider } from "../../../context/socket-context";
+import { LoadingStateProvider } from "../../../context/loading-context";
 import Game from "../../../feature/Main/Game";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
 function App() {
-  const [isLoading, setIsLoading] = useState(false);
-
   return (
     <SocketStateProvider>
-      <React.Fragment>
-        <CssBaseline />
-        <Loading loading={isLoading} />
-        <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
-          <Switch>
-            <Route path="/logIn">
-              {/* Header */}
-              <Header />
-              <LogIn setIsLoading={setIsLoading} />
-            </Route>
-            <Route path="/signUp">
-              {/* Header */}
-              <Header />
-              <SignUp setIsLoading={setIsLoading} />
-            </Route>
-            <Route path="/profile">
-              {/* Header */}
-              <Header />
-              <Profile setIsLoading={setIsLoading} />
-            </Route>
-            <Route path="/dashboard">
-              {/* Header */}
-              {/* End Header */}
-              <Header />
-              <DashBoard setIsLoading={setIsLoading} />
-              {/* Footer */}
-              <Footer />
-              {/* End footer */}
-            </Route>
-            <Route path="/game">
-              <Header />
-              <Game />
-            </Route>
-            <Route path="/">
-              <Redirect to="/logIn" />
-            </Route>
-          </Switch>
-        </Router>
-      </React.Fragment>
+      <LoadingStateProvider>
+        <React.Fragment>
+          <CssBaseline />
+          <Loading/>
+          <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
+            <Switch>
+              <Route path="/logIn">
+                {/* Header */}
+                <Header />
+                <LogIn/>
+              </Route>
+              <Route path="/signUp">
+                {/* Header */}
+                <Header />
+                <SignUp/>
+              </Route>
+              <Route path="/profile">
+                {/* Header */}
+                <Header />
+                <Profile/>
+              </Route>
+              <Route path="/dashboard">
+                {/* Header */}
+                {/* End Header */}
+                <Header />
+                <DashBoard/>
+                {/* Footer */}
+                <Footer />
+                {/* End footer */}
+              </Route>
+              <Route path="/game">
+                <Header />
+                <Game />
+              </Route>
+              <Route path="/">
+                <Redirect to="/logIn" />
+              </Route>
+            </Switch>
+          </Router>
+        </React.Fragment>
+      </LoadingStateProvider>
     </SocketStateProvider>
   );
 }

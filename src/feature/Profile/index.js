@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { useHistory } from "react-router-dom";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Button from "@material-ui/core/Button";
@@ -26,6 +26,7 @@ import Footer from "../../components/layouts/Footer";
 import authHeader from "../../services/auth-header.js";
 import AuthService from "../../services/auth.service";
 import constant from "../../Utils/index";
+import { loadingStore } from "../../context/loading-context";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -82,6 +83,7 @@ export default function SignUp(props) {
   const [gender, setGender] = useState(user.gender);
   const [isSuccess, setIsSuccess] = useState(true);
   const [errorMsg, setErrMsg] = useState("");
+  const {loadingState, dispatchLoading} = useContext(loadingStore);
 
   const toggleUpdate = (evt) => {
     setDisabled(!disabled);
@@ -107,7 +109,7 @@ export default function SignUp(props) {
     if (!name || !email || !gender) {
       return;
     }
-    props.setIsLoading(true);
+    dispatchLoading({ type: "Set-Loading", isLoading: true });
     const requestOptions = {
       method: "POST",
       headers: Object.assign(
@@ -138,11 +140,11 @@ export default function SignUp(props) {
           }
           setIsSuccess(result.isSuccess);
           setErrMsg(result.message);
-          props.setIsLoading(false);
+          dispatchLoading({ type: "Set-Loading", isLoading: false });
         },
         (error) => {
           if (error) {
-            props.setIsLoading(false);
+            dispatchLoading({ type: "Set-Loading", isLoading: false });
           }
         }
       );
