@@ -1,6 +1,6 @@
 //JOIN GLOBAL ROOM
 const JoinGlobalRoom = (socket, user) => {
-  socket.emit("Global-Room", { socketID: user.id, username: user.username });
+  socket.emit("Global-Room", { userID: user._id, username: user.username });
 };
 
 //GET ALL ONLINE USER
@@ -23,8 +23,8 @@ const GetChatGlobalRoom = (socket, dispatch) => {
 };
 
 //LOG OUT
-const LogOut = (socket) => {
-  socket.emit("Log-Out");
+const LogOut = (socket, user) => {
+  socket.emit("Log-Out", {userID: user.userID});
 };
 
 //CREATE NEW ROOM
@@ -49,18 +49,27 @@ const LeaveRoom = (socket, roomID, user) => {
 //GET LEAVE PLAYER
 const LeaveRoomPlayer = (socket, setState, roomID, onLeave) => {
   socket.on("Leave-Room-Player", (value) => {
-    if (value === roomID) {
-      onLeave();
-    }
+    //if (value === roomID) {
+    //  onLeave();
+    //}
     setState({});
   });
 };
+
+// CLOSE ROOM
+const CloseRoom = (socket, roomID, onCloseRoom) => {
+  socket.on("Close-Room", (value) => {
+    if (roomID === value){
+      onCloseRoom();
+    }
+  })
+}
 
 //JOIN ROOM
 const JoinRoom = (socket, roomID, player) => {
   socket.emit("Join-Room", {
     roomID: roomID,
-    player: { playerID: socket.id, ...player },
+    player: player,
   });
 };
 
@@ -130,5 +139,6 @@ export {
   LeaveRoomPlayer,
   GetBoard,
   MakeAMove,
-  DeclareWinner
+  DeclareWinner,
+  CloseRoom
 };

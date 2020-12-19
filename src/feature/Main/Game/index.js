@@ -33,6 +33,8 @@ import {
   GetSecondPlayer,
   GetFirstPlayer,
   ChatPrivateRoom,
+  CloseRoom,
+  JoinGlobalRoom
 } from "../../../services/socket/base-socket";
 import "./index.css";
 import { Typography } from "@material-ui/core";
@@ -116,7 +118,7 @@ export default function Game(props) {
   };
 
   const handleClick = (i) => {
-    if (winner || board.turn != user.username || board.squares[i]) {
+    if (winner || board.turn != user._id || board.squares[i]) {
       return;
     }
     //const history_t = history.slice(0, stepNumber + 1);
@@ -171,6 +173,7 @@ export default function Game(props) {
     );
     GetBoard(socket, setBoard);
     DeclareWinner(socket, handleWinner);
+    CloseRoom(socket, location.state.roomID, handleOnCloseRoomRes);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -184,14 +187,21 @@ export default function Game(props) {
   const handleOnSubmitChat = (e) => {
     e.preventDefault();
     const temp = [...roomChat];
-    temp.push({ username: user.username, msg: chatText });
-    ChatPrivateRoom(socket, location.state.roomID, temp);
+    const newChat = { _id: user._id, username: user.username, msg: chatText, time: Date.now() };
+    temp.push(newChat);
+    setRoomChat(temp);
+    ChatPrivateRoom(socket, location.state.roomID, newChat);
     setChatText("");
   };
 
   const handleWinner = (winner) => {
     setWinner(winner);
   }
+
+  const handleOnCloseRoomRes = () => {
+    historyPages.push("/dashboard");
+    JoinGlobalRoom(socket, user);
+  };
 
   return (
     <Container component="main" maxWidth="xl">

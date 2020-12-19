@@ -31,6 +31,9 @@ const useStyles = makeStyles((theme) => ({
   cardContent: {
     flexGrow: 1,
   },
+  gameID: {
+    fontSize: '16px'
+  },
   iconHeader: {
     marginRight: "5px",
     verticalAlign: "text-bottom",
@@ -44,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "5px",
     overflow: "hidden",
     textOverflow: "ellipsis",
+    fontSize: '20px'
   },
   username: {
     color: "#666666",
@@ -63,13 +67,13 @@ const GameEntrance = ({ onClick, data }) => {
         />
       </div>
       <CardContent className={classes.cardContent}>
-        <Typography gutterBottom variant="h6" component="h6">
-          <VpnKeyIcon className={classes.iconHeader} />
-          <b>{data.roomID}</b>
-        </Typography>
         <Typography className={classes.roomName}>
           <VideogameAssetIcon className={classes.icon} />
           <b>{data.title}</b>
+        </Typography>
+        <Typography gutterBottom className={classes.gameID} component="h6">
+          <VpnKeyIcon className={classes.iconHeader} />
+          <b>{data.roomID}</b>
         </Typography>
         <Typography className={classes.username}>
           <StarsIcon className={classes.icon} />

@@ -39,7 +39,7 @@ const useStyles = makeStyles((theme) => ({
   },
   content: {
     padding: theme.spacing(1),
-    justifyContent: "center"
+    justifyContent: "center",
   }
 }));
 
@@ -67,24 +67,24 @@ export default function UserInfo(props) {
             >
               {props.user.username || '...'}
             </Typography>
-            <Grid container align="center">
+            <Grid container align="left">
               <Grid item md={6}>
-                <Typography style={{ fontSize: 18 }}>
+                <Typography style={{ fontSize: 16 }}>
                   Rank: {props.user.rank || 'NA'}
                 </Typography>
               </Grid>
               <Grid item md={6}>
-                <Typography style={{ fontSize: 18 }}>
+                <Typography style={{ fontSize: 16 }}>
                   Point: {props.user.point || 0}
                 </Typography>
               </Grid>
               <Grid item md={6}>
-                <Typography style={{ fontSize: 18 }}>
+                <Typography style={{ fontSize: 16 }}>
                   Win: {props.user.win || 0}
                 </Typography>
               </Grid>
               <Grid item md={6}>
-                <Typography style={{ fontSize: 18 }}>
+                <Typography style={{ fontSize: 16 }}>
                   Lose: {props.user.lose || 0}
                 </Typography>
               </Grid>
