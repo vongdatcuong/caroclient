@@ -6,6 +6,7 @@ const JoinGlobalRoom = (socket, user) => {
 //GET ALL ONLINE USER
 const GetGlobalUsers = (socket, dispatch) => {
   socket.on("Global-Users", (data) => {
+    console.log(data);
     dispatch({ type: "Get-Global-User", payload: data });
   });
 };
@@ -24,7 +25,7 @@ const GetChatGlobalRoom = (socket, dispatch) => {
 
 //LOG OUT
 const LogOut = (socket, user) => {
-  socket.emit("Log-Out", {userID: user.userID});
+  socket.emit("Log-Out", { userID: user.userID });
 };
 
 //CREATE NEW ROOM
@@ -43,27 +44,28 @@ const GetListRoom = (socket, dispatch) => {
 
 //LEAVE ROOM
 const LeaveRoom = (socket, roomID, user) => {
-  socket.emit("Leave-Room", {roomID: roomID, player: user});
+  socket.emit("Leave-Room", { roomID: roomID, player: user });
 };
 
 //GET LEAVE PLAYER
-const LeaveRoomPlayer = (socket, setState, roomID, onLeave) => {
+const LeaveRoomPlayer = (socket, setState, onLeave) => {
   socket.on("Leave-Room-Player", (value) => {
     //if (value === roomID) {
     //  onLeave();
     //}
     setState({});
+    onLeave(value);
   });
 };
 
 // CLOSE ROOM
 const CloseRoom = (socket, roomID, onCloseRoom) => {
   socket.on("Close-Room", (value) => {
-    if (roomID === value){
+    if (roomID === value) {
       onCloseRoom();
     }
-  })
-}
+  });
+};
 
 //JOIN ROOM
 const JoinRoom = (socket, roomID, player) => {
@@ -104,23 +106,35 @@ const GetBoard = (socket, setState) => {
   socket.on("Board-Response", (board) => {
     setState(board);
   });
-}
+};
 
 // MAKE A MOVE
 const MakeAMove = (socket, roomID, user, boardProp) => {
   socket.emit("Make-a-move", {
     roomID: roomID,
     player: { playerID: socket.id, ...user },
-    boardProp: boardProp
+    boardProp: boardProp,
   });
-}
+};
 
 // DECLARE WINNER
 const DeclareWinner = (socket, handleWinner) => {
   socket.on("Declare-Winner-Response", (winner) => {
     handleWinner(winner);
   });
-}
+};
+
+//INVITE USER
+const InviteUser = (socket, value) => {
+  socket.emit("Invite-Room", { socketID: value.id, room: value.room });
+};
+
+//RECEIVER INVITE REQUEST
+const GetInviteRequest = (socket, handleFunc) => {
+  socket.on("Invite-Room-Response", (value) => {
+    handleFunc(value);
+  });
+};
 
 export {
   JoinGlobalRoom,
@@ -140,5 +154,7 @@ export {
   GetBoard,
   MakeAMove,
   DeclareWinner,
-  CloseRoom
+  CloseRoom,
+  InviteUser,
+  GetInviteRequest,
 };

@@ -8,6 +8,7 @@ import CardMedia from "@material-ui/core/CardMedia";
 import { makeStyles } from "@material-ui/core/styles";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
+import SettingIcon from "@material-ui/icons/Settings";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import Grid from "@material-ui/core/Grid";
@@ -35,12 +36,12 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: "50%",
     height: 130,
     width: 130,
-    margin: '0 auto'
+    margin: "0 auto",
   },
   content: {
     padding: theme.spacing(1),
     justifyContent: "center",
-  }
+  },
 }));
 
 export default function UserInfo(props) {
@@ -63,14 +64,14 @@ export default function UserInfo(props) {
               gutterBottom
               variant="h5"
               component="h2"
-              style={{ textAlign: "center", color: '#016310' }}
+              style={{ textAlign: "center", color: "#016310" }}
             >
-              {props.user.username || '...'}
+              {props.user.username || "..."}
             </Typography>
             <Grid container align="left">
               <Grid item md={6}>
                 <Typography style={{ fontSize: 16 }}>
-                  Rank: {props.user.rank || 'NA'}
+                  Rank: {props.user.rank || "NA"}
                 </Typography>
               </Grid>
               <Grid item md={6}>
@@ -93,12 +94,15 @@ export default function UserInfo(props) {
           <CardActions style={{ alignSelf: "flex-end" }}>
             <IconButton
               children={
-                (props.playerNum == 2)? 
-                props.type === "X" ? (
-                  <CloseIcon />
+                props.playerNum == 2 ? (
+                  props.type === "X" ? (
+                    <CloseIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )
                 ) : (
-                  <RadioButtonUncheckedIcon />
-                ) : ''
+                  ""
+                )
               }
               color="primary"
             />
@@ -110,15 +114,27 @@ export default function UserInfo(props) {
             </Button>
             <IconButton
               children={
-                (props.playerNum == 1)? 
-                props.type === "X" ? (
-                  <CloseIcon />
+                props.playerNum == 1 ? (
+                  props.type === "X" ? (
+                    <CloseIcon />
+                  ) : (
+                    <RadioButtonUncheckedIcon />
+                  )
                 ) : (
-                  <RadioButtonUncheckedIcon />
-                ) : ''
+                  ""
+                )
               }
               color="primary"
             />
+            {props.playerNum == 1 ? (
+              <IconButton
+                onClick={props.onSetting}
+                children={<SettingIcon />}
+                color="primary"
+              />
+            ) : (
+              ""
+            )}
           </CardActions>
         </div>
       ) : null}

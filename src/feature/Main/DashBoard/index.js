@@ -46,14 +46,24 @@ import {
   CreatePlayingRoom,
   GetListRoom,
   JoinRoom,
+  GetInviteRequest,
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
+import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(6),
     maxWidth: "1400px",
+  },
+  title: {
+    color: "#016310",
+    fontWeight: "600",
+    padding: "5px",
+    textAlign: "center",
+    height: "10%",
+    marginBottom: "7px",
   },
   left: {
     "& > .row": {
@@ -87,11 +97,13 @@ const useStyles = makeStyles((theme) => ({
     paddingLeft: "5px",
     paddingRight: "5px",
     borderRadius: "5px",
-    margin: '0 auto',
+    margin: "0 auto",
   },
   onlineUserWrapper: {
     overflow: "auto",
     height: "85%",
+
+    textAlign: "center",
   },
   online: {
     color: "green",
@@ -142,6 +154,8 @@ const DashBoard = (props) => {
   const [chat, setChat] = useState("");
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
+  const [openInviteDialog, setOpenInviteDialog] = useState(false);
+  const [inviteRoom, setInviteRoom] = useState();
 
   if (!AuthService.getCurrentUser()) {
     history.push("/logIn");
@@ -173,10 +187,18 @@ const DashBoard = (props) => {
   const handleCloseJoinDialog = () => {
     setOpenJoinDialog(false);
   };
+
+  const handleOnCloseInviteDialog = () => {
+    setOpenInviteDialog(false);
+  };
+
   const handleOnCreateRoom = (title) => {
     handleCloseCreateDialog();
     CreatePlayingRoom(socket, { title: title, creator: user });
-    history.push({ pathname: "/game", state: { roomID: socket.id, turn: 1 } });
+    history.push({
+      pathname: "/game",
+      state: { roomID: user._id, title: title, creator: user, turn: 1 },
+    });
   };
 
   const handleOnChatSubmit = (e) => {
@@ -185,9 +207,19 @@ const DashBoard = (props) => {
     setChat("");
   };
 
+  const handleOnInvite = (room) => {
+    setInviteRoom(room);
+    setOpenInviteDialog(true);
+  };
+
   useEffect(() => {
     if (!state.isCheck && user) {
-      JoinGlobalRoom(socket, { id: socket.id, _id: (user)? user._id : 0, username: user.username });
+      JoinGlobalRoom(socket, {
+        id: socket.id,
+        _id: user ? user._id : 0,
+        username: user.username,
+      });
+      GetInviteRequest(socket, handleOnInvite);
       GetGlobalUsers(socket, dispatch);
       GetChatGlobalRoom(socket, dispatch);
       GetListRoom(socket, dispatch);
@@ -195,33 +227,25 @@ const DashBoard = (props) => {
     }
   }, []);
 
+  console.log(state.globalUsers);
+
   return (
     <main>
       <Container className={classes.container} maxWidth="md">
         <Grid container spacing={3}>
           {/* Left */}
           <Grid item md={3} xs={5} className={classes.left} spacing={5}>
-            <div className={classes.toolbar}>
-              <Button
-                variant="contained"
-                color="primary"
-                className={`${classes.button} ${classes.globalBtn}`}
-                startIcon={<PublicIcon />}
-              >
-                Global
-              </Button>
-              <Button
-                variant="outlined"
-                color="primary"
-                className={`${classes.button} ${classes.friendBtn}`}
-                startIcon={<PeopleIcon />}
-              >
-                Friends
-              </Button>
-            </div>
             <div className="row">
               <Box className={classes.box}>
                 <div className={classes.onlineUserWrapper}>
+                  <Typography
+                    textAlign="center"
+                    variant="h6"
+                    component="h6"
+                    className={classes.title}
+                  >
+                    GLOBAL
+                  </Typography>
                   <List dense={true}>
                     {state.globalUsers.map((user, index) => {
                       return (
@@ -280,14 +304,6 @@ const DashBoard = (props) => {
                 Play now
               </Button>
               <Button
-                variant="contained"
-                color="primary"
-                className={`${classes.button} ${classes.rankingBtn}`}
-                startIcon={<EqualizerIcon />}
-              >
-                Ranking
-              </Button>
-              <Button
                 onClick={handleClickOpenCreateDialog}
                 variant="contained"
                 color="primary"
@@ -343,6 +359,16 @@ const DashBoard = (props) => {
         onClose={handleCloseJoinDialog}
         onJoin={handleOnChooseRoom}
       />
+      {inviteRoom ? (
+        <InviteRequestDialog
+          room={inviteRoom}
+          value={openInviteDialog}
+          onClose={handleOnCloseInviteDialog}
+          onAccept={() => handleOnChooseRoom(inviteRoom.id)}
+        />
+      ) : (
+        ""
+      )}
     </main>
   );
 };

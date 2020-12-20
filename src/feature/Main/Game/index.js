@@ -22,11 +22,15 @@ import {
   LeaveRoom,
   LeaveRoomPlayer,
   MakeAMove,
-  DeclareWinner
+  DeclareWinner,
+  GetGlobalUsers,
+  InviteUser,
+  GetInviteRequest,
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
 import Settings from "./components/settings";
+import SettingDialog from "../../../components/dialogs/SettingDialog/index";
 import UserInfo from "./components/user-info";
 
 import {
@@ -34,10 +38,11 @@ import {
   GetFirstPlayer,
   ChatPrivateRoom,
   CloseRoom,
-  JoinGlobalRoom
+  JoinGlobalRoom,
 } from "../../../services/socket/base-socket";
 import "./index.css";
 import { Typography } from "@material-ui/core";
+import ListUser from "./components/list-user";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -54,9 +59,9 @@ const useStyles = makeStyles((theme) => ({
   },
   winner: {
     marginTop: theme.spacing(3),
-    textAlign: 'center',
-    color: 'red'
-  }
+    textAlign: "center",
+    color: "red",
+  },
 }));
 function calculateWinner(squares) {
   const lines = [
@@ -102,18 +107,40 @@ export default function Game(props) {
   const [xIsNext, setXIsNext] = useState(true);
   const [isAsc, setIsAsc] = useState(true);
 
-  const [board, setBoard] = useState({squares: []});
+  const [board, setBoard] = useState({ squares: [] });
   const [roomChat, setRoomChat] = useState([]);
   const [secondPlayer, setSecondPlayer] = useState({});
   const [chatText, setChatText] = useState("");
   const [winner, setWinner] = useState("");
+  const [openSetting, setOpenSetting] = useState(false);
+
+  const initializeRoomUser = [
+    {
+      user: user,
+      role: location.state.roomID === user._id ? "Player 1" : "Player 2",
+    },
+  ];
+  const [roomUsers, setRoomUsers] = useState(initializeRoomUser);
 
   const handleOnLoadSecondPlayer = (value) => {
+    setRoomUsers([
+      ...roomUsers,
+      {
+        user: value,
+        role: location.state.roomID === user._id ? "Player 2" : "Player 1",
+      },
+    ]);
     setSecondPlayer(value);
   };
 
+  const handleOnPlayerLeave = (player) => {
+    setRoomUsers(roomUsers.filter((e) => e.user._id !== player));
+  };
+
   const handleOnLeave = () => {
+    setOpenSetting(false);
     LeaveRoom(socket, location.state.roomID, user);
+    JoinGlobalRoom(socket, user);
     historyPages.push("/dashboard");
   };
 
@@ -127,7 +154,11 @@ export default function Game(props) {
     const col = (i % boardSize) + 1;
     const row = Math.floor(i / boardSize) + 1;
     const total = board.total;
-    MakeAMove(socket, location.state.roomID, user, {idx: i, col: col, row: row});
+    MakeAMove(socket, location.state.roomID, user, {
+      idx: i,
+      col: col,
+      row: row,
+    });
     //if (calculateWinner(squares) || squares[i]) {
     //  return;
     //}
@@ -165,12 +196,8 @@ export default function Game(props) {
     GetSecondPlayer(socket, handleOnLoadSecondPlayer);
     GetFirstPlayer(socket, handleOnLoadSecondPlayer);
     GetChatPrivateRoom(socket, handleOnGetRoomChat);
-    LeaveRoomPlayer(
-      socket,
-      handleOnLoadSecondPlayer,
-      location.state.roomID,
-      handleOnLeave
-    );
+    GetGlobalUsers(socket, dispatch);
+    LeaveRoomPlayer(socket, handleOnLoadSecondPlayer, handleOnPlayerLeave);
     GetBoard(socket, setBoard);
     DeclareWinner(socket, handleWinner);
     CloseRoom(socket, location.state.roomID, handleOnCloseRoomRes);
@@ -187,7 +214,12 @@ export default function Game(props) {
   const handleOnSubmitChat = (e) => {
     e.preventDefault();
     const temp = [...roomChat];
-    const newChat = { _id: user._id, username: user.username, msg: chatText, time: Date.now() };
+    const newChat = {
+      _id: user._id,
+      username: user.username,
+      msg: chatText,
+      time: Date.now(),
+    };
     temp.push(newChat);
     setRoomChat(temp);
     ChatPrivateRoom(socket, location.state.roomID, newChat);
@@ -196,11 +228,31 @@ export default function Game(props) {
 
   const handleWinner = (winner) => {
     setWinner(winner);
-  }
+  };
 
   const handleOnCloseRoomRes = () => {
     historyPages.push("/dashboard");
     JoinGlobalRoom(socket, user);
+  };
+
+  const handleOnSetting = () => {
+    setOpenSetting(true);
+  };
+
+  const handleOnCloseSetting = () => {
+    setOpenSetting(false);
+  };
+
+  const handleOnInviteUser = (socketID) => {
+    console.log(socketID);
+    InviteUser(socket, {
+      id: socketID,
+      room: {
+        id: location.state.roomID,
+        title: location.state.title,
+        creator: location.state.creator,
+      },
+    });
   };
 
   return (
@@ -221,6 +273,7 @@ export default function Game(props) {
                   user={user}
                   playerNum={1}
                   type={location.state.turn === 1 ? "X" : "O"}
+                  onSetting={handleOnSetting}
                 />
               </Grid>
               <div className="row" style={{ width: 300 }}>
@@ -248,13 +301,15 @@ export default function Game(props) {
                 />
               </div>
             </div>
-            {(winner)? 
+            {winner ? (
               <div className={classes.winner}>
-                <Typography variant="h5" component="h5">Winner {winner}</Typography>
-              </div> 
-              : 
-              ''
-            }
+                <Typography variant="h5" component="h5">
+                  Winner {winner}
+                </Typography>
+              </div>
+            ) : (
+              ""
+            )}
           </Grid>
           <Grid key={2} item>
             <Grid
@@ -272,10 +327,15 @@ export default function Game(props) {
                 />
               </Grid>
               <Grid item>
-                <Settings onLeave={handleOnLeave} />
+                <ListUser roomData={roomUsers} onInvite={handleOnInviteUser} />
               </Grid>
             </Grid>
           </Grid>
+          <SettingDialog
+            value={openSetting}
+            onClose={handleOnCloseSetting}
+            onLeave={handleOnLeave}
+          />
         </Grid>
       </div>
     </Container>
