@@ -171,18 +171,6 @@ export default function SignUp(props) {
                   id="password"
                   autoComplete="current-password"
                   value={password}
-                  error={
-                    password === "" ||
-                    repassword === "" ||
-                    password !== repassword
-                  }
-                  helperText={
-                    password === "" ||
-                    repassword === "" ||
-                    password !== repassword
-                      ? "Confirm Password incorrect"
-                      : " "
-                  }
                   onChange={(evt) => handlePasswordChange(evt)}
                 />
               </Grid>
@@ -198,13 +186,9 @@ export default function SignUp(props) {
                   autoComplete="re-password"
                   value={repassword}
                   error={
-                    password === "" ||
-                    repassword === "" ||
                     password !== repassword
                   }
                   helperText={
-                    password === "" ||
-                    repassword === "" ||
                     password !== repassword
                       ? "Confirm Password incorrect"
                       : " "

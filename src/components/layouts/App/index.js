@@ -22,6 +22,9 @@ import createHashHistory from "history/createHashHistory";
 import { SocketStateProvider } from "../../../context/socket-context";
 import { LoadingStateProvider } from "../../../context/loading-context";
 import Game from "../../../feature/Main/Game";
+import AccountValidation from "../../../feature/Authentication/AccountValidation"
+import ResetPassword from "../../../feature/Authentication/ResetPassword";
+import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
@@ -31,29 +34,29 @@ function App() {
       <LoadingStateProvider>
         <React.Fragment>
           <CssBaseline />
-          <Loading/>
+          <Loading />
           <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
             <Switch>
               <Route path="/logIn">
                 {/* Header */}
                 <Header />
-                <LogIn/>
+                <LogIn />
               </Route>
               <Route path="/signUp">
                 {/* Header */}
                 <Header />
-                <SignUp/>
+                <SignUp />
               </Route>
               <Route path="/profile">
                 {/* Header */}
                 <Header />
-                <Profile/>
+                <Profile />
               </Route>
               <Route path="/dashboard">
                 {/* Header */}
                 {/* End Header */}
                 <Header />
-                <DashBoard/>
+                <DashBoard />
                 {/* Footer */}
                 <Footer />
                 {/* End footer */}
@@ -61,6 +64,18 @@ function App() {
               <Route path="/game">
                 <Header />
                 <Game />
+              </Route>
+              <Route path="/account-validation/:token">
+                <Header />
+                <AccountValidation />
+              </Route>
+              <Route path="/forget-password">
+                <Header />
+                <ForgetPassword />
+              </Route>
+              <Route path="/reset-password/:token">
+                <Header />
+                <ResetPassword />
               </Route>
               <Route path="/">
                 <Redirect to="/logIn" />

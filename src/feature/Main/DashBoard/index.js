@@ -186,7 +186,7 @@ const DashBoard = (props) => {
   };
 
   useEffect(() => {
-    if (!state.isCheck) {
+    if (!state.isCheck && user) {
       JoinGlobalRoom(socket, { id: socket.id, _id: (user)? user._id : 0, username: user.username });
       GetGlobalUsers(socket, dispatch);
       GetChatGlobalRoom(socket, dispatch);

@@ -138,6 +138,52 @@ class AuthService {
     localStorage.removeItem("user");
     localStorage.setItem("user", JSON.stringify(user));
   }
+
+  async activeAccount(token) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    };
+    let res = await fetch(
+      constant.api + constant.userPath + constant.emailValidation,
+      requestOptions
+    );
+    return res;
+  }
+  async sendRequestResetEmail(email) {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: email,
+      }),
+    };
+    let res = await fetch(
+      constant.api + constant.userPath + constant.sendEmailResetPassword,
+      requestOptions
+    );
+    return res;
+  }
+  async resetPassword(token, password) {
+    const requestOptions = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+      body: JSON.stringify({
+        password: password,
+      }),
+    };
+    let res = await fetch(
+      constant.api + constant.userPath + constant.resetPassword,
+      requestOptions
+    );
+    return res;
+  }
 }
 
 export default new AuthService();

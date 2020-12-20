@@ -5,7 +5,9 @@ const api = `${SERVER}/api`;
 const userPath = "/user";
 const logInPath = "/login";
 const signUpPath = "/signup";
-
+const emailValidation = "/emailValidation";
+const sendEmailResetPassword = "/sendEmailResetPassword";
+const resetPassword = "/resetPassword";
 function queryParams(params) {
   return Object.keys(params)
     .map((k) => encodeURIComponent(k) + "=" + encodeURIComponent(params[k]))
@@ -19,6 +21,9 @@ export default {
   userPath,
   logInPath,
   signUpPath,
+  emailValidation,
+  sendEmailResetPassword,
+  resetPassword,
   //
   queryParams,
 };
