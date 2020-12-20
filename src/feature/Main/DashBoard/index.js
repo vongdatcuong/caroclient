@@ -50,6 +50,7 @@ import {
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
+import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -120,6 +121,13 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: "600",
     textDecoration: "underline",
   },
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+  },
+  selectEmpty: {
+    marginTop: theme.spacing(2),
+  },
   // Right
   playNowBtn: {
     backgroundColor: "#EA4335",
@@ -156,6 +164,7 @@ const DashBoard = (props) => {
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [inviteRoom, setInviteRoom] = useState();
+  const [roomOption, setRoomOption] = useState("Waiting");
 
   if (!AuthService.getCurrentUser()) {
     history.push("/logIn");
@@ -210,6 +219,10 @@ const DashBoard = (props) => {
   const handleOnInvite = (room) => {
     setInviteRoom(room);
     setOpenInviteDialog(true);
+  };
+
+  const handleOnChangeRoomOption = (event) => {
+    setRoomOption(event.target.value);
   };
 
   useEffect(() => {
@@ -295,6 +308,22 @@ const DashBoard = (props) => {
           {/* Right */}
           <Grid item md={9} xs={7} className={classes.right}>
             <div className={classes.toolbar}>
+              <FormControl variant="outlined" className={classes.formControl}>
+                <InputLabel id="demo-simple-select-outlined-label">
+                  Option
+                </InputLabel>
+                <Select
+                  labelId="demo-simple-select-outlined-label"
+                  id="demo-simple-select-outlined"
+                  value={roomOption}
+                  onChange={handleOnChangeRoomOption}
+                  autoFocus={false}
+                  label="Option"
+                >
+                  <MenuItem value={"Waiting"}>Waiting</MenuItem>
+                  <MenuItem value={"Playing"}>Playing</MenuItem>
+                </Select>
+              </FormControl>
               <Button
                 variant="contained"
                 color="primary"
@@ -330,13 +359,31 @@ const DashBoard = (props) => {
               </Typography>
             </div>
             <Grid container className="row" spacing={3}>
-              {state.listRoom.map((game, index) => {
-                return (
-                  <Grid item md={4} key={index}>
-                    <GameEntrance data={game} onClick={handleOnChooseRoom} />
-                  </Grid>
-                );
-              })}
+              {roomOption === "Waiting"
+                ? state.listRoom.map((game, index) => {
+                    return (
+                      game.num < 2 && (
+                        <Grid item md={4} key={index}>
+                          <GameEntrance
+                            data={game}
+                            onClick={handleOnChooseRoom}
+                          />
+                        </Grid>
+                      )
+                    );
+                  })
+                : state.listRoom.map((game, index) => {
+                    return (
+                      game.num >= 2 && (
+                        <Grid item md={4} key={index}>
+                          <GameEntrance
+                            data={game}
+                            onClick={handleOnChooseRoom}
+                          />
+                        </Grid>
+                      )
+                    );
+                  })}
             </Grid>
             <div className={classes.paginationWrapper}>
               <Pagination
