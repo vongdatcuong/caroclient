@@ -35,6 +35,12 @@ const CreatePlayingRoom = (socket, room) => {
   socket.emit("Create", room);
 };
 
+// GET ROOM OWNER
+const GetRoomOwner = (socket, setRoomOwnerID) => {
+  socket.on('Room-Owner-Response', (roomOwnerID) => {
+    setRoomOwnerID(roomOwnerID);
+  })
+}
 //GET ALL LIST ROOM
 const GetListRoom = (socket, dispatch) => {
   socket.on("Playing-Room", (data) => {
@@ -101,6 +107,28 @@ const GetChatPrivateRoom = (socket, setState) => {
   });
 };
 
+// START GAME
+const StartGame = (socket, roomID, user) => {
+  socket.emit("Start-Game", {
+    roomID: roomID,
+    roomOwnerID: user._id
+  })
+}
+
+// RESTART GAME
+const RestartGame = (socket, roomID, user) => {
+  socket.emit("Restart-Game", {
+    roomID: roomID,
+    roomOwnerID: user._id
+  })
+}
+
+const RestartGameRes = (socket, handleRestartGameRes) => {
+  socket.on("Restart-Game-Response", (board) => {
+    handleRestartGameRes(board)
+  })
+}
+
 // GET BOARD
 const GetBoard = (socket, setState) => {
   socket.on("Board-Response", (board) => {
@@ -164,5 +192,9 @@ export {
   CloseRoom,
   InviteUser,
   GetInviteRequest,
-  WithDraw
+  WithDraw,
+  GetRoomOwner,
+  StartGame,
+  RestartGame,
+  RestartGameRes
 };
