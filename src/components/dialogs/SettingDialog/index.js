@@ -10,6 +10,15 @@ import Settings from "../../../feature/Main/Game/components/settings";
 import { makeStyles } from "@material-ui/core/styles";
 
 const useStyles = makeStyles((theme) => ({
+  withDrawBtn: {
+    flex: 1,
+    width: 290,
+    background: "#FBBC05",
+    color: "white",
+    alignItems: "flex-end",
+    display: 'block',
+    marginBottom: theme.spacing(2)
+  },
   timeButton: {
     flex: 1,
     width: 290,
@@ -19,7 +28,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SettingRoomDialog({ value, onLeave, onClose }) {
+export default function SettingRoomDialog({ value, onWithdraw, onLeave, onClose }) {
   const classes = useStyles();
 
   return (
@@ -35,6 +44,12 @@ export default function SettingRoomDialog({ value, onLeave, onClose }) {
             Setting
           </DialogTitle>
           <DialogContent>
+            {(onWithdraw)? 
+              <Button onClick={onWithdraw} className={classes.withDrawBtn}>
+                Withdraw
+              </Button>
+              :
+              ''}
             <Button onClick={onLeave} className={classes.timeButton}>
               Leave Room
             </Button>

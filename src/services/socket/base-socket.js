@@ -117,6 +117,13 @@ const MakeAMove = (socket, roomID, user, boardProp) => {
   });
 };
 
+// WITHDRAW
+const WithDraw = (socket, roomID, user) => {
+  socket.emit("Withdraw", {
+    roomID: roomID,
+    player: user
+  })
+}
 // DECLARE WINNER
 const DeclareWinner = (socket, handleWinner) => {
   socket.on("Declare-Winner-Response", (winner) => {
@@ -157,4 +164,5 @@ export {
   CloseRoom,
   InviteUser,
   GetInviteRequest,
+  WithDraw
 };

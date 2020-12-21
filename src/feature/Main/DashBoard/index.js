@@ -153,6 +153,9 @@ const useStyles = makeStyles((theme) => ({
       justifyContent: "center",
     },
   },
+  roomOption: {
+    height: '30px'
+  }
 }));
 
 const DashBoard = (props) => {
@@ -319,6 +322,7 @@ const DashBoard = (props) => {
                   onChange={handleOnChangeRoomOption}
                   autoFocus={false}
                   label="Option"
+                  className={classes.roomOption}
                 >
                   <MenuItem value={"Waiting"}>Waiting</MenuItem>
                   <MenuItem value={"Playing"}>Playing</MenuItem>
@@ -362,7 +366,7 @@ const DashBoard = (props) => {
               {roomOption === "Waiting"
                 ? state.listRoom.map((game, index) => {
                     return (
-                      game.num < 2 && (
+                      game.status === 'Waiting' && (
                         <Grid item md={4} key={index}>
                           <GameEntrance
                             data={game}

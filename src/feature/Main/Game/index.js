@@ -26,12 +26,14 @@ import {
   GetGlobalUsers,
   InviteUser,
   GetInviteRequest,
+  WithDraw
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
 import Settings from "./components/settings";
 import SettingDialog from "../../../components/dialogs/SettingDialog/index";
 import UserInfo from "./components/user-info";
+import ConfirmDialog from '../../../components/dialogs/ConfirmDialog';
 
 import {
   GetSecondPlayer,
@@ -46,7 +48,7 @@ import ListUser from "./components/list-user";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1.8),
     display: "flex",
     alignItems: "center",
   },
@@ -84,7 +86,7 @@ function calculateWinner(squares) {
 }
 
 export default function Game(props) {
-  const boardSize = 15;
+  const boardSize = 20;
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
@@ -113,6 +115,7 @@ export default function Game(props) {
   const [chatText, setChatText] = useState("");
   const [winner, setWinner] = useState("");
   const [openSetting, setOpenSetting] = useState(false);
+  const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(false);
 
   const initializeRoomUser = [
     {
@@ -137,6 +140,15 @@ export default function Game(props) {
     setRoomUsers(roomUsers.filter((e) => e.user._id !== player));
   };
 
+  const handleOnWithDraw = () => {
+    setOpenConfirmWithdrawDialog(true);
+  };
+
+  const handleWithDraw = () => {
+    WithDraw(socket, location.state.roomID, user);
+    setOpenSetting(false);
+  }
+  
   const handleOnLeave = () => {
     setOpenSetting(false);
     LeaveRoom(socket, location.state.roomID, user);
@@ -331,8 +343,16 @@ export default function Game(props) {
               </Grid>
             </Grid>
           </Grid>
+          <ConfirmDialog
+            open={openConfirmWithdrawDialog}
+            action={handleWithDraw}
+            setOpen={setOpenConfirmWithdrawDialog}
+          >
+            <div align='center'>Do you want to <b>Withdraw</b></div>
+          </ConfirmDialog>
           <SettingDialog
             value={openSetting}
+            onWithdraw={(board.squares.length > 0)? handleOnWithDraw : null}
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
           />
