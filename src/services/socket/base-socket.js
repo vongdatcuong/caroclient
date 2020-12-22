@@ -107,11 +107,17 @@ const GetChatPrivateRoom = (socket, setState) => {
   });
 };
 
-// START GAME
-const StartGame = (socket, roomID, user) => {
-  socket.emit("Start-Game", {
+// READY GAME
+const ReadyGame = (socket, roomID, user) => {
+  socket.emit("Ready-Game", {
     roomID: roomID,
-    roomOwnerID: user._id
+    _id: user._id
+  })
+}
+
+const ReadyGameRes = (socket, handleReadyGameRes) => {
+  socket.on("Ready-Game-Response", (_id) => {
+    handleReadyGameRes(_id);
   })
 }
 
@@ -119,7 +125,7 @@ const StartGame = (socket, roomID, user) => {
 const RestartGame = (socket, roomID, user) => {
   socket.emit("Restart-Game", {
     roomID: roomID,
-    roomOwnerID: user._id
+    _id: user._id
   })
 }
 
@@ -194,7 +200,8 @@ export {
   GetInviteRequest,
   WithDraw,
   GetRoomOwner,
-  StartGame,
+  ReadyGame,
+  ReadyGameRes,
   RestartGame,
   RestartGameRes
 };

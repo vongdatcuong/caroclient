@@ -16,6 +16,7 @@ import BoxChat from "../../../components/layouts/BoxChat";
 import { store } from "../../../context/socket-context";
 // Components
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import BackgroundGameImg from "../../../vendors/images/background-game.jpg";
 
 // Constant && Services
 import AuthService from "../../../services/auth.service";
@@ -31,7 +32,8 @@ import {
   GetInviteRequest,
   WithDraw,
   GetRoomOwner,
-  StartGame,
+  ReadyGame,
+  ReadyGameRes,
   RestartGame,
   RestartGameRes,
 } from "../../../services/socket/base-socket";
@@ -54,10 +56,16 @@ import { Typography } from "@material-ui/core";
 import ListUser from "./components/list-user";
 
 const useStyles = makeStyles((theme) => ({
+  main: {
+    backgroundImage: "url(" + BackgroundGameImg + ")",
+    backgroundSize: 'contain'
+  },
   paper: {
-    marginTop: theme.spacing(1.8),
     display: "flex",
     alignItems: "center",
+  },
+  root: {
+    marginTop: '0px'
   },
   avatar: {
     margin: theme.spacing(3),
@@ -105,7 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
   waitBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline block',
+    display: 'inline-block',
     textAlign: 'center',
     fontSize: '1.5em',
     color: '#016310',
@@ -117,8 +125,11 @@ const useStyles = makeStyles((theme) => ({
   },
   waitAnotherBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline block',
+    display: 'inline-block',
     textAlign: 'center',
+  },
+  waitAnotherBtn2: {
+    marginTop: theme.spacing(5)
   },
   winnerWrapper: {
     marginTop: theme.spacing(25),
@@ -134,6 +145,21 @@ const useStyles = makeStyles((theme) => ({
     borderRadius: '5px',
     textAlign: "center",
   },
+  leaveClosedRoomWrapper: {
+    backgroundColor: fade('#000000', 0.4),
+    zIndex: '1000'
+  },
+  leaveClosedRoomBtn: {
+    marginTop: theme.spacing(40),
+    display: 'inline-block',
+    textAlign: 'center',
+    fontSize: '1.5em',
+    padding: theme.spacing(1),
+    paddingLeft: theme.spacing(4),
+    paddingRight: theme.spacing(4),
+    display: 'inline-block',
+    textAlign: 'center',
+  }
 }));
 function calculateWinner(squares) {
   const lines = [
@@ -187,7 +213,10 @@ export default function Game(props) {
   const [winner, setWinner] = useState("");
   const [openSetting, setOpenSetting] = useState(false);
   const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(false);
+  const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
   const [roomOwner, setRoomOwner] = useState('');
+  const [isReady, setIsReady] = useState(false);
+  const [isRoomClosed, setIsRoomClosed] = useState(false);
 
   const initializeRoomUser = [
     {
@@ -222,6 +251,10 @@ export default function Game(props) {
   }
   
   const handleOnLeave = () => {
+    setOpenConfirmLeaveDialog(true);
+  };
+
+  const handleLeave = () => {
     setOpenSetting(false);
     LeaveRoom(socket, location.state.roomID, user);
     JoinGlobalRoom(socket, user);
@@ -286,6 +319,7 @@ export default function Game(props) {
     DeclareWinner(socket, handleWinner);
     CloseRoom(socket, location.state.roomID, handleOnCloseRoomRes);
     GetRoomOwner(socket, setRoomOwner);
+    ReadyGameRes(socket, handleReadyGameRes);
     RestartGameRes(socket, handleRestartGameRes);
   }, []);
 
@@ -314,12 +348,17 @@ export default function Game(props) {
 
   const handleWinner = (winner) => {
     setWinner(winner);
+    setIsReady(false);
   };
 
   const handleOnCloseRoomRes = () => {
+    setIsRoomClosed(true);
+  };
+
+  const handleCloseRoom = () => {
     historyPages.push("/dashboard");
     JoinGlobalRoom(socket, user);
-  };
+  }
 
   const handleOnSetting = () => {
     setOpenSetting(true);
@@ -341,21 +380,31 @@ export default function Game(props) {
     });
   };
 
-  const handleOnStartGame = () => {
-    StartGame(socket, location.state.roomID, user);
+  const handleOnReadyGame = () => {
+    ReadyGame(socket, location.state.roomID, user);
+    setIsReady(true);
+    setWinner("");
+  }
+
+  const handleReadyGameRes = (_id) => {
+    if (user._id === _id){
+      setIsReady(true);
+    }
   }
 
   const handleOnRestartGame = () => {
     RestartGame(socket, location.state.roomID, user);
+    setIsReady(true);
+    setBoard({squares: []});
+    setWinner("");
   }
 
   const handleRestartGameRes = (emptyBoard) => {
     setBoard(emptyBoard);
-    setWinner("");
   }
 
   return (
-    <Container component="main" maxWidth="xl">
+    <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
       <div className={classes.paper}>
         <Grid container justify="center" spacing={2} className={classes.root}>
@@ -399,62 +448,98 @@ export default function Game(props) {
                   winnerList={winner}
                 />
               </div>
-              <div className={classes.controlWrapper}>
-                {(winner) ? (
-                    <div className={classes.winnerWrapper}>
-                      <Typography variant="h5" component="span" className={classes.winner}>
-                        Winner {winner}
-                      </Typography>
-                    </div>
-                    ) : (
-                      "")
-                }
-                {
-                  // When game hasn't been started
+              {
+                (isRoomClosed)? 
+                  <div className={`${classes.controlWrapper} + ${classes.leaveClosedRoomWrapper}`}>
+                    <Button
+                      className={classes.leaveClosedRoomBtn}
+                      variant="contained"
+                      color="secondary"
+                      onClick={handleCloseRoom}
+                    >
+                      Room is closed. LEAVE NOW.
+                    </Button> 
+                  </div>
+                  :
+                  ""
+              }
+              {
+                // When game hasn't been started
                   (board.squares.length === 0) ? 
-                    (
-                      // If there are enough players
-                      (roomUsers.length >= 2)? 
-                      (
-                        (roomOwner === user._id)?
-                          <Button
-                            startIcon={<PlayCircleFilledWhiteIcon/>} 
-                            className={classes.startBtn}
-                            onClick={handleOnStartGame}
-                          >
-                            Start
-                          </Button>
+                    <div className={classes.controlWrapper}>
+                      {
+                        // If there are enough players
+                        (roomUsers.length >= 2)? 
+                          (
+                            (!isReady)?
+                              (
+                                <Button
+                                    startIcon={<PlayCircleFilledWhiteIcon/>} 
+                                    className={classes.startBtn}
+                                    onClick={handleOnReadyGame}>
+                                    Ready
+                                </Button>
+                              )
+                              :
+                              (
+                                <Button
+                                  className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
+                                >
+                                  Waiting for the other player to be ready ...  
+                                </Button>
+                              )
+                          )
                           :
-                          // Waiting start game message
+                          (
+                            // Waiting another player message
+                            <Button
+                              className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
+                            >
+                              Waiting for another player ...  
+                            </Button>  
+                          )
+                      }
+                    </div>
+                  :
+                  // when game has already been started
+                  (winner) ?
+                    <div className={classes.controlWrapper}>
+                      <div className={classes.winnerWrapper}>
+                        <Typography variant="h5" component="span" className={classes.winner}>
+                          Winner {winner}
+                        </Typography>
+                      </div>
+                      {
+                        // If there are enough players
+                        (roomUsers.length >= 2)? 
+                          (!isReady)?
+                              <Button
+                                startIcon={<PlayCircleFilledWhiteIcon/>} 
+                                className={`${classes.startBtn} + ${classes.restartBtn}`}
+                                onClick={handleOnRestartGame}
+                              >
+                                Ready
+                              </Button>
+                            :
+                              <Button
+                                className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
+                              >
+                                Waiting for the other player to be ready ...  
+                              </Button>
+                        :
+                        (
+                          // Waiting another player message
                           <Button
-                            className={classes.waitBtn}
+                            className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
                           >
-                            Game is starting soon ...  
-                          </Button>
-                      )
-                      :
-                      // Waiting another player message
-                      <Button
-                        className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
-                      >
-                        Waiting for another player ...  
-                      </Button>  
-                    ) : 
-                    (
-                      (winner)? 
-                        // Restart game
-                        <Button
-                          startIcon={<PlayCircleFilledWhiteIcon/>} 
-                          className={`${classes.startBtn} + ${classes.restartBtn}`}
-                          onClick={handleOnRestartGame}
-                        >
-                          Restart
-                        </Button>
-                      :
-                        ""
-                    )
-                }
-              </div>
+                            Waiting for another player ...  
+                          </Button>  
+                        )
+                      }
+                    </div>
+                    :
+                    ""
+              }
             </div>
           </Grid>
           <Grid key={2} item>
@@ -483,6 +568,13 @@ export default function Game(props) {
             setOpen={setOpenConfirmWithdrawDialog}
           >
             <div align='center'>Do you want to <b>Withdraw</b></div>
+          </ConfirmDialog>
+          <ConfirmDialog
+            open={openConfirmLeaveDialog}
+            action={handleLeave}
+            setOpen={setOpenConfirmLeaveDialog}
+          >
+            <div align='center'>Do you want to <b>Leave</b></div>
           </ConfirmDialog>
           <SettingDialog
             value={openSetting}
