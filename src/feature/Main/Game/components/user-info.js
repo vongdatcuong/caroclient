@@ -12,6 +12,7 @@ import SettingIcon from "@material-ui/icons/Settings";
 import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import Grid from "@material-ui/core/Grid";
+import Constant from "../../../../Utils/index";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -110,7 +111,7 @@ export default function UserInfo(props) {
               className={classes.timeButton}
               endIcon={<QueryBuilderIcon />}
             >
-              20:00
+              {Constant.milliSecondToMinSecFormat(props.time)}
             </Button>
             <IconButton
               children={

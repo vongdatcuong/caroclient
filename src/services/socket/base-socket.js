@@ -122,7 +122,7 @@ const ReadyGameRes = (socket, handleReadyGameRes) => {
 }
 
 // RESTART GAME
-const RestartGame = (socket, roomID, user) => {
+/*const RestartGame = (socket, roomID, user) => {
   socket.emit("Restart-Game", {
     roomID: roomID,
     _id: user._id
@@ -133,7 +133,7 @@ const RestartGameRes = (socket, handleRestartGameRes) => {
   socket.on("Restart-Game-Response", (board) => {
     handleRestartGameRes(board)
   })
-}
+}*/
 
 // GET BOARD
 const GetBoard = (socket, setState) => {
@@ -202,6 +202,6 @@ export {
   GetRoomOwner,
   ReadyGame,
   ReadyGameRes,
-  RestartGame,
-  RestartGameRes
+  //RestartGame,
+  //RestartGameRes
 };

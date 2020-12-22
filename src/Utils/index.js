@@ -14,6 +14,16 @@ function queryParams(params) {
     .join("&");
 }
 
+// Convert milliseconds to minutes & seconds 
+const milliSecondToMinSecFormat = (millisecond) => {
+  millisecond = 1000*Math.round(millisecond/1000);
+  const d = new Date(millisecond);
+  const min = d.getUTCMinutes();
+  let second = d.getUTCSeconds();
+  second = (second >= 10)? second : "0" + second;
+  return min + ':' + second;
+}
+
 export default {
   api,
   SERVER,
@@ -26,4 +36,5 @@ export default {
   resetPassword,
   //
   queryParams,
+  milliSecondToMinSecFormat
 };

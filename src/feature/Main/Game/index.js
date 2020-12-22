@@ -217,6 +217,11 @@ export default function Game(props) {
   const [roomOwner, setRoomOwner] = useState('');
   const [isReady, setIsReady] = useState(false);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
+  const [turnTime, setTurnTime] = useState(180000); // Millisecond
+  const [player1Time, setPlayer1Time] = useState(turnTime);
+  const [player2Time, setPlayer2Time] = useState(turnTime);
+  let countDownInterval = null;
+  
 
   const initializeRoomUser = [
     {
@@ -315,12 +320,12 @@ export default function Game(props) {
     GetChatPrivateRoom(socket, handleOnGetRoomChat);
     GetGlobalUsers(socket, dispatch);
     LeaveRoomPlayer(socket, handleOnLoadSecondPlayer, handleOnPlayerLeave);
-    GetBoard(socket, setBoard);
+    GetBoard(socket, handleSetBoardVsCount);
     DeclareWinner(socket, handleWinner);
     CloseRoom(socket, location.state.roomID, handleOnCloseRoomRes);
     GetRoomOwner(socket, setRoomOwner);
     ReadyGameRes(socket, handleReadyGameRes);
-    RestartGameRes(socket, handleRestartGameRes);
+    //RestartGameRes(socket, handleRestartGameRes);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -349,6 +354,9 @@ export default function Game(props) {
   const handleWinner = (winner) => {
     setWinner(winner);
     setIsReady(false);
+    clearCountDown();
+    setPlayer1Time(turnTime);
+    setPlayer2Time(turnTime);
   };
 
   const handleOnCloseRoomRes = () => {
@@ -393,14 +401,55 @@ export default function Game(props) {
   }
 
   const handleOnRestartGame = () => {
-    RestartGame(socket, location.state.roomID, user);
+    ReadyGame(socket, location.state.roomID, user);
     setIsReady(true);
     setBoard({squares: []});
     setWinner("");
   }
 
-  const handleRestartGameRes = (emptyBoard) => {
+  /*const handleRestartGameRes = (emptyBoard) => {
     setBoard(emptyBoard);
+  }*/
+
+  const handleSetBoardVsCount = (board) => {
+    setBoard(board);
+    clearCountDown();
+    // Player 1 Turn
+    if (board.turn === user._id){
+      setPlayer2Time(turnTime);
+      countDown(player1Time, setPlayer1Time)
+      .then((value) => {
+        WithDraw(socket, location.state.roomID, user);
+      });
+    }
+    // Player 2 Turn (board.turn != 0)
+    else if (board.turn){
+      setPlayer1Time(turnTime);
+      countDown(player2Time, setPlayer2Time)
+      .then((value) => {
+      });
+    }
+  }
+
+  const countDown = (time, setTime) => {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        time-=1000; // Millisecond
+        setTime(time);
+        if (time === 0){
+          clearInterval(interval);
+          resolve(1);
+        }
+      }, 1000);
+      countDownInterval = interval;
+    })
+  }
+
+  const clearCountDown = () => {
+    // Clear interval
+    if (countDownInterval){
+      clearInterval(countDownInterval);
+    }
   }
 
   return (
@@ -422,6 +471,7 @@ export default function Game(props) {
                   playerNum={1}
                   type={location.state.turn === 1 ? "X" : "O"}
                   onSetting={handleOnSetting}
+                  time={player1Time}
                 />
               </Grid>
               <div className="row" style={{ width: 300 }}>
@@ -555,6 +605,7 @@ export default function Game(props) {
                   user={secondPlayer}
                   playerNum={2}
                   type={location.state.turn === 1 ? "O" : "X"}
+                  time={player2Time}
                 />
               </Grid>
               <Grid item>
