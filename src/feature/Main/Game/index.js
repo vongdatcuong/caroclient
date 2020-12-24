@@ -161,25 +161,6 @@ const useStyles = makeStyles((theme) => ({
     textAlign: 'center',
   }
 }));
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return [a, b, c];
-    }
-  }
-  return null;
-}
 
 export default function Game(props) {
   const boardSize = 20;
@@ -193,24 +174,15 @@ export default function Game(props) {
   }
   const classes = useStyles();
   const nameRef = useRef();
-  const [history, setHistory] = useState([
-    {
-      col: 0,
-      row: 0,
-      total: 0,
-      squares: Array(9).fill(null),
-    },
-  ]);
-  const [stepNumber, setStepNumber] = useState(0);
-  const [xIsNext, setXIsNext] = useState(true);
-  const [isAsc, setIsAsc] = useState(true);
+
+  const [currentIndex, setCurrentIndex] = useState(-1);
 
   // board.squares.length === 0 => Chưa start game
   const [board, setBoard] = useState({ squares: [] });
   const [roomChat, setRoomChat] = useState([]);
   const [secondPlayer, setSecondPlayer] = useState({});
   const [chatText, setChatText] = useState("");
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState({});
   const [openSetting, setOpenSetting] = useState(false);
   const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(false);
   const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
@@ -267,52 +239,18 @@ export default function Game(props) {
   };
 
   const handleClick = (i) => {
-    if (board.squares.length === 0 || winner || board.turn != user._id || board.squares[i]) {
+    if (board.squares.length === 0 || winner.winner || board.turn != user._id || board.squares[i]) {
       return;
     }
-    //const history_t = history.slice(0, stepNumber + 1);
-    //const current = history_t[history_t.length - 1];
-    //const squares = current.squares.slice();
+
     const col = (i % boardSize) + 1;
     const row = Math.floor(i / boardSize) + 1;
-    const total = board.total;
     MakeAMove(socket, location.state.roomID, user, {
       idx: i,
       col: col,
       row: row,
     });
-    //if (calculateWinner(squares) || squares[i]) {
-    //  return;
-    //}
-    //squares[i] = xIsNext ? "X" : "O";
-
-    /*setHistory(
-      history_t.concat([
-        {
-          col: col,
-          row: row,
-          total: total + 1,
-          squares: squares,
-        },
-      ])
-    );
-    setStepNumber(history_t.length);
-    setXIsNext(!xIsNext);
-    setIsAsc(isAsc);*/
   };
-  const current = history[stepNumber];
-  /*const winner = calculateWinner(current.squares);
-  const totalMoves = current.total;
-  let status;
-  if (winner) {
-    const winnerValue = current.squares[winner[0]];
-    status = "Winner: " + winnerValue;
-  } else if (totalMoves === current.squares.length) {
-    status = "Draw";
-  } else {
-    status = "Next player: " + (xIsNext ? "X" : "O");
-  }*/
-  const currentLocation = { row: current.row, col: current.col };
 
   useEffect(() => {
     GetSecondPlayer(socket, handleOnLoadSecondPlayer);
@@ -354,6 +292,7 @@ export default function Game(props) {
   const handleWinner = (winner) => {
     setWinner(winner);
     setIsReady(false);
+    setCurrentIndex(-1);
     clearCountDown();
     setPlayer1Time(turnTime);
     setPlayer2Time(turnTime);
@@ -391,7 +330,8 @@ export default function Game(props) {
   const handleOnReadyGame = () => {
     ReadyGame(socket, location.state.roomID, user);
     setIsReady(true);
-    setWinner("");
+    setWinner({});
+    setCurrentIndex(-1);
   }
 
   const handleReadyGameRes = (_id) => {
@@ -404,7 +344,8 @@ export default function Game(props) {
     ReadyGame(socket, location.state.roomID, user);
     setIsReady(true);
     setBoard({squares: []});
-    setWinner("");
+    setWinner({});
+    setCurrentIndex(-1);
   }
 
   /*const handleRestartGameRes = (emptyBoard) => {
@@ -413,6 +354,7 @@ export default function Game(props) {
 
   const handleSetBoardVsCount = (board) => {
     setBoard(board);
+    setCurrentIndex((board.row - 1) * boardSize + (board.col - 1));
     clearCountDown();
     // Player 1 Turn
     if (board.turn === user._id){
@@ -494,8 +436,8 @@ export default function Game(props) {
                   boardSize={boardSize}
                   squares={board.squares}
                   onClick={(i) => handleClick(i)}
-                  currentLocation={currentLocation}
-                  winnerList={winner}
+                  currentIndex={currentIndex}
+                  winnerList={winner.winnerList}
                 />
               </div>
               {
@@ -552,11 +494,11 @@ export default function Game(props) {
                     </div>
                   :
                   // when game has already been started
-                  (winner) ?
+                  (winner.winner) ?
                     <div className={classes.controlWrapper}>
                       <div className={classes.winnerWrapper}>
                         <Typography variant="h5" component="span" className={classes.winner}>
-                          Winner {winner}
+                          Winner {winner.winner}
                         </Typography>
                       </div>
                       {
