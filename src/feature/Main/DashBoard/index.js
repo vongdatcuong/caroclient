@@ -47,6 +47,7 @@ import {
   GetListRoom,
   JoinRoom,
   GetInviteRequest,
+  LoadingRes
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
@@ -161,6 +162,7 @@ const useStyles = makeStyles((theme) => ({
 const DashBoard = (props) => {
   const history = useHistory();
   const { state, dispatch } = useContext(store);
+  const {loadingState, dispatchLoading} = useContext(loadingStore);
   const [socket, setSocket] = useState(state.socket);
   const [chat, setChat] = useState("");
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
@@ -239,6 +241,7 @@ const DashBoard = (props) => {
       GetGlobalUsers(socket, dispatch);
       GetChatGlobalRoom(socket, dispatch);
       GetListRoom(socket, dispatch);
+      LoadingRes(socket, dispatchLoading)
       dispatch({ type: "Check-listener" });
     }
   }, []);

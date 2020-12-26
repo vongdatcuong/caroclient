@@ -177,6 +177,20 @@ const GetInviteRequest = (socket, handleFunc) => {
   });
 };
 
+// UPDATE USER
+const UpdateUserRes = (socket, handleUpdateUser) => {
+  socket.on("Update-User-Response", (newUser) => {
+    handleUpdateUser(newUser);
+  })
+}
+
+// LOADING
+const LoadingRes = (socket, dispatch) => {
+  socket.on("Loading-Response", (isLoading) => {
+    dispatch({ type: "Set-Loading", isLoading: isLoading });
+  });
+}
+
 export {
   JoinGlobalRoom,
   GetGlobalUsers,
@@ -204,4 +218,6 @@ export {
   ReadyGameRes,
   //RestartGame,
   //RestartGameRes
+  UpdateUserRes,
+  LoadingRes
 };

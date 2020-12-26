@@ -95,7 +95,7 @@ const BoxChat = ({ data, title, value, onType, onSubmit }) => {
                 <Typography textAlign="center" className={classes.username}>
                   {line.username}:{" "}
                 </Typography>
-                <ListItemText primary={line.msg} />
+                <ListItemText primary={line.content} />
               </ListItem>
             );
           })}

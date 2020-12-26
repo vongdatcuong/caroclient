@@ -14,6 +14,7 @@ import React, {
 import { useHistory, useLocation } from "react-router-dom";
 import BoxChat from "../../../components/layouts/BoxChat";
 import { store } from "../../../context/socket-context";
+import { loadingStore } from "../../../context/loading-context";
 // Components
 import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
 import BackgroundGameImg from "../../../vendors/images/background-game.jpg";
@@ -36,6 +37,8 @@ import {
   ReadyGameRes,
   RestartGame,
   RestartGameRes,
+  UpdateUserRes,
+  LoadingRes
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
@@ -167,6 +170,7 @@ export default function Game(props) {
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
+  const {loadingState, dispatchLoading} = useContext(loadingStore);
   const [socket, setSocket] = useState(state.socket);
   const user = AuthService.getCurrentUser();
   if (!user) {
@@ -264,6 +268,8 @@ export default function Game(props) {
     GetRoomOwner(socket, setRoomOwner);
     ReadyGameRes(socket, handleReadyGameRes);
     //RestartGameRes(socket, handleRestartGameRes);
+    UpdateUserRes(socket, handleUpdateUserRes);
+    LoadingRes(socket, dispatchLoading)
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -280,7 +286,7 @@ export default function Game(props) {
     const newChat = {
       _id: user._id,
       username: user.username,
-      msg: chatText,
+      content: chatText,
       time: Date.now(),
     };
     temp.push(newChat);
@@ -394,6 +400,17 @@ export default function Game(props) {
     }
   }
 
+  const handleUpdateUserRes = (newUser) => {
+    if (user._id === newUser._id){
+      // Intialize Room users khong biet lam sao
+      delete newUser.id;
+      delete newUser.isReady;
+      AuthService.updateCurrentUser(newUser);
+    } else {
+      handleOnLoadSecondPlayer(newUser);
+    }
+  }
+
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
@@ -498,7 +515,7 @@ export default function Game(props) {
                     <div className={classes.controlWrapper}>
                       <div className={classes.winnerWrapper}>
                         <Typography variant="h5" component="span" className={classes.winner}>
-                          Winner {winner.winner}
+                          {(winner.winner != "None")? ("Winner " + winner.winner) : "Draw"}
                         </Typography>
                       </div>
                       {
@@ -530,7 +547,7 @@ export default function Game(props) {
                       }
                     </div>
                     :
-                    ""
+                    "dd"
               }
             </div>
           </Grid>
