@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useContext, useRef } from "react";
+import React, {
+  useState,
+  useEffect,
+  useContext,
+  useRef,
+  useCallback,
+} from "react";
 import { useHistory, useLocation } from "react-router-dom";
 
 // Material UI Core
@@ -47,11 +53,15 @@ import {
   GetListRoom,
   JoinRoom,
   GetInviteRequest,
-  LoadingRes
+  LoadingRes,
+  QuickPlay,
+  SearchedRoom,
+  NotifyQuickPlay,
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
+import { formatTime } from "../../../Utils/timeHelper";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -79,6 +89,7 @@ const useStyles = makeStyles((theme) => ({
   },
   toolbar: {},
   button: {
+    width: 150,
     fontFamily: "'Exo2.0'",
     spacing: theme.spacing(3),
     marginRight: theme.spacing(2),
@@ -155,14 +166,14 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   roomOption: {
-    height: '30px'
-  }
+    height: "30px",
+  },
 }));
 
 const DashBoard = (props) => {
   const history = useHistory();
   const { state, dispatch } = useContext(store);
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
   const [socket, setSocket] = useState(state.socket);
   const [chat, setChat] = useState("");
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
@@ -170,6 +181,9 @@ const DashBoard = (props) => {
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
   const [inviteRoom, setInviteRoom] = useState();
   const [roomOption, setRoomOption] = useState("Waiting");
+  const isWaitingRoom = useRef(false);
+  const [countTime, setCountTime] = useState(null);
+  const countDownInterval = useRef(null);
 
   if (!AuthService.getCurrentUser()) {
     history.push("/logIn");
@@ -208,10 +222,18 @@ const DashBoard = (props) => {
 
   const handleOnCreateRoom = (title) => {
     handleCloseCreateDialog();
-    CreatePlayingRoom(socket, { title: title, creator: user });
+    CreatePlayingRoom(socket, {
+      title: title,
+      creator: user,
+    });
     history.push({
       pathname: "/game",
-      state: { roomID: user._id, title: title, creator: user, turn: 1 },
+      state: {
+        roomID: user._id,
+        title: title,
+        creator: user,
+        turn: 1,
+      },
     });
   };
 
@@ -241,12 +263,48 @@ const DashBoard = (props) => {
       GetGlobalUsers(socket, dispatch);
       GetChatGlobalRoom(socket, dispatch);
       GetListRoom(socket, dispatch);
-      LoadingRes(socket, dispatchLoading)
+      LoadingRes(socket, dispatchLoading);
       dispatch({ type: "Check-listener" });
     }
   }, []);
 
-  console.log(state.globalUsers);
+  const callbackQuickPlay = (value) => {
+    history.push("/game", value);
+  };
+
+  const handleOnQuickPlay = () => {
+    isWaitingRoom.current = !isWaitingRoom.current;
+    if (isWaitingRoom.current) {
+      setCountTime(0);
+      countUp(countTime, setCountTime);
+      QuickPlay(socket, {
+        title: "Quick-Play " + socket.id,
+        creator: user,
+      });
+      SearchedRoom(socket, callbackQuickPlay);
+      NotifyQuickPlay(socket, callbackQuickPlay);
+    } else {
+      setCountTime(null);
+      clearCountDown();
+    }
+  };
+
+  const countUp = (time, setTime) => {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        time += 1; // Millisecond
+        setTime(time);
+      }, 1000);
+      countDownInterval.current = interval;
+    });
+  };
+  const clearCountDown = () => {
+    // Clear interval
+    console.log(countDownInterval);
+    if (countDownInterval.current) {
+      clearInterval(countDownInterval.current);
+    }
+  };
 
   return (
     <main>
@@ -336,8 +394,9 @@ const DashBoard = (props) => {
                 color="primary"
                 className={`${classes.button} ${classes.playNowBtn}`}
                 startIcon={<SportsEsportsIcon />}
+                onClick={handleOnQuickPlay}
               >
-                Play now
+                {!isWaitingRoom.current ? "Play now" : "Cancel"}
               </Button>
               <Button
                 onClick={handleClickOpenCreateDialog}
@@ -362,14 +421,14 @@ const DashBoard = (props) => {
                 component="body1"
                 className={classes.waiting}
               >
-                Waiting: <b>00:00</b>
+                Waiting: <b>{formatTime(countTime)}</b>
               </Typography>
             </div>
             <Grid container className="row" spacing={3}>
               {roomOption === "Waiting"
                 ? state.listRoom.map((game, index) => {
                     return (
-                      game.status === 'Waiting' && (
+                      game.status === "Waiting" && (
                         <Grid item md={4} key={index}>
                           <GameEntrance
                             data={game}

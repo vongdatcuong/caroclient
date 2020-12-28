@@ -37,10 +37,10 @@ const CreatePlayingRoom = (socket, room) => {
 
 // GET ROOM OWNER
 const GetRoomOwner = (socket, setRoomOwnerID) => {
-  socket.on('Room-Owner-Response', (roomOwnerID) => {
+  socket.on("Room-Owner-Response", (roomOwnerID) => {
     setRoomOwnerID(roomOwnerID);
-  })
-}
+  });
+};
 //GET ALL LIST ROOM
 const GetListRoom = (socket, dispatch) => {
   socket.on("Playing-Room", (data) => {
@@ -111,15 +111,15 @@ const GetChatPrivateRoom = (socket, setState) => {
 const ReadyGame = (socket, roomID, user) => {
   socket.emit("Ready-Game", {
     roomID: roomID,
-    _id: user._id
-  })
-}
+    _id: user._id,
+  });
+};
 
 const ReadyGameRes = (socket, handleReadyGameRes) => {
   socket.on("Ready-Game-Response", (_id) => {
     handleReadyGameRes(_id);
-  })
-}
+  });
+};
 
 // RESTART GAME
 /*const RestartGame = (socket, roomID, user) => {
@@ -155,9 +155,9 @@ const MakeAMove = (socket, roomID, user, boardProp) => {
 const WithDraw = (socket, roomID, user) => {
   socket.emit("Withdraw", {
     roomID: roomID,
-    player: user
-  })
-}
+    player: user,
+  });
+};
 // DECLARE WINNER
 const DeclareWinner = (socket, handleWinner) => {
   socket.on("Declare-Winner-Response", (winner) => {
@@ -181,15 +181,36 @@ const GetInviteRequest = (socket, handleFunc) => {
 const UpdateUserRes = (socket, handleUpdateUser) => {
   socket.on("Update-User-Response", (newUser) => {
     handleUpdateUser(newUser);
-  })
-}
+  });
+};
 
 // LOADING
 const LoadingRes = (socket, dispatch) => {
   socket.on("Loading-Response", (isLoading) => {
     dispatch({ type: "Set-Loading", isLoading: isLoading });
   });
-}
+};
+
+//QUICK PLAY
+const QuickPlay = (socket, room) => {
+  socket.emit("Quick-Play", room);
+};
+
+//QUICK PLAY RESPONSE SEARCHED ROOM
+const SearchedRoom = (socket, callback) => {
+  socket.on("Searched-Room", (value) => {
+    console.log(value);
+    callback(value);
+  });
+};
+
+//NOTIFICATION WHEN OTHER USER JOIN ROOM
+const NotifyQuickPlay = (socket, callback) => {
+  socket.on("Notify-Quick-Play", (value) => {
+    console.log(value);
+    callback(value);
+  });
+};
 
 export {
   JoinGlobalRoom,
@@ -219,5 +240,8 @@ export {
   //RestartGame,
   //RestartGameRes
   UpdateUserRes,
-  LoadingRes
+  LoadingRes,
+  QuickPlay,
+  SearchedRoom,
+  NotifyQuickPlay,
 };
