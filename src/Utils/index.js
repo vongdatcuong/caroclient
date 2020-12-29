@@ -1,10 +1,12 @@
 const SERVER = "http://localhost:4000";
 const api = `${SERVER}/api`;
-
+const boardSize = 20;
 // User
 const userPath = "/user";
 const logInPath = "/login";
 const signUpPath = "/signup";
+const gamePath = "/game";
+const historyPath = "/history";
 const emailValidation = "/emailValidation";
 const sendEmailResetPassword = "/sendEmailResetPassword";
 const resetPassword = "/resetPassword";
@@ -27,10 +29,13 @@ const milliSecondToMinSecFormat = (millisecond) => {
 export default {
   api,
   SERVER,
+  boardSize,
   // User
   userPath,
   logInPath,
   signUpPath,
+  gamePath,
+  historyPath,
   emailValidation,
   sendEmailResetPassword,
   resetPassword,

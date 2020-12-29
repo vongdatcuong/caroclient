@@ -239,7 +239,7 @@ const DashBoard = (props) => {
 
   const handleOnChatSubmit = (e) => {
     e.preventDefault();
-    ChatGlobalRoom(socket, { username: user.username, msg: chat });
+    ChatGlobalRoom(socket, { username: user.username, content: chat });
     setChat("");
   };
 

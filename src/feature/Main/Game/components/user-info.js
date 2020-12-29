@@ -1,5 +1,5 @@
 import React from "react";
-import { IconButton } from "@material-ui/core";
+import { Icon, IconButton } from "@material-ui/core";
 import Button from "@material-ui/core/Button";
 import Card from "@material-ui/core/Card";
 import CardActions from "@material-ui/core/CardActions";
@@ -13,6 +13,7 @@ import QueryBuilderIcon from "@material-ui/icons/QueryBuilder";
 import RadioButtonUncheckedIcon from "@material-ui/icons/RadioButtonUnchecked";
 import Grid from "@material-ui/core/Grid";
 import Constant from "../../../../Utils/index";
+import WinnerIcon from "../../../../vendors/images/winner.svg";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -23,6 +24,7 @@ const useStyles = makeStyles((theme) => ({
   },
   media: {
     padding: theme.spacing(1),
+    position: 'relative'
   },
   timeButton: {
     flex: 1,
@@ -43,6 +45,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(1),
     justifyContent: "center",
   },
+  winnerIcon: {
+    position: 'absolute',
+    width: '50px',
+    height: '50px',
+    left: '18%'
+  }
 }));
 
 export default function UserInfo(props) {
@@ -59,6 +67,7 @@ export default function UserInfo(props) {
               image="https://material-ui.com/static/images/cards/contemplative-reptile.jpg"
               title={props.user.username}
             />
+            {(props.isWinner)? <CardMedia className={classes.winnerIcon} image={WinnerIcon}></CardMedia> : ""}
           </CardContent>
           <CardContent className={classes.content}>
             <Typography
@@ -67,7 +76,7 @@ export default function UserInfo(props) {
               component="h2"
               style={{ textAlign: "center", color: "#016310" }}
             >
-              {props.user.username || "..."}
+              {props.user.name || "..."}
             </Typography>
             <Grid container align="left">
               <Grid item md={6}>
@@ -77,7 +86,7 @@ export default function UserInfo(props) {
               </Grid>
               <Grid item md={6}>
                 <Typography style={{ fontSize: 16 }}>
-                  Point: {props.user.point || 0}
+                  Trophy: {props.user.trophy || 0}
                 </Typography>
               </Grid>
               <Grid item md={6}>
@@ -111,7 +120,7 @@ export default function UserInfo(props) {
               className={classes.timeButton}
               endIcon={<QueryBuilderIcon />}
             >
-              {Constant.milliSecondToMinSecFormat(props.time)}
+              {(props.time >=0)? Constant.milliSecondToMinSecFormat(props.time) : (<h1>∞</h1>)}
             </Button>
             <IconButton
               children={

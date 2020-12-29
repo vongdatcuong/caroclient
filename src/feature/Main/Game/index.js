@@ -20,6 +20,7 @@ import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite'
 import BackgroundGameImg from "../../../vendors/images/background-game.jpg";
 
 // Constant && Services
+import Utils from "../../../Utils";
 import AuthService from "../../../services/auth.service";
 import {
   GetBoard,
@@ -61,14 +62,15 @@ import ListUser from "./components/list-user";
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundImage: "url(" + BackgroundGameImg + ")",
-    backgroundSize: 'contain'
+    backgroundSize: 'contain',
+    minHeight: '100vh'
   },
   paper: {
     display: "flex",
     alignItems: "center",
   },
   root: {
-    marginTop: '0px'
+    marginTop: theme.spacing(2)
   },
   avatar: {
     margin: theme.spacing(3),
@@ -166,7 +168,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Game(props) {
-  const boardSize = 20;
+  const boardSize = Utils.boardSize;
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
@@ -287,7 +289,7 @@ export default function Game(props) {
       _id: user._id,
       username: user.username,
       content: chatText,
-      time: Date.now(),
+      //time: Date.now(),
     };
     temp.push(newChat);
     setRoomChat(temp);
@@ -588,7 +590,7 @@ export default function Game(props) {
           </ConfirmDialog>
           <SettingDialog
             value={openSetting}
-            onWithdraw={(board.squares.length > 0)? handleOnWithDraw : null}
+            onWithdraw={(board.squares.length > 0 && !winner)? handleOnWithDraw : null}
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
           />

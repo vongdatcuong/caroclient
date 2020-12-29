@@ -25,6 +25,7 @@ import Game from "../../../feature/Main/Game";
 import AccountValidation from "../../../feature/Authentication/AccountValidation"
 import ResetPassword from "../../../feature/Authentication/ResetPassword";
 import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
+import History from "../../../feature/History";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
@@ -62,8 +63,11 @@ function App() {
                 {/* End footer */}
               </Route>
               <Route path="/game">
-                <Header />
+                {/*<Header />*/}
                 <Game />
+              </Route>
+              <Route path="/history/:gameID">
+                <History />
               </Route>
               <Route path="/account-validation/:token">
                 <Header />
