@@ -10,13 +10,16 @@ import Link from "@material-ui/core/Link";
 import Grid from "@material-ui/core/Grid";
 import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
 import Typography from "@material-ui/core/Typography";
-import { makeStyles } from "@material-ui/core/styles";
+import { makeStyles, withStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import FacebookIcon from "@material-ui/icons/Facebook";
 import GoogleIcon from "../../../vendors/images/google.png";
 import BackgroundImg from "../../../vendors/images/background-img.jpg";
-
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import GoogleLogin from "react-google-login";
+import { BtnFacebook, BtnGoogle } from "../../../components/custom-components";
+import { config } from "../../../Utils";
 // Components
 import Footer from "../../../components/layouts/Footer/index";
 
@@ -83,7 +86,6 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
-
 export default function LogIn(props) {
   const history = useHistory();
   if (AuthService.getCurrentUser()) {
@@ -95,7 +97,7 @@ export default function LogIn(props) {
   const [errorMsg, setErrMsg] = useState("");
   const { state, dispatch } = useContext(store);
   const [socket, setSocket] = useState(state.socket);
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
 
   function handleLogIn(event) {
     event.preventDefault();
@@ -129,7 +131,58 @@ export default function LogIn(props) {
   function handlePasswordChange(evt) {
     setPassword(evt.target.value);
   }
-
+  const responseFacebook = async (response) => {
+    if (!response.name) {
+      return;
+    }
+    const fbresponse = {
+      name: response.name,
+      email: response.email,
+      facebook_token: response.userID,
+      photo_link: response.picture.data.url,
+      username: response.email,
+    };
+    try {
+      let res = await AuthService.facebookLogin(fbresponse);
+      let response = await res.json();
+      if (response.success) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        history.push("/");
+      } else {
+        setErrMsg(response.msg);
+      }
+    } catch (error) {
+      setErrMsg("Error when login");
+      console.log(error);
+    }
+  };
+  const errorGoogle = (response) => {
+    console.log(response);
+  };
+  const signUpGoogle = async (response) => {
+    const googleresponse = {
+      name: response.profileObj.name,
+      email: response.profileObj.email,
+      google_token: response.googleId,
+      photo_link: response.profileObj.imageUrl,
+      username: response.profileObj.email,
+    };
+    try {
+      let res = AuthService.googleLogin(googleresponse);
+      let response = await res.json();
+      if (response.success) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        history.push("/");
+      } else {
+        setErrMsg(response.msg);
+      }
+    } catch (error) {
+      setErrMsg("Error when login");
+      console.log(error);
+    }
+  };
   return (
     <React.Fragment>
       <div className={classes.bgImg}></div>
@@ -197,33 +250,38 @@ export default function LogIn(props) {
             >
               Sign In
             </Button>
-            <a
-              href={constant.api + constant.userPath + constant.authGooglePath}
-              className={classes.anchor}
-            >
-              <Button
-                fullWidth
-                variant="outlined"
-                color="secondary"
-                className={classes.googleBtn}
-              >
-                <img src={GoogleIcon} className={classes.googleIcon} />
-                Sign In With google
-              </Button>
-            </a>
-            <a
-              href={constant.api + constant.userPath + constant.authFbPath}
-              className={classes.anchor}
-            >
-              <Button
-                fullWidth
-                variant="contained"
-                color="primary"
-                startIcon={<FacebookIcon className={classes.facebookIcon} />}
-              >
-                Sign In With Facebook
-              </Button>
-            </a>
+            <GoogleLogin
+              clientId={
+                config.google_auth_client_id + ".apps.googleusercontent.com"
+              }
+              render={(renderProps) => (
+                <BtnGoogle
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                  style={{ width: "100%" }}
+                >
+                  Login with Google
+                </BtnGoogle>
+              )}
+              buttonText="Login with Google"
+              onSuccess={signUpGoogle}
+              onFailure={errorGoogle}
+            ></GoogleLogin>
+            <FacebookLogin
+              appId={config.facebook_app_id}
+              fields="name,email,picture"
+              callback={responseFacebook}
+              render={(renderProps) => (
+                <BtnFacebook
+                  onClick={renderProps.onClick}
+                  style={{ width: "100%" }}
+                  startIcon={<FacebookIcon />}
+                >
+                  Login with Facebook
+                </BtnFacebook>
+              )}
+              style={{ width: "100%" }}
+            />
           </form>
         </div>
       </Container>

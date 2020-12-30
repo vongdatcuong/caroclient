@@ -12,13 +12,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Container from "@material-ui/core/Container";
 import FormHelperText from "@material-ui/core/FormHelperText";
 import BackgroundImg from "../../../vendors/images/background-img.jpg";
-
+import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
+import GoogleLogin from "react-google-login";
+import FacebookIcon from "@material-ui/icons/Facebook";
+import { config } from "../../../Utils";
 // Components
 import Footer from "../../../components/layouts/Footer";
 
 // Constant && Services
 import AuthService from "../../../services/auth.service";
 import { loadingStore } from "../../../context/loading-context";
+import { BtnFacebook, BtnGoogle } from "../../../components/custom-components";
 
 const useStyles = makeStyles((theme) => ({
   bgImg: {
@@ -68,7 +72,7 @@ export default function SignUp(props) {
   if (AuthService.getCurrentUser()) {
     history.push("/dashboard");
   }
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
   const classes = useStyles();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -97,7 +101,58 @@ export default function SignUp(props) {
   function handleEmailChange(evt) {
     setEmail(evt.target.value);
   }
-
+  const responseFacebook = async (response) => {
+    if (!response.name) {
+      return;
+    }
+    const fbresponse = {
+      name: response.name,
+      email: response.email,
+      facebook_token: response.userID,
+      photo_link: response.picture.data.url,
+      username: response.email,
+    };
+    try {
+      let res = await AuthService.facebookLogin(fbresponse);
+      let response = await res.json();
+      if (response.success) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        history.push("/");
+      } else {
+        setErrMsg(response.msg);
+      }
+    } catch (error) {
+      setErrMsg("Error when login");
+      console.log(error);
+    }
+  };
+  const errorGoogle = (response) => {
+    console.log(response);
+  };
+  const signUpGoogle = async (response) => {
+    const googleresponse = {
+      name: response.profileObj.name,
+      email: response.profileObj.email,
+      google_token: response.googleId,
+      photo_link: response.profileObj.imageUrl,
+      username: response.profileObj.email,
+    };
+    try {
+      let res = AuthService.googleLogin(googleresponse);
+      let response = await res.json();
+      if (response.success) {
+        localStorage.setItem("token", response.token);
+        localStorage.setItem("user", JSON.stringify(response.user));
+        history.push("/");
+      } else {
+        setErrMsg(response.msg);
+      }
+    } catch (error) {
+      setErrMsg("Error when login");
+      console.log(error);
+    }
+  };
   function handleSignUp(event) {
     event.preventDefault();
     if (
@@ -185,13 +240,9 @@ export default function SignUp(props) {
                   id="re-password"
                   autoComplete="re-password"
                   value={repassword}
-                  error={
-                    password !== repassword
-                  }
+                  error={password !== repassword}
                   helperText={
-                    password !== repassword
-                      ? "Confirm Password incorrect"
-                      : " "
+                    password !== repassword ? "Confirm Password incorrect" : " "
                   }
                   onChange={(evt) => handleRePasswordChange(evt)}
                 />
@@ -242,6 +293,38 @@ export default function SignUp(props) {
             >
               Sign Up
             </Button>
+            <GoogleLogin
+              clientId={
+                config.google_auth_client_id + ".apps.googleusercontent.com"
+              }
+              render={(renderProps) => (
+                <BtnGoogle
+                  onClick={renderProps.onClick}
+                  disabled={renderProps.disabled}
+                  style={{ width: "100%" }}
+                >
+                  Login with Google
+                </BtnGoogle>
+              )}
+              buttonText="Login with Google"
+              onSuccess={signUpGoogle}
+              onFailure={errorGoogle}
+            ></GoogleLogin>
+            <FacebookLogin
+              appId={config.facebook_app_id}
+              fields="name,email,picture"
+              callback={responseFacebook}
+              render={(renderProps) => (
+                <BtnFacebook
+                  onClick={renderProps.onClick}
+                  style={{ width: "100%" }}
+                  startIcon={<FacebookIcon />}
+                >
+                  Login with Facebook
+                </BtnFacebook>
+              )}
+              style={{ width: "100%" }}
+            />
             <Grid container justify="flex-end">
               <Grid item>
                 <Link href="/logIn" variant="body2">
