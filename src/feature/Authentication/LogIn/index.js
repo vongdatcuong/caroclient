@@ -19,7 +19,7 @@ import BackgroundImg from "../../../vendors/images/background-img.jpg";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import GoogleLogin from "react-google-login";
 import { BtnFacebook, BtnGoogle } from "../../../components/custom-components";
-import { config } from "../../../Utils";
+
 // Components
 import Footer from "../../../components/layouts/Footer/index";
 
@@ -32,6 +32,7 @@ import {
   JoinGlobalRoom,
   GetGlobalUsers,
 } from "../../../services/socket/base-socket";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   bgImg: {
@@ -193,7 +194,7 @@ export default function LogIn(props) {
             <LockOutlinedIcon />
           </Avatar>
           <Typography component="h1" variant="h5" className={classes.title}>
-            Sign in
+            {config.string.MT_SIGN_IN}
           </Typography>
           <form className={classes.form} onSubmit={(evt) => handleLogIn(evt)}>
             <TextField
@@ -202,7 +203,7 @@ export default function LogIn(props) {
               required
               fullWidth
               id="username"
-              label="Username"
+              label={config.string.PH_USERNAME}
               name="username"
               autoComplete="username"
               autoFocus
@@ -215,7 +216,7 @@ export default function LogIn(props) {
               required
               fullWidth
               name="password"
-              label="Password"
+              label={config.string.PH_PASSWORD}
               type="password"
               id="password"
               autoComplete="current-password"
@@ -227,17 +228,17 @@ export default function LogIn(props) {
             </FormHelperText>
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}
-              label="Remember me"
+              label={config.string.PH_REMEMBER_ME}
             />
             <Grid container>
               <Grid item xs>
                 <Link href="/forget-password" variant="body2">
-                  Forgot password?
+                  {config.string.PH_FORGOT_PASSWORD}
                 </Link>
               </Grid>
               <Grid item>
                 <Link href="/signUp" variant="body2">
-                  {"Don't have an account? Sign Up"}
+                  {config.string.D_SIGNUP}
                 </Link>
               </Grid>
             </Grid>
@@ -248,11 +249,11 @@ export default function LogIn(props) {
               color="primary"
               className={classes.submit}
             >
-              Sign In
+              {config.string.MT_SIGN_IN}
             </Button>
             <GoogleLogin
               clientId={
-                config.google_auth_client_id + ".apps.googleusercontent.com"
+                config.key.GOOGLE_CLIENT_ID + ".apps.googleusercontent.com"
               }
               render={(renderProps) => (
                 <BtnGoogle
@@ -260,15 +261,15 @@ export default function LogIn(props) {
                   disabled={renderProps.disabled}
                   style={{ width: "100%" }}
                 >
-                  Login with Google
+                  {config.string.MT_SIGN_IN_GOOGLE}
                 </BtnGoogle>
               )}
-              buttonText="Login with Google"
+              buttonText={config.string.MT_SIGN_IN_GOOGLE}
               onSuccess={signUpGoogle}
               onFailure={errorGoogle}
             ></GoogleLogin>
             <FacebookLogin
-              appId={config.facebook_app_id}
+              appId={config.key.FACEBOOK_CLIENT_ID}
               fields="name,email,picture"
               callback={responseFacebook}
               render={(renderProps) => (
@@ -277,7 +278,7 @@ export default function LogIn(props) {
                   style={{ width: "100%" }}
                   startIcon={<FacebookIcon />}
                 >
-                  Login with Facebook
+                  {config.string.MT_SIGN_IN_FACEBOOK}
                 </BtnFacebook>
               )}
               style={{ width: "100%" }}

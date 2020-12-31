@@ -16,10 +16,11 @@ import AuthService from "../../../services/auth.service";
 import { store } from "../../../context/socket-context";
 
 import { LogOut } from "../../../services/socket/base-socket";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   toolbar: {
-    minHeight: '40px',
+    minHeight: "40px",
   },
   logo: {
     fontSize: "30px",
@@ -85,7 +86,7 @@ function Header() {
     AuthService.logOut();
     handleClose();
     dispatch({ type: "Log-out" });
-    LogOut(socket, {userID: (user)? user._id : 0} );
+    LogOut(socket, { userID: user ? user._id : 0 });
     history.push("/logIn");
   }
 
@@ -117,10 +118,10 @@ function Header() {
         >
           <MenuItem onClick={handleClose}>
             <Link href="/profile" className={classes.link}>
-              Profile
+              {config.string.MT_PROFILE}
             </Link>
           </MenuItem>
-          <MenuItem onClick={handleLogOut}>Logout</MenuItem>
+          <MenuItem onClick={handleLogOut}>{config.string.MT_LOGOUT}</MenuItem>
         </Menu>
       </div>
     );
@@ -131,7 +132,7 @@ function Header() {
       <Toolbar className={classes.toolbar}>
         <Typography variant="h6" color="inherit" noWrap>
           <Link href="/dashboard" className={classes.logo}>
-            Caro Online
+            {config.string.APP_NAME}
           </Link>
         </Typography>
         <div className={classes.rightNavBar}>{navHeadings}</div>

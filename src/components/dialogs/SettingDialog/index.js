@@ -8,6 +8,7 @@ import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Settings from "../../../feature/Main/Game/components/settings";
 import { makeStyles } from "@material-ui/core/styles";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   withDrawBtn: {
@@ -16,8 +17,8 @@ const useStyles = makeStyles((theme) => ({
     background: "#FBBC05",
     color: "white",
     alignItems: "flex-end",
-    display: 'block',
-    marginBottom: theme.spacing(2)
+    display: "block",
+    marginBottom: theme.spacing(2),
   },
   timeButton: {
     flex: 1,
@@ -28,7 +29,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function SettingRoomDialog({ value, onWithdraw, onLeave, onClose }) {
+export default function SettingRoomDialog({
+  value,
+  onWithdraw,
+  onLeave,
+  onClose,
+}) {
   const classes = useStyles();
 
   return (
@@ -41,17 +47,18 @@ export default function SettingRoomDialog({ value, onWithdraw, onLeave, onClose 
       >
         <div style={{ height: 300 }}>
           <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>
-            Setting
+            {config.string.MT_SETTING}
           </DialogTitle>
           <DialogContent>
-            {(onWithdraw)? 
+            {onWithdraw ? (
               <Button onClick={onWithdraw} className={classes.withDrawBtn}>
-                Withdraw
+                {config.string.MT_WITHDRAW}
               </Button>
-              :
-              ''}
+            ) : (
+              ""
+            )}
             <Button onClick={onLeave} className={classes.timeButton}>
-              Leave Room
+              {config.string.MT_LEAVE_ROOM}
             </Button>
           </DialogContent>
         </div>

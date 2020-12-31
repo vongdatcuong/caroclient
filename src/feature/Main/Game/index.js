@@ -3,7 +3,7 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { fade } from '@material-ui/core/styles/colorManipulator';
+import { fade } from "@material-ui/core/styles/colorManipulator";
 import React, {
   useCallback,
   useContext,
@@ -12,11 +12,10 @@ import React, {
   useState,
 } from "react";
 import { useHistory, useLocation } from "react-router-dom";
-import BoxChat from "../../../components/layouts/BoxChat";
 import { store } from "../../../context/socket-context";
 import { loadingStore } from "../../../context/loading-context";
 // Components
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
 import BackgroundGameImg from "../../../vendors/images/background-game.jpg";
 
 // Constant && Services
@@ -39,14 +38,14 @@ import {
   RestartGame,
   RestartGameRes,
   UpdateUserRes,
-  LoadingRes
+  LoadingRes,
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
 import Settings from "./components/settings";
 import SettingDialog from "../../../components/dialogs/SettingDialog/index";
 import UserInfo from "./components/user-info";
-import ConfirmDialog from '../../../components/dialogs/ConfirmDialog';
+import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
 
 import {
   GetSecondPlayer,
@@ -58,19 +57,23 @@ import {
 import "./index.css";
 import { Typography } from "@material-ui/core";
 import ListUser from "./components/list-user";
+import CustomBox from "../../../components/custom-components/CustomBox";
+import ListGlobalChat from "../../../components/custom-components/CustomBox/components/ListGlobalChat";
+import ChatBox from "../../../components/custom-components/CustomBox/components/ChatBox";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundImage: "url(" + BackgroundGameImg + ")",
-    backgroundSize: 'contain',
-    minHeight: '100vh'
+    backgroundSize: "contain",
+    minHeight: "100vh",
   },
   paper: {
     display: "flex",
     alignItems: "center",
   },
   root: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   avatar: {
     margin: theme.spacing(3),
@@ -80,35 +83,35 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px",
   },
   game: {
-    position: 'relative',
+    position: "relative",
   },
   controlWrapper: {
     position: "absolute",
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     top: 0,
-    textAlign: 'center',
-    zIndex: '999'
+    textAlign: "center",
+    zIndex: "999",
   },
   start: {
-    position: 'absolute',
-    top: '40%',
-    left: '45%',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
-    borderRadius: '5px',
+    position: "absolute",
+    top: "40%",
+    left: "45%",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
+    borderRadius: "5px",
     textAlign: "center",
   },
   startBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline block',
-    textAlign: 'center',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
+    display: "inline block",
+    textAlign: "center",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
@@ -118,53 +121,53 @@ const useStyles = makeStyles((theme) => ({
   },
   waitBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline-block',
-    textAlign: 'center',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
+    display: "inline-block",
+    textAlign: "center",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
   },
   waitAnotherBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline-block',
-    textAlign: 'center',
+    display: "inline-block",
+    textAlign: "center",
   },
   waitAnotherBtn2: {
-    marginTop: theme.spacing(5)
+    marginTop: theme.spacing(5),
   },
   winnerWrapper: {
     marginTop: theme.spacing(25),
   },
   winner: {
-    textAlign: 'center',
+    textAlign: "center",
     color: "red",
-    backgroundColor: fade('#000000', 0.3),
+    backgroundColor: fade("#000000", 0.3),
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
-    border: '2px solid red',
-    borderRadius: '5px',
+    border: "2px solid red",
+    borderRadius: "5px",
     textAlign: "center",
   },
   leaveClosedRoomWrapper: {
-    backgroundColor: fade('#000000', 0.4),
-    zIndex: '1000'
+    backgroundColor: fade("#000000", 0.4),
+    zIndex: "1000",
   },
   leaveClosedRoomBtn: {
     marginTop: theme.spacing(40),
-    display: 'inline-block',
-    textAlign: 'center',
-    fontSize: '1.5em',
+    display: "inline-block",
+    textAlign: "center",
+    fontSize: "1.5em",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
-    display: 'inline-block',
-    textAlign: 'center',
-  }
+    display: "inline-block",
+    textAlign: "center",
+  },
 }));
 
 export default function Game(props) {
@@ -172,7 +175,7 @@ export default function Game(props) {
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
   const [socket, setSocket] = useState(state.socket);
   const user = AuthService.getCurrentUser();
   if (!user) {
@@ -190,16 +193,17 @@ export default function Game(props) {
   const [chatText, setChatText] = useState("");
   const [winner, setWinner] = useState({});
   const [openSetting, setOpenSetting] = useState(false);
-  const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(false);
+  const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(
+    false
+  );
   const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
-  const [roomOwner, setRoomOwner] = useState('');
+  const [roomOwner, setRoomOwner] = useState("");
   const [isReady, setIsReady] = useState(false);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
   const [turnTime, setTurnTime] = useState(180000); // Millisecond
   const [player1Time, setPlayer1Time] = useState(turnTime);
   const [player2Time, setPlayer2Time] = useState(turnTime);
   let countDownInterval = null;
-  
 
   const initializeRoomUser = [
     {
@@ -231,8 +235,8 @@ export default function Game(props) {
   const handleWithDraw = () => {
     WithDraw(socket, location.state.roomID, user);
     setOpenSetting(false);
-  }
-  
+  };
+
   const handleOnLeave = () => {
     setOpenConfirmLeaveDialog(true);
   };
@@ -245,7 +249,12 @@ export default function Game(props) {
   };
 
   const handleClick = (i) => {
-    if (board.squares.length === 0 || winner.winner || board.turn != user._id || board.squares[i]) {
+    if (
+      board.squares.length === 0 ||
+      winner.winner ||
+      board.turn != user._id ||
+      board.squares[i]
+    ) {
       return;
     }
 
@@ -271,7 +280,7 @@ export default function Game(props) {
     ReadyGameRes(socket, handleReadyGameRes);
     //RestartGameRes(socket, handleRestartGameRes);
     UpdateUserRes(socket, handleUpdateUserRes);
-    LoadingRes(socket, dispatchLoading)
+    LoadingRes(socket, dispatchLoading);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -313,7 +322,7 @@ export default function Game(props) {
   const handleCloseRoom = () => {
     historyPages.push("/dashboard");
     JoinGlobalRoom(socket, user);
-  }
+  };
 
   const handleOnSetting = () => {
     setOpenSetting(true);
@@ -340,21 +349,21 @@ export default function Game(props) {
     setIsReady(true);
     setWinner({});
     setCurrentIndex(-1);
-  }
+  };
 
   const handleReadyGameRes = (_id) => {
-    if (user._id === _id){
+    if (user._id === _id) {
       setIsReady(true);
     }
-  }
+  };
 
   const handleOnRestartGame = () => {
     ReadyGame(socket, location.state.roomID, user);
     setIsReady(true);
-    setBoard({squares: []});
+    setBoard({ squares: [] });
     setWinner({});
     setCurrentIndex(-1);
-  }
+  };
 
   /*const handleRestartGameRes = (emptyBoard) => {
     setBoard(emptyBoard);
@@ -365,45 +374,42 @@ export default function Game(props) {
     setCurrentIndex((board.row - 1) * boardSize + (board.col - 1));
     clearCountDown();
     // Player 1 Turn
-    if (board.turn === user._id){
+    if (board.turn === user._id) {
       setPlayer2Time(turnTime);
-      countDown(player1Time, setPlayer1Time)
-      .then((value) => {
+      countDown(player1Time, setPlayer1Time).then((value) => {
         WithDraw(socket, location.state.roomID, user);
       });
     }
     // Player 2 Turn (board.turn != 0)
-    else if (board.turn){
+    else if (board.turn) {
       setPlayer1Time(turnTime);
-      countDown(player2Time, setPlayer2Time)
-      .then((value) => {
-      });
+      countDown(player2Time, setPlayer2Time).then((value) => {});
     }
-  }
+  };
 
   const countDown = (time, setTime) => {
     return new Promise((resolve, reject) => {
       const interval = setInterval(() => {
-        time-=1000; // Millisecond
+        time -= 1000; // Millisecond
         setTime(time);
-        if (time === 0){
+        if (time === 0) {
           clearInterval(interval);
           resolve(1);
         }
       }, 1000);
       countDownInterval = interval;
-    })
-  }
+    });
+  };
 
   const clearCountDown = () => {
     // Clear interval
-    if (countDownInterval){
+    if (countDownInterval) {
       clearInterval(countDownInterval);
     }
-  }
+  };
 
   const handleUpdateUserRes = (newUser) => {
-    if (user._id === newUser._id){
+    if (user._id === newUser._id) {
       // Intialize Room users khong biet lam sao
       delete newUser.id;
       delete newUser.isReady;
@@ -411,7 +417,7 @@ export default function Game(props) {
     } else {
       handleOnLoadSecondPlayer(newUser);
     }
-  }
+  };
 
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
@@ -437,13 +443,15 @@ export default function Game(props) {
               </Grid>
               <div className="row" style={{ width: 300 }}>
                 <div className={classes.boxChatWrapper}>
-                  <BoxChat
-                    title="ROOM"
+                  <CustomBox
+                    title={config.string.MT_ROOM}
                     data={roomChat}
                     value={chatText}
+                    ListComponent={ListGlobalChat}
+                    ActionComponent={ChatBox}
                     onType={handleOnChangeChat}
                     onSubmit={handleOnSubmitChat}
-                  ></BoxChat>
+                  ></CustomBox>
                 </div>
               </div>
             </Grid>
@@ -459,97 +467,99 @@ export default function Game(props) {
                   winnerList={winner.winnerList}
                 />
               </div>
-              {
-                (isRoomClosed)? 
-                  <div className={`${classes.controlWrapper} + ${classes.leaveClosedRoomWrapper}`}>
-                    <Button
-                      className={classes.leaveClosedRoomBtn}
-                      variant="contained"
-                      color="secondary"
-                      onClick={handleCloseRoom}
-                    >
-                      Room is closed. LEAVE NOW.
-                    </Button> 
-                  </div>
-                  :
-                  ""
-              }
+              {isRoomClosed ? (
+                <div
+                  className={`${classes.controlWrapper} + ${classes.leaveClosedRoomWrapper}`}
+                >
+                  <Button
+                    className={classes.leaveClosedRoomBtn}
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleCloseRoom}
+                  >
+                    {config.string.D_LEAVE_ROOM}
+                  </Button>
+                </div>
+              ) : (
+                ""
+              )}
               {
                 // When game hasn't been started
-                  (board.squares.length === 0) ? 
-                    <div className={classes.controlWrapper}>
-                      {
-                        // If there are enough players
-                        (roomUsers.length >= 2)? 
-                          (
-                            (!isReady)?
-                              (
-                                <Button
-                                    startIcon={<PlayCircleFilledWhiteIcon/>} 
-                                    className={classes.startBtn}
-                                    onClick={handleOnReadyGame}>
-                                    Ready
-                                </Button>
-                              )
-                              :
-                              (
-                                <Button
-                                  className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
-                                >
-                                  Waiting for the other player to be ready ...  
-                                </Button>
-                              )
-                          )
-                          :
-                          (
-                            // Waiting another player message
-                            <Button
-                              className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
-                            >
-                              Waiting for another player ...  
-                            </Button>  
-                          )
-                      }
+                board.squares.length === 0 ? (
+                  <div className={classes.controlWrapper}>
+                    {
+                      // If there are enough players
+                      roomUsers.length >= 2 ? (
+                        !isReady ? (
+                          <Button
+                            startIcon={<PlayCircleFilledWhiteIcon />}
+                            className={classes.startBtn}
+                            onClick={handleOnReadyGame}
+                          >
+                            {config.string.D_READY}
+                          </Button>
+                        ) : (
+                          <Button
+                            className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
+                          >
+                            {config.string.D_WAITING_READY}
+                          </Button>
+                        )
+                      ) : (
+                        // Waiting another player message
+                        <Button
+                          className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
+                        >
+                          {config.string.D_WAITING_PLAYER}
+                        </Button>
+                      )
+                    }
+                  </div>
+                ) : // when game has already been started
+                winner.winner ? (
+                  <div className={classes.controlWrapper}>
+                    <div className={classes.winnerWrapper}>
+                      <Typography
+                        variant="h5"
+                        component="span"
+                        className={classes.winner}
+                      >
+                        {winner.winner != config.string.MT_NONE
+                          ? `${config.string.MT_WINNER} ` + winner.winner
+                          : config.string.MT_DRAW}
+                      </Typography>
                     </div>
-                  :
-                  // when game has already been started
-                  (winner.winner) ?
-                    <div className={classes.controlWrapper}>
-                      <div className={classes.winnerWrapper}>
-                        <Typography variant="h5" component="span" className={classes.winner}>
-                          {(winner.winner != "None")? ("Winner " + winner.winner) : "Draw"}
-                        </Typography>
-                      </div>
-                      {
-                        // If there are enough players
-                        (roomUsers.length >= 2)? 
-                          (!isReady)?
-                              <Button
-                                startIcon={<PlayCircleFilledWhiteIcon/>} 
-                                className={`${classes.startBtn} + ${classes.restartBtn}`}
-                                onClick={handleOnRestartGame}
-                              >
-                                Ready
-                              </Button>
-                            :
-                              <Button
-                                className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
-                              >
-                                Waiting for the other player to be ready ...  
-                              </Button>
-                        :
-                        (
-                          // Waiting another player message
+                    {
+                      // If there are enough players
+                      roomUsers.length >= 2 ? (
+                        !isReady ? (
+                          <Button
+                            startIcon={<PlayCircleFilledWhiteIcon />}
+                            className={`${classes.startBtn} + ${classes.restartBtn}`}
+                            onClick={handleOnRestartGame}
+                          >
+                            {config.string.D_READY}
+                          </Button>
+                        ) : (
                           <Button
                             className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
                           >
-                            Waiting for another player ...  
-                          </Button>  
+                            {config.string.D_WAITING_READY}
+                          </Button>
                         )
-                      }
-                    </div>
-                    :
-                    "dd"
+                      ) : (
+                        // Waiting another player message
+                        <Button
+                          className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
+                        >
+                          {config.string.D_WAITING_PLAYER}
+                        </Button>
+                      )
+                    }
+                  </div>
+                ) : (
+                  "dd"
+                )
               }
             </div>
           </Grid>
@@ -579,18 +589,24 @@ export default function Game(props) {
             action={handleWithDraw}
             setOpen={setOpenConfirmWithdrawDialog}
           >
-            <div align='center'>Do you want to <b>Withdraw</b></div>
+            <div align="center">
+              {config.string.D_ASKING} <b>{config.string.MT_WITHDRAW}</b>
+            </div>
           </ConfirmDialog>
           <ConfirmDialog
             open={openConfirmLeaveDialog}
             action={handleLeave}
             setOpen={setOpenConfirmLeaveDialog}
           >
-            <div align='center'>Do you want to <b>Leave</b></div>
+            <div align="center">
+              {config.string.D_ASKING} <b>{config.string.MT_LEAVE_ROOM}</b>
+            </div>
           </ConfirmDialog>
           <SettingDialog
             value={openSetting}
-            onWithdraw={(board.squares.length > 0 && !winner)? handleOnWithDraw : null}
+            onWithdraw={
+              board.squares.length > 0 && !winner ? handleOnWithDraw : null
+            }
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
           />

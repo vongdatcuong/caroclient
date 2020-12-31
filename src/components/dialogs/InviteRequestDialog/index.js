@@ -7,6 +7,7 @@ import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import { makeStyles } from "@material-ui/core/styles";
+import { config } from "../../../config";
 import FormHelperText from "@material-ui/core/FormHelperText";
 
 const useStyles = makeStyles((theme) => ({
@@ -46,17 +47,19 @@ function InviteRequestDialog({ value, onAccept, onClose, room }) {
           component="h1"
           id="form-dialog-title"
         >
-          Invite
+          {config.string.MT_INVITE}
         </DialogTitle>
         <DialogContent className={classes.content}>
           <DialogContentText className={classes.contentText}>
-            {"Creator " + room.creator.username + " invite you to Room."}
+            {`${config.string.MT_CREATOR} ` +
+              room.creator.username +
+              " invite you to Room."}
           </DialogContentText>
           <DialogContentText className={classes.contentText}>
-            {"Room ID: " + room.id}
+            {`${config.string.PH_ROOM_ID}: ` + room.id}
           </DialogContentText>
           <DialogContentText className={classes.contentText}>
-            {"Title: " + room.title}
+            {`${config.string.PH_TITLE}: ` + room.title}
           </DialogContentText>
         </DialogContent>
         <DialogActions className={classes.action}>
@@ -66,7 +69,7 @@ function InviteRequestDialog({ value, onAccept, onClose, room }) {
             color="primary"
             className={classes.button}
           >
-            OK
+            {config.string.MT_OK}
           </Button>
           <Button
             onClick={onClose}
@@ -74,7 +77,7 @@ function InviteRequestDialog({ value, onAccept, onClose, room }) {
             color="secondary"
             className={classes.button}
           >
-            Cancel
+            {config.string.MT_CANCEL}
           </Button>
         </DialogActions>
       </Dialog>

@@ -11,12 +11,11 @@ import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
-import { fade } from '@material-ui/core/styles/colorManipulator';
-import BoxChat from "../../components/layouts/BoxChat";
+import { fade } from "@material-ui/core/styles/colorManipulator";
 import { store } from "../../context/socket-context";
 import { loadingStore } from "../../context/loading-context";
 // Components
-import PlayCircleFilledWhiteIcon from '@material-ui/icons/PlayCircleFilledWhite';
+import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
 import BackgroundGameImg from "../../vendors/images/background-game.jpg";
 
 // Constant && Services
@@ -29,34 +28,33 @@ import {
   GetGlobalUsers,
   InviteUser,
   GetRoomOwner,
-  LoadingRes
+  LoadingRes,
 } from "../../services/socket/base-socket";
 import Board from "../Main/Game/components/board";
 import Chatbox from "../Main/Game/components/chatbox";
 import Settings from "../Main/Game/components/settings";
 import SettingDialog from "../../components/dialogs/SettingDialog/index";
 import UserInfo from "../Main/Game/components/user-info";
-import ConfirmDialog from '../../components/dialogs/ConfirmDialog';
+import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 
-import {
-  JoinGlobalRoom,
-} from "../../services/socket/base-socket";
+import { JoinGlobalRoom } from "../../services/socket/base-socket";
 import "./index.css";
 import { Typography } from "@material-ui/core";
 import ListMove from "./list-move";
+import CustomBox from "../../components/custom-components/CustomBox";
 
 const useStyles = makeStyles((theme) => ({
   main: {
     backgroundImage: "url(" + BackgroundGameImg + ")",
-    backgroundSize: 'contain',
-    minHeight: '100vh'
+    backgroundSize: "contain",
+    minHeight: "100vh",
   },
   paper: {
     display: "flex",
     alignItems: "center",
   },
   root: {
-    marginTop: theme.spacing(2)
+    marginTop: theme.spacing(2),
   },
   avatar: {
     margin: theme.spacing(3),
@@ -66,35 +64,35 @@ const useStyles = makeStyles((theme) => ({
     padding: "5px",
   },
   game: {
-    position: 'relative',
+    position: "relative",
   },
   controlWrapper: {
     position: "absolute",
-    width: '100%',
-    height: '100%',
+    width: "100%",
+    height: "100%",
     top: 0,
-    textAlign: 'center',
-    zIndex: '999'
+    textAlign: "center",
+    zIndex: "999",
   },
   start: {
-    position: 'absolute',
-    top: '40%',
-    left: '45%',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
-    borderRadius: '5px',
+    position: "absolute",
+    top: "40%",
+    left: "45%",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
+    borderRadius: "5px",
     textAlign: "center",
   },
   startBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline block',
-    textAlign: 'center',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
+    display: "inline block",
+    textAlign: "center",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
@@ -104,53 +102,53 @@ const useStyles = makeStyles((theme) => ({
   },
   waitBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline-block',
-    textAlign: 'center',
-    fontSize: '1.5em',
-    color: '#016310',
-    backgroundColor: fade('#ffffff', 1),
-    border: '3px solid #016310',
+    display: "inline-block",
+    textAlign: "center",
+    fontSize: "1.5em",
+    color: "#016310",
+    backgroundColor: fade("#ffffff", 1),
+    border: "3px solid #016310",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
   },
   waitAnotherBtn: {
     marginTop: theme.spacing(30),
-    display: 'inline-block',
-    textAlign: 'center',
+    display: "inline-block",
+    textAlign: "center",
   },
   waitAnotherBtn2: {
-    marginTop: theme.spacing(5)
+    marginTop: theme.spacing(5),
   },
   winnerWrapper: {
     marginTop: theme.spacing(25),
   },
   winner: {
-    textAlign: 'center',
+    textAlign: "center",
     color: "red",
-    backgroundColor: fade('#000000', 0.3),
+    backgroundColor: fade("#000000", 0.3),
     padding: theme.spacing(2),
     paddingLeft: theme.spacing(3),
     paddingRight: theme.spacing(3),
-    border: '2px solid red',
-    borderRadius: '5px',
+    border: "2px solid red",
+    borderRadius: "5px",
     textAlign: "center",
   },
   leaveClosedRoomWrapper: {
-    backgroundColor: fade('#000000', 0.4),
-    zIndex: '1000'
+    backgroundColor: fade("#000000", 0.4),
+    zIndex: "1000",
   },
   leaveClosedRoomBtn: {
     marginTop: theme.spacing(40),
-    display: 'inline-block',
-    textAlign: 'center',
-    fontSize: '1.5em',
+    display: "inline-block",
+    textAlign: "center",
+    fontSize: "1.5em",
     padding: theme.spacing(1),
     paddingLeft: theme.spacing(4),
     paddingRight: theme.spacing(4),
-    display: 'inline-block',
-    textAlign: 'center',
-  }
+    display: "inline-block",
+    textAlign: "center",
+  },
 }));
 
 export default function Game(props) {
@@ -163,9 +161,9 @@ export default function Game(props) {
   const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
   const [socket, setSocket] = useState(state.socket);
-  
+
   const classes = useStyles();
   const nameRef = useRef();
 
@@ -182,7 +180,7 @@ export default function Game(props) {
   const handleOnPlayerLeave = (player) => {
     //setRoomUsers(roomUsers.filter((e) => e.user._id !== player));
   };
-  
+
   const handleOnLeave = () => {
     setOpenConfirmLeaveDialog(true);
   };
@@ -192,7 +190,6 @@ export default function Game(props) {
     historyPages.push("/dashboard");
   };
 
-
   useEffect(() => {
     JoinGlobalRoom(socket, {
       id: socket.id,
@@ -201,11 +198,11 @@ export default function Game(props) {
     });
     getGame();
     GetGlobalUsers(socket, dispatch);
-    LoadingRes(socket, dispatchLoading)
+    LoadingRes(socket, dispatchLoading);
   }, []);
 
   const getGame = () => {
-    dispatchLoading({type: "Set-Loading", isLoading: true});
+    dispatchLoading({ type: "Set-Loading", isLoading: true });
     const token = JSON.parse(localStorage.getItem("token"));
     const requestOptions = {
       method: "GET",
@@ -215,26 +212,32 @@ export default function Game(props) {
       },
     };
     return fetch(
-      Utils.api + Utils.gamePath + Utils.historyPath + "?" + Utils.queryParams({
-        userID: user._id,
-        gameID: gameID
-      }),
+      Utils.api +
+        Utils.gamePath +
+        Utils.historyPath +
+        "?" +
+        Utils.queryParams({
+          userID: user._id,
+          gameID: gameID,
+        }),
       requestOptions
     )
       .then((response) => response.json())
       .then((result) => {
-        dispatchLoading({type: "Set-Loading", isLoading: false});
+        dispatchLoading({ type: "Set-Loading", isLoading: false });
         if (result.success) {
           setWinner(result.game.winner);
           setPlayer1(result.game.player1);
           setPlayer2(result.game.player2);
           setMoves(result.game.moves);
-          setRoomChat(result.game.chats); console.log(result.game.chats)
+          setRoomChat(result.game.chats);
+          console.log(result.game.chats);
           // Handle Board
-          const newBoard = {squares: Array(boardSize * boardSize).fill(null)};
+          const newBoard = { squares: Array(boardSize * boardSize).fill(null) };
           result.game.moves.forEach((move, index) => {
-            newBoard.squares[(move.row - 1) * boardSize + move.col - 1] = move.type;
-          })
+            newBoard.squares[(move.row - 1) * boardSize + move.col - 1] =
+              move.type;
+          });
           setBoard(newBoard);
           setCurrentMoveIndex(result.game.moves.length - 1);
         } else {
@@ -242,9 +245,9 @@ export default function Game(props) {
         }
       })
       .catch((err) => {
-        dispatchLoading({type: "Set-Loading", isLoading: false});
-      })
-  }
+        dispatchLoading({ type: "Set-Loading", isLoading: false });
+      });
+  };
 
   const handleOnSetting = () => {
     setOpenSetting(true);
@@ -266,21 +269,19 @@ export default function Game(props) {
     });
   };
 
-  const fakeOnClick = (evt) => {
-    
-  }
+  const fakeOnClick = (evt) => {};
 
   const handleHistoryRowClick = (idx) => {
-    const newBoard = {squares: Array(boardSize * boardSize).fill(null)};
+    const newBoard = { squares: Array(boardSize * boardSize).fill(null) };
     moves.forEach((move, index) => {
-      if (index > idx){
+      if (index > idx) {
         return;
       }
       newBoard.squares[(move.row - 1) * boardSize + move.col - 1] = move.type;
-    })
+    });
     setBoard(newBoard);
     setCurrentMoveIndex(idx);
-  }
+  };
 
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
@@ -307,12 +308,12 @@ export default function Game(props) {
               </Grid>
               <div className="row" style={{ width: 300 }}>
                 <div className={classes.boxChatWrapper}>
-                  <BoxChat
+                  <CustomBox
                     title="ROOM"
                     data={roomChat}
                     value=""
                     isDisabled={true}
-                  ></BoxChat>
+                  ></CustomBox>
                 </div>
               </div>
             </Grid>
@@ -323,7 +324,13 @@ export default function Game(props) {
                 <Board
                   boardSize={boardSize}
                   squares={board.squares}
-                  currentIndex={(moves.length === 0)? -1 : ((moves[currentMoveIndex].row - 1) * boardSize + moves[currentMoveIndex].col - 1)}
+                  currentIndex={
+                    moves.length === 0
+                      ? -1
+                      : (moves[currentMoveIndex].row - 1) * boardSize +
+                        moves[currentMoveIndex].col -
+                        1
+                  }
                   winnerList={winner.winnerList}
                   onClick={fakeOnClick}
                 />
@@ -348,7 +355,12 @@ export default function Game(props) {
                 />
               </Grid>
               <Grid item>
-                <ListMove moveData={moves} onInvite={handleOnInviteUser} currentMoveIdx={currentMoveIndex} onRowClick={(i) => handleHistoryRowClick(i)}/>
+                <ListMove
+                  moveData={moves}
+                  onInvite={handleOnInviteUser}
+                  currentMoveIdx={currentMoveIndex}
+                  onRowClick={(i) => handleHistoryRowClick(i)}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -357,7 +369,9 @@ export default function Game(props) {
             action={handleLeave}
             setOpen={setOpenConfirmLeaveDialog}
           >
-            <div align='center'>Do you want to <b>Leave</b></div>
+            <div align="center">
+              Do you want to <b>Leave</b>
+            </div>
           </ConfirmDialog>
           <SettingDialog
             value={openSetting}

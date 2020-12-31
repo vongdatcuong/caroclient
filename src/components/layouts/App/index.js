@@ -22,14 +22,17 @@ import createHashHistory from "history/createHashHistory";
 import { SocketStateProvider } from "../../../context/socket-context";
 import { LoadingStateProvider } from "../../../context/loading-context";
 import Game from "../../../feature/Main/Game";
-import AccountValidation from "../../../feature/Authentication/AccountValidation"
+import AccountValidation from "../../../feature/Authentication/AccountValidation";
 import ResetPassword from "../../../feature/Authentication/ResetPassword";
 import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 import History from "../../../feature/History";
+import { initializeAPIService } from "../../../services/api/base-api";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
 function App() {
+  initializeAPIService();
+
   return (
     <SocketStateProvider>
       <LoadingStateProvider>

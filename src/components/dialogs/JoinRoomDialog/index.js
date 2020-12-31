@@ -6,6 +6,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { config } from "../../../config";
 
 export default function JoinRoomDialog({ value, onJoin, onClose }) {
   const [roomID, setRoomID] = useState("");
@@ -22,14 +23,16 @@ export default function JoinRoomDialog({ value, onJoin, onClose }) {
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Join Room</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {config.string.MT_JOIN_ROOM}
+        </DialogTitle>
         <DialogContent>
           <TextField
             style={{ width: 300 }}
             autoFocus
             margin="dense"
-            id="roomID"
-            label="Room ID"
+            id={config.string.PH_ROOM_ID}
+            label={config.string.PH_ROOM_ID}
             type="text"
             fullWidth
             onChange={handleOnChange}
@@ -37,10 +40,10 @@ export default function JoinRoomDialog({ value, onJoin, onClose }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="primary">
-            Cancel
+            {config.string.MT_CANCEL}
           </Button>
           <Button onClick={() => onJoin(roomID)} color="primary">
-            Join
+            {config.string.MT_JOIN}
           </Button>
         </DialogActions>
       </Dialog>

@@ -11,6 +11,7 @@ import FormHelperText from "@material-ui/core/FormHelperText";
 
 // Service
 import constant from "../../../Utils/index";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -57,7 +58,7 @@ export default function ConfirmDialog(props) {
           component="h1"
           id="form-dialog-title"
         >
-          Confirmation
+          {config.string.MT_CONFIRMATION}
         </DialogTitle>
         <DialogContent className={classes.content}>
           <DialogContentText className={classes.contentText}>
@@ -71,7 +72,7 @@ export default function ConfirmDialog(props) {
             color="primary"
             className={classes.button}
           >
-            OK
+            {config.string.MT_OK}
           </Button>
           <Button
             onClick={handleClose}
@@ -79,7 +80,7 @@ export default function ConfirmDialog(props) {
             color="secondary"
             className={classes.button}
           >
-            Cancel
+            {config.string.MT_CANCEL}
           </Button>
         </DialogActions>
       </Dialog>

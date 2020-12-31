@@ -6,6 +6,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogContentText from "@material-ui/core/DialogContentText";
 import DialogTitle from "@material-ui/core/DialogTitle";
+import { config } from "../../../config";
 
 export default function CreateFormDialog({ value, onCreate, onClose }) {
   const [title, setTitle] = useState("");
@@ -22,14 +23,16 @@ export default function CreateFormDialog({ value, onCreate, onClose }) {
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">Create Room</DialogTitle>
+        <DialogTitle id="form-dialog-title">
+          {config.string.MT_CREATE_ROOM}
+        </DialogTitle>
         <DialogContent>
           <TextField
             style={{ width: 300 }}
             autoFocus
             margin="dense"
             id="title"
-            label="Title"
+            label={config.string.PH_TITLE}
             type="text"
             fullWidth
             onChange={handleOnChange}
@@ -37,10 +40,10 @@ export default function CreateFormDialog({ value, onCreate, onClose }) {
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="primary">
-            Cancel
+            {config.string.MT_CANCEL}
           </Button>
           <Button onClick={() => onCreate(title)} color="primary">
-            Create
+            {config.string.MT_CREATE}
           </Button>
         </DialogActions>
       </Dialog>

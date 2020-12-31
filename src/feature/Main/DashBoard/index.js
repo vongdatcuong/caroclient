@@ -35,7 +35,6 @@ import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 // Components
 
 import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
-import BoxChat from "../../../components/layouts/BoxChat";
 import GameEntrance from "./GameEntrance";
 import CreateFormDialog from "../../../components/dialogs/CreateRoomDialog";
 
@@ -62,6 +61,13 @@ import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { formatTime } from "../../../Utils/timeHelper";
+import CustomBox from "../../../components/custom-components/CustomBox";
+import ChatBox from "../../../components/custom-components/CustomBox/components/ChatBox";
+import ListGlobalChat from "../../../components/custom-components/CustomBox/components/ListGlobalChat";
+import ListOnlineUser from "../../../components/custom-components/CustomBox/components/ListOnlineUser";
+import MoreButton from "../../../components/custom-components/CustomBox/components/MoreButton";
+
+import { config } from "../../../config/index";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -118,21 +124,7 @@ const useStyles = makeStyles((theme) => ({
 
     textAlign: "center",
   },
-  online: {
-    color: "green",
-  },
-  bold: {
-    fontWeight: "600",
-  },
-  moreWrapper: {
-    marginTop: "5px",
-  },
-  more: {
-    textAlign: "center",
-    color: "#016310",
-    fontWeight: "600",
-    textDecoration: "underline",
-  },
+
   formControl: {
     margin: theme.spacing(1),
     minWidth: 120,
@@ -313,60 +305,32 @@ const DashBoard = (props) => {
           {/* Left */}
           <Grid item md={3} xs={5} className={classes.left} spacing={5}>
             <div className="row">
-              <Box className={classes.box}>
-                <div className={classes.onlineUserWrapper}>
-                  <Typography
-                    textAlign="center"
-                    variant="h6"
-                    component="h6"
-                    className={classes.title}
-                  >
-                    GLOBAL
-                  </Typography>
-                  <List dense={true}>
-                    {state.globalUsers.map((user, index) => {
-                      return (
-                        <ListItem>
-                          <ListItemIcon>
-                            <AccountCircleIcon fontSize="large" />
-                          </ListItemIcon>
-                          <ListItemText
-                            primary={user.username}
-                            className={classes.bold}
-                            disableTypography={true}
-                          />
-                          <ListItemSecondaryAction>
-                            <IconButton edge="end" aria-label="delete">
-                              <FiberManualRecordIcon
-                                fontSize="small"
-                                className={classes.online}
-                              />
-                            </IconButton>
-                          </ListItemSecondaryAction>
-                        </ListItem>
-                      );
-                    })}
-                  </List>
-                </div>
-                <div className={classes.moreWrapper}>
-                  <Typography
-                    variant="h6"
-                    component="h6"
-                    className={classes.more}
-                  >
-                    More
-                  </Typography>
-                </div>
-              </Box>
+              <CustomBox
+                title={config.string.MT_GLOBAL}
+                data={state.globalUsers}
+                ListComponent={ListOnlineUser}
+                ActionComponent={MoreButton}
+              />
             </div>
             <div className="row">
-              <BoxChat
-                title="GLOBAL"
+              <CustomBox
+                title={config.string.MT_GLOBAL}
+                ListComponent={ListGlobalChat}
+                ActionComponent={ChatBox}
                 data={state.globalChat}
                 value={chat}
                 onType={handleOnChatChange}
                 onSubmit={handleOnChatSubmit}
-              ></BoxChat>
+              ></CustomBox>
+            </div>
+            <div className="row">
+              <CustomBox
+                title={config.string.MT_RANKING}
+                ListComponent={ListGlobalChat}
+                ActionComponent={MoreButton}
+                data={state.globalChat}
+                value={chat}
+              ></CustomBox>
             </div>
           </Grid>
           {/* Right */}
@@ -374,7 +338,7 @@ const DashBoard = (props) => {
             <div className={classes.toolbar}>
               <FormControl variant="outlined" className={classes.formControl}>
                 <InputLabel id="demo-simple-select-outlined-label">
-                  Option
+                  {config.string.MT_OPTION}
                 </InputLabel>
                 <Select
                   labelId="demo-simple-select-outlined-label"
@@ -382,11 +346,15 @@ const DashBoard = (props) => {
                   value={roomOption}
                   onChange={handleOnChangeRoomOption}
                   autoFocus={false}
-                  label="Option"
+                  label={config.string.MT_OPTION}
                   className={classes.roomOption}
                 >
-                  <MenuItem value={"Waiting"}>Waiting</MenuItem>
-                  <MenuItem value={"Playing"}>Playing</MenuItem>
+                  <MenuItem value={config.string.PH_WATING}>
+                    {config.string.PH_WATING}
+                  </MenuItem>
+                  <MenuItem value={config.string.PH_PLAYING}>
+                    {config.string.PH_PLAYING}
+                  </MenuItem>
                 </Select>
               </FormControl>
               <Button
@@ -396,7 +364,9 @@ const DashBoard = (props) => {
                 startIcon={<SportsEsportsIcon />}
                 onClick={handleOnQuickPlay}
               >
-                {!isWaitingRoom.current ? "Play now" : "Cancel"}
+                {!isWaitingRoom.current
+                  ? config.string.MT_PLAY_NOW
+                  : config.string.MT_CANCEL}
               </Button>
               <Button
                 onClick={handleClickOpenCreateDialog}
@@ -405,7 +375,7 @@ const DashBoard = (props) => {
                 className={`${classes.button} ${classes.newRoomBtn}`}
                 startIcon={<AddBoxIcon />}
               >
-                New Room
+                {config.string.MT_NEW_ROOM}
               </Button>
               <Button
                 variant="contained"
@@ -414,21 +384,21 @@ const DashBoard = (props) => {
                 startIcon={<ExitToAppIcon />}
                 onClick={handleClickOpenJoinDialog}
               >
-                Join Room
+                {config.string.MT_JOIN_ROOM}
               </Button>
               <Typography
                 variant="h6"
                 component="body1"
                 className={classes.waiting}
               >
-                Waiting: <b>{formatTime(countTime)}</b>
+                {config.string.PH_WATING}: <b>{formatTime(countTime)}</b>
               </Typography>
             </div>
             <Grid container className="row" spacing={3}>
-              {roomOption === "Waiting"
+              {roomOption === config.string.PH_WATING
                 ? state.listRoom.map((game, index) => {
                     return (
-                      game.status === "Waiting" && (
+                      game.status === config.string.PH_WATING && (
                         <Grid item md={4} key={index}>
                           <GameEntrance
                             data={game}

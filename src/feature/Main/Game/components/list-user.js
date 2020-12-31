@@ -22,6 +22,7 @@ import {
   JoinGlobalRoom,
 } from "../../../../services/socket/base-socket";
 import authService from "../../../../services/auth.service";
+import { config } from "../../../../config";
 
 const useStyles = makeStyles((theme) => ({
   box: {
@@ -61,7 +62,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-function ListUser({ roomData, onInvite}) {
+function ListUser({ roomData, onInvite }) {
   const classes = useStyles();
   const { state, dispatch } = useContext(store);
   const [socket, setSocket] = useState(state.socket);
@@ -91,8 +92,8 @@ function ListUser({ roomData, onInvite}) {
               aria-label="disabled tabs example"
               onChange={handleChange}
             >
-              <Tab className={classes.tab} label="Global" />
-              <Tab className={classes.tab} label="Room" />
+              <Tab className={classes.tab} label={config.string.MT_GLOBAL} />
+              <Tab className={classes.tab} label={config.string.MT_ROOM} />
             </Tabs>
           </Paper>
           {value === 0 ? (
