@@ -232,12 +232,12 @@ export default function LogIn(props) {
             />
             <Grid container>
               <Grid item xs>
-                <Link href="/forget-password" variant="body2">
+                <Link href={config.route.forgotPassword} variant="body2">
                   {config.string.PH_FORGOT_PASSWORD}
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/signUp" variant="body2">
+                <Link href={config.route.signup} variant="body2">
                   {config.string.D_SIGNUP}
                 </Link>
               </Grid>

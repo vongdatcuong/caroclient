@@ -19,6 +19,7 @@ const MT_SETTING = "SETTING";
 const MT_WITHDRAW = "WITHDRAW";
 const MT_LEAVE_ROOM = "LEAVE ROOM";
 const MT_SIGN_IN = "SIGN IN";
+const MT_SIGN_UP = "SIGN UP";
 const MT_SIGN_IN_GOOGLE = "Login with Google";
 const MT_SIGN_IN_FACEBOOK = "Login with Facebook";
 const MT_ROOM = "ROOM";
@@ -49,6 +50,7 @@ const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
 
 export const string = {
+  MT_SIGN_UP,
   APP_NAME,
   MT_LOGOUT,
   MT_PROFILE,

@@ -42,6 +42,7 @@ import "./index.css";
 import { Typography } from "@material-ui/core";
 import ListMove from "./list-move";
 import CustomBox from "../../components/custom-components/CustomBox";
+import { config } from "../../config";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -155,7 +156,7 @@ export default function Game(props) {
   const { gameID } = useParams();
   const user = AuthService.getCurrentUser();
   if (!user || !gameID) {
-    historyPages.push("/login");
+    historyPages.push(config.route.login);
   }
   const boardSize = Utils.boardSize;
   const historyPages = useHistory();

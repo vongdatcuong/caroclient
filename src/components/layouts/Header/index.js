@@ -87,7 +87,7 @@ function Header() {
     handleClose();
     dispatch({ type: "Log-out" });
     LogOut(socket, { userID: user ? user._id : 0 });
-    history.push("/logIn");
+    history.push(config.route.login);
   }
 
   if (user) {
@@ -117,7 +117,7 @@ function Header() {
           onClose={handleClose}
         >
           <MenuItem onClick={handleClose}>
-            <Link href="/profile" className={classes.link}>
+            <Link href={config.route.profile} className={classes.link}>
               {config.string.MT_PROFILE}
             </Link>
           </MenuItem>

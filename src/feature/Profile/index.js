@@ -27,6 +27,7 @@ import authHeader from "../../services/auth-header.js";
 import AuthService from "../../services/auth.service";
 import constant from "../../Utils/index";
 import { loadingStore } from "../../context/loading-context";
+import { config } from "../../config";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -73,7 +74,7 @@ export default function SignUp(props) {
   const history = useHistory();
   const user = AuthService.getCurrentUser();
   if (!user) {
-    history.push("/logIn");
+    history.push(config.route.login);
   }
   const classes = useStyles();
   const [disabled, setDisabled] = useState(true);
@@ -83,7 +84,7 @@ export default function SignUp(props) {
   const [gender, setGender] = useState(user.gender);
   const [isSuccess, setIsSuccess] = useState(true);
   const [errorMsg, setErrMsg] = useState("");
-  const {loadingState, dispatchLoading} = useContext(loadingStore);
+  const { loadingState, dispatchLoading } = useContext(loadingStore);
 
   const toggleUpdate = (evt) => {
     setDisabled(!disabled);
@@ -125,7 +126,7 @@ export default function SignUp(props) {
       }),
     };
     return fetch(
-      constant.api + constant.userPath + constant.updateProfilePath,
+      constant.api + config.route.user.userPath + constant.updateProfilePath,
       requestOptions
     )
       .then((response) => response.json())

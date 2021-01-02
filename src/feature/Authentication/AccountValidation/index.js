@@ -5,6 +5,7 @@ import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 // Constant && Services
 import AuthService from "../../../services/auth.service";
+import { config } from "../../../config";
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
@@ -31,7 +32,7 @@ export default function AccountValidation(props) {
         <div className={classes.paper}>
           <h1>{errorMsg} </h1>
           <h2>
-            <Link to="/logIn">Sign In Now</Link>
+            <Link to={config.route.login}>Sign In Now</Link>
           </h2>
         </div>
       </Container>

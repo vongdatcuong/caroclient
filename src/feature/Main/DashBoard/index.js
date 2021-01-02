@@ -68,6 +68,9 @@ import ListOnlineUser from "../../../components/custom-components/CustomBox/comp
 import MoreButton from "../../../components/custom-components/CustomBox/components/MoreButton";
 
 import { config } from "../../../config/index";
+import ListRanking from "../../../components/custom-components/CustomBox/components/ListRanking";
+
+import { httpGet } from "../../../services/api/base-api";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -176,15 +179,19 @@ const DashBoard = (props) => {
   const isWaitingRoom = useRef(false);
   const [countTime, setCountTime] = useState(null);
   const countDownInterval = useRef(null);
+  const [rankingList, setRankingList] = useState([]);
 
   if (!AuthService.getCurrentUser()) {
-    history.push("/logIn");
+    history.push(config.route.login);
   }
   const classes = useStyles();
   const user = AuthService.getCurrentUser();
 
   const handleOnChooseRoom = (roomID) => {
-    history.push({ pathname: "/game", state: { roomID: roomID, turn: 2 } });
+    history.push({
+      pathname: config.route.game,
+      state: { roomID: roomID, turn: 2 },
+    });
     JoinRoom(socket, roomID, user);
   };
 
@@ -219,7 +226,7 @@ const DashBoard = (props) => {
       creator: user,
     });
     history.push({
-      pathname: "/game",
+      pathname: config.route.game,
       state: {
         roomID: user._id,
         title: title,
@@ -258,10 +265,13 @@ const DashBoard = (props) => {
       LoadingRes(socket, dispatchLoading);
       dispatch({ type: "Check-listener" });
     }
+    httpGet({ url: "/user/ranking" }).then((value) => {
+      setRankingList(value.payload);
+    });
   }, []);
 
   const callbackQuickPlay = (value) => {
-    history.push("/game", value);
+    history.push(config.route.game, value);
   };
 
   const handleOnQuickPlay = () => {
@@ -326,9 +336,9 @@ const DashBoard = (props) => {
             <div className="row">
               <CustomBox
                 title={config.string.MT_RANKING}
-                ListComponent={ListGlobalChat}
+                ListComponent={ListRanking}
                 ActionComponent={MoreButton}
-                data={state.globalChat}
+                data={rankingList}
                 value={chat}
               ></CustomBox>
             </div>
