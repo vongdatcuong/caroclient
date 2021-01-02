@@ -4,6 +4,7 @@ let token = "";
 /** REQUEST MODEL
  *  url: string
  *  option (Optional): Object
+ *  body: Object
  */
 
 //INITIALIZE
@@ -21,6 +22,7 @@ const httpGet = async (requestModel) => {
         "Content-Type": "application/json",
         Authorization: "Bearer " + token,
       },
+      body: requestModel.body,
     });
     const json = await response.json();
     return json;

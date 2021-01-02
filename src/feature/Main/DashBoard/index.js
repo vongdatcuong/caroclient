@@ -60,7 +60,7 @@ import {
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
-import { formatTime } from "../../../Utils/timeHelper";
+import { formatTime } from "../../../Utils/datetimeHelper";
 import CustomBox from "../../../components/custom-components/CustomBox";
 import ChatBox from "../../../components/custom-components/CustomBox/components/ChatBox";
 import ListGlobalChat from "../../../components/custom-components/CustomBox/components/ListGlobalChat";

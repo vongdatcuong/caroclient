@@ -29,6 +29,7 @@ const MT_DRAW = "DRAW";
 const MT_MORE = "MORE";
 const MT_PROFILE = "PROFILE";
 const MT_LOGOUT = "LOGOUT";
+const MT_HISTORY_LIST = "History List";
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -50,6 +51,7 @@ const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
 
 export const string = {
+  MT_HISTORY_LIST,
   MT_SIGN_UP,
   APP_NAME,
   MT_LOGOUT,

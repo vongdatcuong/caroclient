@@ -14,3 +14,9 @@ export const formatTime = (time) => {
   }
   return ("0" + min).slice(-2) + ":" + ("0" + second).slice(-2);
 };
+
+export const formatDate = (date) => {
+  const result = new Date(date);
+
+  return result.toLocaleDateString();
+};

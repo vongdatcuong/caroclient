@@ -82,6 +82,11 @@ function Header() {
     setAnchorEl(null);
   };
 
+  const handleOnProfile = () => {
+    handleClose();
+    history.push(config.route.profile);
+  };
+
   function handleLogOut() {
     AuthService.logOut();
     handleClose();
@@ -116,10 +121,8 @@ function Header() {
           open={Boolean(anchorEl)}
           onClose={handleClose}
         >
-          <MenuItem onClick={handleClose}>
-            <Link href={config.route.profile} className={classes.link}>
-              {config.string.MT_PROFILE}
-            </Link>
+          <MenuItem onClick={handleOnProfile}>
+            {config.string.MT_PROFILE}
           </MenuItem>
           <MenuItem onClick={handleLogOut}>{config.string.MT_LOGOUT}</MenuItem>
         </Menu>

@@ -1,9 +1,9 @@
-import React, { useState, useRef, useContext } from "react";
+import React, { useState, useRef, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import AccountBoxIcon from "@material-ui/icons/AccountBox";
 import Button from "@material-ui/core/Button";
 import CssBaseline from "@material-ui/core/CssBaseline";
-import { Avatar } from "@material-ui/core";
+import { Avatar, List, ListItem, ListItemText } from "@material-ui/core";
 import PublishIcon from "@material-ui/icons/Publish";
 import TextField from "@material-ui/core/TextField";
 import Link from "@material-ui/core/Link";
@@ -33,6 +33,9 @@ import { config } from "../../config";
 
 import { deepOrange } from "@material-ui/core/colors";
 import ImgurApiService from "../../services/api/imgur-api";
+import { httpGet } from "../../services/api/base-api";
+import ListHistory from "./components/ListHistory";
+
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(0),
@@ -103,6 +106,7 @@ export default function SignUp(props) {
   const [errorMsg, setErrMsg] = useState("");
   const [avatar, setAvatar] = useState(user.avatar);
   const { loadingState, dispatchLoading } = useContext(loadingStore);
+  const [historyData, setHistoryData] = useState([]);
 
   const toggleUpdate = (evt) => {
     setDisabled(!disabled);
@@ -173,6 +177,7 @@ export default function SignUp(props) {
       .then((response) => response.json())
       .then(
         (result) => {
+          console.log(result);
           if (result.isSuccess) {
             AuthService.updateCurrentUser({
               name: name,
@@ -195,6 +200,17 @@ export default function SignUp(props) {
           }
         }
       );
+  };
+
+  useEffect(() => {
+    httpGet({ url: `/user/list-game?userID=${user._id}` }).then((value) => {
+      setHistoryData(value.payload);
+    });
+  }, []);
+
+  //OnClick History
+  const handleOnHistory = () => {
+    history.push(config.route.history, {});
   };
 
   return (
@@ -276,27 +292,14 @@ export default function SignUp(props) {
                 onChange={(evt) => handleNameChange(evt)}
               />
             </Grid>
-            <Grid item xs={12}>
-              <TextField
-                autoComplete="email"
-                name="email"
-                variant="outlined"
-                required
-                type="email"
-                fullWidth
-                id="email"
-                label="Email"
-                InputProps={{
-                  className: classes.formControl,
-                }}
-                disabled={disabled}
-                value={email}
-                error={email === ""}
-                helperText={email === "" ? "Enter Email" : " "}
-                onChange={(evt) => handleEmailChange(evt)}
-              />
-            </Grid>
           </Grid>
+          {disabled && (
+            <ListHistory
+              data={historyData}
+              user={user._id}
+              onClick={handleOnHistory}
+            />
+          )}
           <br />
           <FormHelperText
             className={
@@ -306,16 +309,17 @@ export default function SignUp(props) {
           >
             {errorMsg}
           </FormHelperText>
-          <Button
-            type="submit"
-            fullWidth
-            variant="contained"
-            color="primary"
-            disabled={disabled}
-            className={classes.submit}
-          >
-            Update
-          </Button>
+          {!disabled && (
+            <Button
+              type="submit"
+              fullWidth
+              variant="contained"
+              color="primary"
+              className={classes.submit}
+            >
+              Update
+            </Button>
+          )}
           <Grid container justify="flex-end">
             <Grid item>
               <Link href="/dashBoard" variant="body2">
