@@ -183,7 +183,7 @@ export default function Game(props) {
   const [socket, setSocket] = useState(state.socket);
   const user = AuthService.getCurrentUser();
   if (!user) {
-    historyPages.push("/login");
+    historyPages.push(config.route.login);
   }
   const classes = useStyles();
   const nameRef = useRef();

@@ -28,6 +28,7 @@ import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 import History from "../../../feature/History";
 import Reconnect from "../../../feature/Main/Reconnect";
 import { initializeAPIService } from "../../../services/api/base-api";
+import { config } from "../../../config";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
 
@@ -42,22 +43,22 @@ function App() {
           <Loading />
           <Router /*history={hashHistory} basename={process.env.PUBLIC_URL} */>
             <Switch>
-              <Route path="/logIn">
+              <Route path={config.route.login}>
                 {/* Header */}
                 <Header />
                 <LogIn />
               </Route>
-              <Route path="/signUp">
+              <Route path={config.route.signup}>
                 {/* Header */}
                 <Header />
                 <SignUp />
               </Route>
-              <Route path="/profile">
+              <Route path={config.route.profile}>
                 {/* Header */}
                 <Header />
                 <Profile />
               </Route>
-              <Route path="/dashboard">
+              <Route path={config.route.dashboard}>
                 <Reconnect/>
                 {/* Header */}
                 <Header />
@@ -67,27 +68,27 @@ function App() {
                 <Footer />
                 {/* End footer */}
               </Route>
-              <Route path="/game">
+              <Route path={config.route.game}>
                 {/*<Header />*/}
                 <Game />
               </Route>
-              <Route path="/history/:gameID">
+              <Route path={config.route.history}>
                 <History />
               </Route>
-              <Route path="/account-validation/:token">
+              <Route path={config.route.accountValidate}>
                 <Header />
                 <AccountValidation />
               </Route>
-              <Route path="/forget-password">
+              <Route path={config.route.forgotPassword}>
                 <Header />
                 <ForgetPassword />
               </Route>
-              <Route path="/reset-password/:token">
+              <Route path={config.route.resetPasswordPath}>
                 <Header />
                 <ResetPassword />
               </Route>
-              <Route path="/">
-                <Redirect to="/logIn" />
+              <Route path={config.route.root}>
+                <Redirect to={config.route.login} />
               </Route>
             </Switch>
           </Router>

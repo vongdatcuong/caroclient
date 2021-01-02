@@ -15,7 +15,6 @@ import BackgroundImg from "../../../vendors/images/background-img.jpg";
 import FacebookLogin from "react-facebook-login/dist/facebook-login-render-props";
 import GoogleLogin from "react-google-login";
 import FacebookIcon from "@material-ui/icons/Facebook";
-import { config } from "../../../Utils";
 // Components
 import Footer from "../../../components/layouts/Footer";
 
@@ -23,6 +22,7 @@ import Footer from "../../../components/layouts/Footer";
 import AuthService from "../../../services/auth.service";
 import { loadingStore } from "../../../context/loading-context";
 import { BtnFacebook, BtnGoogle } from "../../../components/custom-components";
+import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
   bgImg: {
@@ -197,7 +197,7 @@ export default function SignUp(props) {
             <CreateIcon />
           </Avatar>
           <Typography component="h1" variant="h5" className={classes.title}>
-            Sign up
+            {config.string.MT_SIGN_UP}
           </Typography>
           <form className={classes.form} onSubmit={(evt) => handleSignUp(evt)}>
             <Grid container spacing={2}>
@@ -291,11 +291,11 @@ export default function SignUp(props) {
               color="primary"
               className={classes.submit}
             >
-              Sign Up
+              {config.string.MT_SIGN_UP}
             </Button>
             <GoogleLogin
               clientId={
-                config.google_auth_client_id + ".apps.googleusercontent.com"
+                config.key.GOOGLE_CLIENT_ID + ".apps.googleusercontent.com"
               }
               render={(renderProps) => (
                 <BtnGoogle
@@ -303,7 +303,7 @@ export default function SignUp(props) {
                   disabled={renderProps.disabled}
                   style={{ width: "100%" }}
                 >
-                  Login with Google
+                  {config.string.MT_SIGN_IN_GOOGLE}
                 </BtnGoogle>
               )}
               buttonText="Login with Google"
@@ -311,7 +311,7 @@ export default function SignUp(props) {
               onFailure={errorGoogle}
             ></GoogleLogin>
             <FacebookLogin
-              appId={config.facebook_app_id}
+              appId={config.key.FACEBOOK_CLIENT_ID}
               fields="name,email,picture"
               callback={responseFacebook}
               render={(renderProps) => (
@@ -320,14 +320,14 @@ export default function SignUp(props) {
                   style={{ width: "100%" }}
                   startIcon={<FacebookIcon />}
                 >
-                  Login with Facebook
+                  {config.string.MT_SIGN_IN_FACEBOOK}
                 </BtnFacebook>
               )}
               style={{ width: "100%" }}
             />
             <Grid container justify="flex-end">
               <Grid item>
-                <Link href="/logIn" variant="body2">
+                <Link href={config.route.login} variant="body2">
                   Already have an account? Sign in
                 </Link>
               </Grid>

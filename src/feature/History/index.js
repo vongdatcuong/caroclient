@@ -38,6 +38,7 @@ import "./index.css";
 import ListMove from "./list-move";
 import CustomBox from "../../components/custom-components/CustomBox";
 import ListGlobalChat from "../../components/custom-components/CustomBox/components/ListGlobalChat";
+import { config } from "../../config";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -151,7 +152,7 @@ export default function History(props) {
   const { gameID } = useParams();
   const user = AuthService.getCurrentUser();
   if (!user || !gameID) {
-    historyPages.push("/login");
+    historyPages.push(config.route.login);
   }
   const boardSize = Utils.boardSize;
   const historyPages = useHistory();

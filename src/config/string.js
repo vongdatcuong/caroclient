@@ -19,6 +19,7 @@ const MT_SETTING = "SETTING";
 const MT_WITHDRAW = "WITHDRAW";
 const MT_LEAVE_ROOM = "LEAVE ROOM";
 const MT_SIGN_IN = "SIGN IN";
+const MT_SIGN_UP = "SIGN UP";
 const MT_SIGN_IN_GOOGLE = "Login with Google";
 const MT_SIGN_IN_FACEBOOK = "Login with Facebook";
 const MT_ROOM = "ROOM";
@@ -29,6 +30,7 @@ const MT_MORE = "MORE";
 const MT_PROFILE = "PROFILE";
 const MT_LOGOUT = "LOGOUT";
 const MT_RECONNECT = "RECONNECT"
+const MT_HISTORY_LIST = "History List";
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -50,6 +52,8 @@ const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
 
 export const string = {
+  MT_HISTORY_LIST,
+  MT_SIGN_UP,
   APP_NAME,
   MT_LOGOUT,
   MT_PROFILE,

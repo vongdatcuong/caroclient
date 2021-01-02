@@ -60,7 +60,7 @@ function ListGlobalChat({ data }) {
               </Typography>
               <ListItemText
                 className={classes.content}
-                primary={line.content + "sad"}
+                primary={line.content}
               />
             </ListItem>
           );
