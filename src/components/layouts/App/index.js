@@ -72,7 +72,7 @@ function App() {
                 {/*<Header />*/}
                 <Game />
               </Route>
-              <Route path={config.route.history}>
+              <Route path={config.route.historyGame}>
                 <History />
               </Route>
               <Route path={config.route.accountValidate}>

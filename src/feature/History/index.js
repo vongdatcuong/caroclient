@@ -151,11 +151,11 @@ const useStyles = makeStyles((theme) => ({
 export default function History(props) {
   const { gameID } = useParams();
   const user = AuthService.getCurrentUser();
+  const historyPages = useHistory();
   if (!user || !gameID) {
     historyPages.push(config.route.login);
   }
   const boardSize = Utils.boardSize;
-  const historyPages = useHistory();
   const location = useLocation();
   const { state, dispatch } = useContext(store);
   const { loadingState, dispatchLoading } = useContext(loadingStore);
@@ -184,7 +184,7 @@ export default function History(props) {
 
   const handleLeave = () => {
     setOpenSetting(false);
-    historyPages.push("/dashboard");
+    historyPages.push("/profile");
   };
 
   useEffect(() => {
