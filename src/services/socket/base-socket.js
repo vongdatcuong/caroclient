@@ -212,6 +212,39 @@ const NotifyQuickPlay = (socket, callback) => {
   });
 };
 
+// RECONNECT
+const Reconnect = (socket, roomID, player) => {
+  socket.emit("Reconnect", {
+    roomID: roomID,
+    player: player,
+  });
+}
+
+const ReconnectRes = (socket, setState) => {
+  socket.on("Reconnect-Response", (room) => {
+    setState(room);
+  })
+}
+
+const PlayerDisconnectRes = (socket, handlePlayerDis) => {
+  socket.on("Player-Disconnect-Response", (player) => {
+    handlePlayerDis(player);
+  })
+}
+
+const PlayerReconnectRes = (socket, handlePlayerRecon) => {
+  socket.on("Player-Reconnect-Response", (player) => {
+    handlePlayerRecon(player);
+  })
+}
+
+const DisconnectedPlayerLose = (socket, roomID, user) => {
+  socket.emit("Disconnected-Player-Lose", {
+    roomID: roomID,
+    player: user
+  })
+}
+
 export {
   JoinGlobalRoom,
   GetGlobalUsers,
@@ -244,4 +277,9 @@ export {
   QuickPlay,
   SearchedRoom,
   NotifyQuickPlay,
+  Reconnect,
+  ReconnectRes,
+  PlayerDisconnectRes,
+  PlayerReconnectRes,
+  DisconnectedPlayerLose
 };

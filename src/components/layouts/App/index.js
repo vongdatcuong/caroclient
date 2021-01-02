@@ -26,6 +26,7 @@ import AccountValidation from "../../../feature/Authentication/AccountValidation
 import ResetPassword from "../../../feature/Authentication/ResetPassword";
 import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 import History from "../../../feature/History";
+import Reconnect from "../../../feature/Main/Reconnect";
 import { initializeAPIService } from "../../../services/api/base-api";
 
 //const hashHistory = createHashHistory({ basename: process.env.PUBLIC_URL });
@@ -57,9 +58,10 @@ function App() {
                 <Profile />
               </Route>
               <Route path="/dashboard">
+                <Reconnect/>
                 {/* Header */}
-                {/* End Header */}
                 <Header />
+                {/* End Header */}
                 <DashBoard />
                 {/* Footer */}
                 <Footer />

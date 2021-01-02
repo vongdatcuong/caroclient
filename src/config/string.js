@@ -28,6 +28,7 @@ const MT_DRAW = "DRAW";
 const MT_MORE = "MORE";
 const MT_PROFILE = "PROFILE";
 const MT_LOGOUT = "LOGOUT";
+const MT_RECONNECT = "RECONNECT"
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -92,4 +93,5 @@ export const string = {
   MT_CREATE,
   PH_TITLE,
   PH_ROOM_ID,
+  MT_RECONNECT
 };

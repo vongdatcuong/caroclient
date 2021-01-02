@@ -39,6 +39,9 @@ import {
   RestartGameRes,
   UpdateUserRes,
   LoadingRes,
+  PlayerDisconnectRes,
+  PlayerReconnectRes,
+  DisconnectedPlayerLose
 } from "../../../services/socket/base-socket";
 import Board from "./components/board";
 import Chatbox from "./components/chatbox";
@@ -60,6 +63,7 @@ import ListUser from "./components/list-user";
 import CustomBox from "../../../components/custom-components/CustomBox";
 import ListGlobalChat from "../../../components/custom-components/CustomBox/components/ListGlobalChat";
 import ChatBox from "../../../components/custom-components/CustomBox/components/ChatBox";
+import PlayerDisconnect from "../../Main/PlayerDisconnect";
 import { config } from "../../../config";
 
 const useStyles = makeStyles((theme) => ({
@@ -167,7 +171,7 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(4),
     display: "inline-block",
     textAlign: "center",
-  },
+  }
 }));
 
 export default function Game(props) {
@@ -205,6 +209,9 @@ export default function Game(props) {
   const [player2Time, setPlayer2Time] = useState(turnTime);
   let countDownInterval = null;
 
+  const [isOtherDis, setIsOtherDis] = useState(false);
+  const [timeout, setTimeout] = useState(Utils.disconnectTimeout);
+
   const initializeRoomUser = [
     {
       user: user,
@@ -226,6 +233,7 @@ export default function Game(props) {
 
   const handleOnPlayerLeave = (player) => {
     setRoomUsers(roomUsers.filter((e) => e.user._id !== player));
+    setIsReady(false);
   };
 
   const handleOnWithDraw = () => {
@@ -281,6 +289,8 @@ export default function Game(props) {
     //RestartGameRes(socket, handleRestartGameRes);
     UpdateUserRes(socket, handleUpdateUserRes);
     LoadingRes(socket, dispatchLoading);
+    PlayerDisconnectRes(socket, handlePlayerDisRes);
+    PlayerReconnectRes(socket ,handlePlayerRecon)
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -375,15 +385,19 @@ export default function Game(props) {
     clearCountDown();
     // Player 1 Turn
     if (board.turn === user._id) {
+      // Reset other player time
       setPlayer2Time(turnTime);
-      countDown(player1Time, setPlayer1Time).then((value) => {
+      const timeLeft = player1Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      countDown(timeLeft, setPlayer1Time).then((value) => {
         WithDraw(socket, location.state.roomID, user);
       });
     }
     // Player 2 Turn (board.turn != 0)
     else if (board.turn) {
+      // Reset other player time
       setPlayer1Time(turnTime);
-      countDown(player2Time, setPlayer2Time).then((value) => {});
+      const timeLeft = player2Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      countDown(timeLeft, setPlayer2Time).then((value) => {});
     }
   };
 
@@ -392,7 +406,7 @@ export default function Game(props) {
       const interval = setInterval(() => {
         time -= 1000; // Millisecond
         setTime(time);
-        if (time === 0) {
+        if (time <= 0) {
           clearInterval(interval);
           resolve(1);
         }
@@ -419,9 +433,49 @@ export default function Game(props) {
     }
   };
 
+  let timeoutInterval;
+  const handlePlayerDisRes = () => {
+    setIsOtherDis(true);
+    clearCountDown();
+    timeoutCountDown(timeout, setTimeout).then((result) => {
+      handleDisTimeout();
+    })
+  }
+
+  const handleDisTimeout = () => {
+    DisconnectedPlayerLose(socket, location.state.roomID, user)
+    setIsOtherDis(false);
+    clearTimeoutCountDown();
+  }
+
+  const handlePlayerRecon = () => {
+    setIsOtherDis(false);
+    clearTimeoutCountDown();
+  }
+
+  const timeoutCountDown = (time, setTime) => {
+    return new Promise((resolve, reject) => {
+      const interval = setInterval(() => {
+        time -= 1000; // Millisecond
+        setTime(time);
+        if (time === 0) {
+          clearInterval(interval);
+          resolve(1);
+        }
+      }, 1000);
+      timeoutInterval = interval;
+    });
+  }
+
+  const clearTimeoutCountDown = () => {
+    clearInterval(timeoutInterval);
+    setTimeout(Utils.disconnectTimeout);
+  }
+
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
+      <PlayerDisconnect display={isOtherDis} time={timeout}/>
       <div className={classes.paper}>
         <Grid container justify="center" spacing={2} className={classes.root}>
           <Grid key={0} item>

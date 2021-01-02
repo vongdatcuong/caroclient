@@ -159,7 +159,7 @@ const useStyles = makeStyles((theme) => ({
   },
   roomOption: {
     height: "30px",
-  },
+  }
 }));
 
 const DashBoard = (props) => {

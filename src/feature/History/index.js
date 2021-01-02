@@ -9,13 +9,11 @@ import { useHistory, useLocation, useParams } from "react-router-dom";
 import Container from "@material-ui/core/Container";
 import CssBaseline from "@material-ui/core/CssBaseline";
 import Grid from "@material-ui/core/Grid";
-import Button from "@material-ui/core/Button";
 import { makeStyles } from "@material-ui/core/styles";
 import { fade } from "@material-ui/core/styles/colorManipulator";
 import { store } from "../../context/socket-context";
 import { loadingStore } from "../../context/loading-context";
 // Components
-import PlayCircleFilledWhiteIcon from "@material-ui/icons/PlayCircleFilledWhite";
 import BackgroundGameImg from "../../vendors/images/background-game.jpg";
 
 // Constant && Services
@@ -31,17 +29,15 @@ import {
   LoadingRes,
 } from "../../services/socket/base-socket";
 import Board from "../Main/Game/components/board";
-import Chatbox from "../Main/Game/components/chatbox";
-import Settings from "../Main/Game/components/settings";
 import SettingDialog from "../../components/dialogs/SettingDialog/index";
 import UserInfo from "../Main/Game/components/user-info";
 import ConfirmDialog from "../../components/dialogs/ConfirmDialog";
 
 import { JoinGlobalRoom } from "../../services/socket/base-socket";
 import "./index.css";
-import { Typography } from "@material-ui/core";
 import ListMove from "./list-move";
 import CustomBox from "../../components/custom-components/CustomBox";
+import ListGlobalChat from "../../components/custom-components/CustomBox/components/ListGlobalChat";
 
 const useStyles = makeStyles((theme) => ({
   main: {
@@ -151,7 +147,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Game(props) {
+export default function History(props) {
   const { gameID } = useParams();
   const user = AuthService.getCurrentUser();
   if (!user || !gameID) {
@@ -313,6 +309,7 @@ export default function Game(props) {
                     data={roomChat}
                     value=""
                     isDisabled={true}
+                    ListComponent={ListGlobalChat}
                   ></CustomBox>
                 </div>
               </div>
