@@ -27,6 +27,7 @@ import ResetPassword from "../../../feature/Authentication/ResetPassword";
 import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 import History from "../../../feature/History";
 import Reconnect from "../../../feature/Main/Reconnect";
+import Spectator from "../../../feature/Main/Spectator";
 import { initializeAPIService } from "../../../services/api/base-api";
 import { config } from "../../../config";
 
@@ -71,6 +72,10 @@ function App() {
               <Route path={config.route.game}>
                 {/*<Header />*/}
                 <Game />
+              </Route>
+              <Route path={config.route.spectatorPath}>
+                {/*<Header />*/}
+                <Spectator />
               </Route>
               <Route path={config.route.historyGame}>
                 <History />

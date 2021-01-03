@@ -31,6 +31,9 @@ const MT_PROFILE = "PROFILE";
 const MT_LOGOUT = "LOGOUT";
 const MT_RECONNECT = "RECONNECT"
 const MT_HISTORY_LIST = "History List";
+const MT_PLAYER = "Player";
+const MT_SPECTATOR = "Spectator";
+const MT_JOINPLAY = "JOIN PlAYING";
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -48,6 +51,7 @@ const D_SIGNUP = "Don't have an account? Sign Up";
 const D_LEAVE_ROOM = "Room is closed. LEAVE NOW.";
 const D_READY = "READY";
 const D_WAITING_READY = "Waiting for the other player to be ready ...";
+const D_WAITING_READY_SPEC = "Waiting for the game to start ...";
 const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
 
@@ -97,5 +101,9 @@ export const string = {
   MT_CREATE,
   PH_TITLE,
   PH_ROOM_ID,
-  MT_RECONNECT
+  MT_RECONNECT,
+  MT_SPECTATOR,
+  MT_PLAYER,
+  MT_JOINPLAY,
+  D_WAITING_READY_SPEC
 };

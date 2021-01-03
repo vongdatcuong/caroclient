@@ -27,7 +27,7 @@ import { config } from "../../../../config";
 const useStyles = makeStyles((theme) => ({
   box: {
     width: 300,
-    height: "250px",
+    height: "350px",
 
     paddingLeft: "5px",
     paddingRight: "5px",
@@ -60,9 +60,15 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 142, // a number of your choice
     width: 142, // a number of your choice
   },
+  playerTitle: {
+    textDecoration: "underline"
+  },
+  spectatorTitle: {
+    textDecoration: "underline"
+  }
 }));
 
-function ListUser({ roomData, onInvite }) {
+function ListUser({ roomData, spectators, onInvite }) { console.log(spectators)
   const classes = useStyles();
   const { state, dispatch } = useContext(store);
   const [socket, setSocket] = useState(state.socket);
@@ -92,11 +98,47 @@ function ListUser({ roomData, onInvite }) {
               aria-label="disabled tabs example"
               onChange={handleChange}
             >
-              <Tab className={classes.tab} label={config.string.MT_GLOBAL} />
               <Tab className={classes.tab} label={config.string.MT_ROOM} />
+              <Tab className={classes.tab} label={config.string.MT_GLOBAL} />
             </Tabs>
           </Paper>
           {value === 0 ? (
+            <List dense={true}>
+              <Typography className={classes.playerTitle} variant="h6">{config.string.MT_PLAYER}</Typography>
+              {roomData.map((value, index) => {
+                return (
+                  <ListItem>
+                    <ListItemIcon>
+                      <AccountCircleIcon fontSize="large" />
+                    </ListItemIcon>
+
+                    <ListItemText
+                      primary={value.user.username}
+                      secondary={` (${value.role})`}
+                      className={classes.bold}
+                      disableTypography={true}
+                    />
+                  </ListItem>
+                );
+              })}
+              <Typography className={classes.spectatorTitle} variant="h6">{config.string.MT_SPECTATOR}</Typography>
+              {spectators.map((value, index) => {
+                return (
+                  <ListItem>
+                    <ListItemIcon>
+                      <AccountCircleIcon fontSize="large" />
+                    </ListItemIcon>
+
+                    <ListItemText
+                      primary={value.username}
+                      className={classes.bold}
+                      disableTypography={true}
+                    />
+                  </ListItem>
+                );
+              })}
+            </List>
+          ) : (
             <List dense={true}>
               {state.globalUsers.map((user, index) => {
                 return (
@@ -125,25 +167,7 @@ function ListUser({ roomData, onInvite }) {
                 );
               })}
             </List>
-          ) : (
-            <List dense={true}>
-              {roomData.map((value, index) => {
-                return (
-                  <ListItem>
-                    <ListItemIcon>
-                      <AccountCircleIcon fontSize="large" />
-                    </ListItemIcon>
-
-                    <ListItemText
-                      primary={value.user.username}
-                      secondary={` (${value.role})`}
-                      className={classes.bold}
-                      disableTypography={true}
-                    />
-                  </ListItem>
-                );
-              })}
-            </List>
+            
           )}
         </div>
         <div className={classes.moreWrapper}>
