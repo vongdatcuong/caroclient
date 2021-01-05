@@ -224,6 +224,94 @@ const NotifyQuickPlay = (socket, callback) => {
   });
 };
 
+// RECONNECT
+const Reconnect = (socket, roomID, player) => {
+  socket.emit("Reconnect", {
+    roomID: roomID,
+    player: player,
+  });
+};
+
+const ReconnectRes = (socket, setState) => {
+  socket.on("Reconnect-Response", (room) => {
+    setState(room);
+  });
+};
+
+const PlayerDisconnectRes = (socket, handlePlayerDis) => {
+  socket.on("Player-Disconnect-Response", (player) => {
+    handlePlayerDis(player);
+  });
+};
+
+const PlayerReconnectRes = (socket, handlePlayerRecon) => {
+  socket.on("Player-Reconnect-Response", (player) => {
+    handlePlayerRecon(player);
+  });
+};
+
+const DisconnectedPlayerLose = (socket, roomID, user) => {
+  socket.emit("Disconnected-Player-Lose", {
+    roomID: roomID,
+    player: user,
+  });
+};
+
+// SPECTATOR
+//SPEC ROOM
+// In Spectator
+const SpecRoom = (socket, roomID, player) => {
+  socket.emit("Spec-Room", {
+    roomID: roomID,
+    player: player,
+  });
+};
+
+// In Game
+const SpecRoomRes = (socket, setState) => {
+  socket.on("Spectator-Room-Response", (spectators) => {
+    setState(spectators);
+  });
+};
+
+// In Spectator
+const PlayersSpecRoomRes = (socket, handleSetPlayersSpecRoom) => {
+  socket.on("Players-Spec-Room-Response", (players) => {
+    handleSetPlayersSpecRoom(players);
+  });
+};
+
+// In Spectator
+//LEAVE SPEC ROOM
+const LeaveSpecRoom = (socket, roomID, user) => {
+  socket.emit("Leave-Spec-Room", { roomID: roomID, player: user });
+};
+
+// In Spectator
+//GET LEAVE PLAYER
+const LeaveRoomPlayerSpec = (socket, onLeave) => {
+  socket.on("Leave-Room-Player-Spec", (value) => {
+    onLeave(value);
+  });
+};
+
+// In Spectator
+// GAME START
+const GameStartSpec = (socket, handleGameStart) => {
+  socket.on("Game-Start-Spec-Response", (board) => {
+    handleGameStart(board);
+  });
+};
+
+// In Spectator
+//JOIN ROOM FROM SPEC
+const JoinRoomFromSpec = (socket, roomID, player) => {
+  socket.emit("Join-Room-From-Spec", {
+    roomID: roomID,
+    player: player,
+  });
+};
+
 export {
   JoinGlobalRoom,
   GetGlobalUsers,
@@ -258,4 +346,16 @@ export {
   NotifyQuickPlay,
   JoinRoomCallBack,
   CancelQuickPlayRoom,
+  Reconnect,
+  ReconnectRes,
+  PlayerDisconnectRes,
+  PlayerReconnectRes,
+  DisconnectedPlayerLose,
+  SpecRoom,
+  SpecRoomRes,
+  LeaveSpecRoom,
+  PlayersSpecRoomRes,
+  LeaveRoomPlayerSpec,
+  GameStartSpec,
+  JoinRoomFromSpec,
 };

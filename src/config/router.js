@@ -18,6 +18,7 @@ const resetPasswordPath = "/reset-password/:token";
 const gamePath = "/game";
 const historyPath = "/history";
 const historyGamePath = "/history/:gameID";
+const spectatorPath = "/spectator";
 
 export const route = {
   root: rootPath,
@@ -35,4 +36,5 @@ export const route = {
   historyGame: historyGamePath,
   accountValidate: accountValidatePath,
   resetPasswordPath: resetPasswordPath,
+  spectatorPath: spectatorPath
 };

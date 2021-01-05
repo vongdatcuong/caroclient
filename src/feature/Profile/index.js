@@ -209,8 +209,8 @@ export default function SignUp(props) {
   }, []);
 
   //OnClick History
-  const handleOnHistory = () => {
-    history.push(config.route.history, {});
+  const handleOnHistory = (gameID) => {
+    history.push(config.route.history + "/" + gameID);
   };
 
   return (
@@ -297,7 +297,7 @@ export default function SignUp(props) {
             <ListHistory
               data={historyData}
               user={user._id}
-              onClick={handleOnHistory}
+              onClick={(gameID) => handleOnHistory(gameID)}
             />
           )}
           <br />

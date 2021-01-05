@@ -58,6 +58,7 @@ import {
   NotifyQuickPlay,
   JoinRoomCallBack,
   CancelQuickPlayRoom,
+  SpecRoom,
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
@@ -215,6 +216,14 @@ const DashBoard = (props) => {
     } else {
       alert("Mật khẩu phòng không đúng");
     }
+  };
+
+  const handleOnWatchRoom = (roomID) => {
+    history.push({
+      pathname: config.route.spectatorPath,
+      state: { roomID: roomID, turn: 2 },
+    });
+    SpecRoom(socket, roomID, user);
   };
 
   const handleOnChatChange = (e) => {
@@ -442,6 +451,7 @@ const DashBoard = (props) => {
                           <GameEntrance
                             data={game}
                             onClick={handleOnChooseRoom}
+                            onClickWatch={handleOnWatchRoom}
                           />
                         </Grid>
                       )
@@ -453,7 +463,7 @@ const DashBoard = (props) => {
                         <Grid item md={4} key={index}>
                           <GameEntrance
                             data={game}
-                            onClick={handleOnChooseRoom}
+                            onClickWatch={handleOnWatchRoom}
                           />
                         </Grid>
                       )

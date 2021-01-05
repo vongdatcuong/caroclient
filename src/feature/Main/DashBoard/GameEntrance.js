@@ -54,7 +54,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const GameEntrance = ({ onClick, data }) => {
+const GameEntrance = ({ onClick, data, onClickWatch }) => {
   const classes = useStyles();
 
   return (
@@ -82,13 +82,22 @@ const GameEntrance = ({ onClick, data }) => {
       </CardContent>
       <CardActions>
         <Button
-          style={{ width: 100 }}
+          style={{ width: 100, marginLeft: 'auto' }}
           variant="contained"
           size="small"
           color="primary"
           onClick={() => onClick(data.roomID, data.time, data.password)}
         >
           Play
+        </Button>
+        <Button
+          style={{ width: 100, marginRight: 'auto' }}
+          variant="contained"
+          size="small"
+          color="secondary"
+          onClick={() => onClickWatch(data.roomID)}
+        >
+          Watch
         </Button>
       </CardActions>
     </Card>

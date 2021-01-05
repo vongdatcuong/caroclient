@@ -1,6 +1,7 @@
 const SERVER = "http://localhost:4000";
 const api = `${SERVER}/api`;
 const boardSize = 20;
+const disconnectTimeout = 180000;
 // User
 const userPath = "/user";
 const logInPath = "/login";
@@ -31,6 +32,7 @@ export default {
   api,
   SERVER,
   boardSize,
+  disconnectTimeout,
   // User
   userPath,
   logInPath,

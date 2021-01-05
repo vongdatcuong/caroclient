@@ -24,33 +24,27 @@ import AuthService from "../../../services/auth.service";
 import {
   GetBoard,
   GetChatPrivateRoom,
-  LeaveRoom,
-  LeaveRoomPlayer,
-  MakeAMove,
   DeclareWinner,
   GetGlobalUsers,
-  InviteUser,
-  GetInviteRequest,
-  WithDraw,
   GetRoomOwner,
-  ReadyGame,
-  ReadyGameRes,
-  RestartGame,
-  RestartGameRes,
-  UpdateUserRes,
   LoadingRes,
   PlayerDisconnectRes,
   PlayerReconnectRes,
   DisconnectedPlayerLose,
   SpecRoomRes,
+  LeaveSpecRoom,
+  PlayersSpecRoomRes,
+  LeaveRoomPlayerSpec,
+  GameStartSpec,
+  JoinRoomFromSpec,
 } from "../../../services/socket/base-socket";
-import Board from "./components/board";
-import Chatbox from "./components/chatbox";
-import Settings from "./components/settings";
+import Board from "../Game/components/board";
+import Chatbox from "../Game/components/chatbox";
+import Settings from "../Game/components/settings";
 import SettingDialog from "../../../components/dialogs/SettingDialog/index";
-import UserInfo from "./components/user-info";
+import UserInfo from "../Game/components/user-info";
 import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
-import JoinPlaying from "./components/join-playing";
+import JoinPlaying from "../Game/components/join-playing";
 
 import {
   GetSecondPlayer,
@@ -61,7 +55,7 @@ import {
 } from "../../../services/socket/base-socket";
 import "./index.css";
 import { Typography } from "@material-ui/core";
-import ListUser from "./components/list-user";
+import ListUser from "../Game/components/list-user";
 import CustomBox from "../../../components/custom-components/CustomBox";
 import ListGlobalChat from "../../../components/custom-components/CustomBox/components/ListGlobalChat";
 import ChatBox from "../../../components/custom-components/CustomBox/components/ChatBox";
@@ -176,7 +170,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function Game(props) {
+export default function Spectator(props) {
   const boardSize = Utils.boardSize;
   const historyPages = useHistory();
   const location = useLocation();
@@ -195,18 +189,13 @@ export default function Game(props) {
   // board.squares.length === 0 => Chưa start game
   const [board, setBoard] = useState({ squares: [] });
   const [roomChat, setRoomChat] = useState([]);
-  const [secondPlayer, setSecondPlayer] = useState({});
   const [chatText, setChatText] = useState("");
-  const [winner, setWinner] = useState("");
+  const [winner, setWinner] = useState({});
   const [openSetting, setOpenSetting] = useState(false);
-  const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(
-    false
-  );
   const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
   const [roomOwner, setRoomOwner] = useState("");
-  const [isReady, setIsReady] = useState(false);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
-  const [turnTime, setTurnTime] = useState(location.state.time); // Millisecond
+  const [turnTime, setTurnTime] = useState(180000); // Millisecond
   const [player1Time, setPlayer1Time] = useState(turnTime);
   const [player2Time, setPlayer2Time] = useState(turnTime);
   let countDownInterval = null;
@@ -223,29 +212,20 @@ export default function Game(props) {
   const [roomUsers, setRoomUsers] = useState(initializeRoomUser);
   const [spectators, setSpectators] = useState([]);
 
-  const handleOnLoadSecondPlayer = (value) => {
-    setRoomUsers([
-      ...roomUsers,
-      {
-        user: value,
-        role: location.state.roomID === user._id ? "Player 2" : "Player 1",
-      },
-    ]);
-    setSecondPlayer(value);
-  };
+  const handleSetPlayersSpecRoom = (players) => {
+    const newPlayers = players.map((player, index) => Object.assign({}, {
+      user: player,
+      role: (index === 0)? "Player 1" : "Player 2"
+    }));
+    setRoomUsers(newPlayers);
+  }
 
-  const handleOnPlayerLeave = (player) => {
-    setRoomUsers(roomUsers.filter((e) => e.user._id !== player));
-    setIsReady(false);
-  };
-
-  const handleOnWithDraw = () => {
-    setOpenConfirmWithdrawDialog(true);
-  };
-
-  const handleWithDraw = () => {
-    WithDraw(socket, location.state.roomID, user);
-    setOpenSetting(false);
+  const handleOnPlayerLeave = (players) => {
+    const newPlayers = players.map((player, index) => Object.assign({}, {
+      user: player,
+      role: (index === 0)? "Player 1" : "Player 2"
+    }));
+    setRoomUsers(newPlayers);
   };
 
   const handleOnLeave = () => {
@@ -254,47 +234,30 @@ export default function Game(props) {
 
   const handleLeave = () => {
     setOpenSetting(false);
-    LeaveRoom(socket, location.state.roomID, user);
+    LeaveSpecRoom(socket, location.state.roomID, user);
     JoinGlobalRoom(socket, user);
-    historyPages.replace("/dashboard");
+    historyPages.push("/dashboard");
   };
 
   const handleClick = (i) => {
-    if (
-      board.squares.length === 0 ||
-      winner.winner ||
-      board.turn != user._id ||
-      board.squares[i]
-    ) {
-      return;
-    }
-
-    const col = (i % boardSize) + 1;
-    const row = Math.floor(i / boardSize) + 1;
-    MakeAMove(socket, location.state.roomID, user, {
-      idx: i,
-      col: col,
-      row: row,
-    });
+    
   };
+  
 
   useEffect(() => {
-    GetSecondPlayer(socket, handleOnLoadSecondPlayer);
-    GetFirstPlayer(socket, handleOnLoadSecondPlayer);
+    PlayersSpecRoomRes(socket, handleSetPlayersSpecRoom);
     GetChatPrivateRoom(socket, handleOnGetRoomChat);
     GetGlobalUsers(socket, dispatch);
-    LeaveRoomPlayer(socket, handleOnLoadSecondPlayer, handleOnPlayerLeave);
+    LeaveRoomPlayerSpec(socket, handleOnPlayerLeave);
     GetBoard(socket, handleSetBoardVsCount);
     DeclareWinner(socket, handleWinner);
     CloseRoom(socket, location.state.roomID, handleOnCloseRoomRes);
     GetRoomOwner(socket, setRoomOwner);
-    ReadyGameRes(socket, handleReadyGameRes);
-    //RestartGameRes(socket, handleRestartGameRes);
-    UpdateUserRes(socket, handleUpdateUserRes);
     LoadingRes(socket, dispatchLoading);
     PlayerDisconnectRes(socket, handlePlayerDisRes);
     PlayerReconnectRes(socket ,handlePlayerRecon);
     SpecRoomRes(socket, setSpectators);
+    GameStartSpec(socket, handleGameStart);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
@@ -322,19 +285,23 @@ export default function Game(props) {
 
   const handleWinner = (winner) => {
     setWinner(winner);
-    setIsReady(false);
     setCurrentIndex(-1);
     clearCountDown();
     setPlayer1Time(turnTime);
     setPlayer2Time(turnTime);
   };
 
+  const handleGameStart = (board) => {
+    handleWinner("");
+    handleSetBoardVsCount(board);
+  }
+
   const handleOnCloseRoomRes = () => {
     setIsRoomClosed(true);
   };
 
   const handleCloseRoom = () => {
-    historyPages.replace("/dashboard");
+    historyPages.push("/dashboard");
     JoinGlobalRoom(socket, user);
   };
 
@@ -347,62 +314,27 @@ export default function Game(props) {
   };
 
   const handleOnInviteUser = (socketID) => {
-    InviteUser(socket, {
-      id: socketID,
-      room: {
-        id: location.state.roomID,
-        title: location.state.title,
-        creator: location.state.creator,
-        time: location.state.time,
-        password: location.state.password,
-      },
-    });
-  };
 
-  const handleOnReadyGame = () => {
-    ReadyGame(socket, location.state.roomID, user);
-    setIsReady(true);
-    setWinner("");
-    setCurrentIndex(-1);
   };
-
-  const handleReadyGameRes = (_id) => {
-    if (user._id === _id) {
-      setIsReady(true);
-    }
-  };
-
-  const handleOnRestartGame = () => {
-    ReadyGame(socket, location.state.roomID, user);
-    setIsReady(true);
-    setBoard({ squares: [] });
-    setWinner("");
-    setCurrentIndex(-1);
-  };
-
-  /*const handleRestartGameRes = (emptyBoard) => {
-    setBoard(emptyBoard);
-  }*/
 
   const handleSetBoardVsCount = (board) => {
     setBoard(board);
     setCurrentIndex((board.row - 1) * boardSize + (board.col - 1));
     clearCountDown();
+    if (!board.turn) return;
     // Player 1 Turn
-    if (board.turn === user._id) {
+    if (board.total % 2 === 0) {
       // Reset other player time
       setPlayer2Time(turnTime);
       const timeLeft = player1Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
-      countDown(timeLeft, setPlayer1Time).then((value) => {
-        WithDraw(socket, location.state.roomID, user);
-      });
+      countDown(timeLeft, setPlayer1Time);
     }
     // Player 2 Turn (board.turn != 0)
-    else if (board.turn) {
+    else {
       // Reset other player time
       setPlayer1Time(turnTime);
       const timeLeft = player2Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
-      countDown(timeLeft, setPlayer2Time).then((value) => {});
+      countDown(timeLeft, setPlayer2Time);
     }
   };
 
@@ -424,17 +356,6 @@ export default function Game(props) {
     // Clear interval
     if (countDownInterval) {
       clearInterval(countDownInterval);
-    }
-  };
-
-  const handleUpdateUserRes = (newUser) => {
-    if (user._id === newUser._id) {
-      // Intialize Room users khong biet lam sao
-      delete newUser.id;
-      delete newUser.isReady;
-      AuthService.updateCurrentUser(newUser);
-    } else {
-      handleOnLoadSecondPlayer(newUser);
     }
   };
 
@@ -477,6 +398,14 @@ export default function Game(props) {
     setTimeout(Utils.disconnectTimeout);
   }
 
+  const handleJoinPlaying = () => { console.log(location)
+    historyPages.push({
+      pathname: config.route.game,
+      state: { roomID: location.state.roomID, turn: 2 },
+    });
+    JoinRoomFromSpec(socket, location.state.roomID, user);
+  }
+
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
@@ -492,13 +421,17 @@ export default function Game(props) {
               spacing={2}
             >
               <Grid item>
-                  <UserInfo
-                  user={user}
-                  playerNum={1}
-                  type={location.state.turn === 1 ? "X" : "O"}
-                  onSetting={handleOnSetting}
-                  time={player1Time}
-                  />
+                  {(roomUsers[0])?
+                    <UserInfo
+                      user={roomUsers[0].user}
+                      playerNum={1}
+                      type="X"
+                      onSetting={handleOnSetting}
+                      time={player1Time}
+                    />
+                    :
+                    <JoinPlaying/>
+                  }
               </Grid>
               <div className="row" style={{ width: 300 }}>
                 <div className={classes.boxChatWrapper}>
@@ -549,21 +482,11 @@ export default function Game(props) {
                     {
                       // If there are enough players
                       roomUsers.length >= 2 ? (
-                        !isReady ? (
-                          <Button
-                            startIcon={<PlayCircleFilledWhiteIcon />}
-                            className={classes.startBtn}
-                            onClick={handleOnReadyGame}
-                          >
-                            {config.string.D_READY}
-                          </Button>
-                        ) : (
-                          <Button
+                        <Button
                             className={`${classes.waitBtn} ${classes.waitAnotherBtn}`}
                           >
-                            {config.string.D_WAITING_READY}
-                          </Button>
-                        )
+                            {config.string.D_WAITING_READY_SPEC}
+                        </Button>
                       ) : (
                         // Waiting another player message
                         <Button
@@ -591,21 +514,11 @@ export default function Game(props) {
                     {
                       // If there are enough players
                       roomUsers.length >= 2 ? (
-                        !isReady ? (
-                          <Button
-                            startIcon={<PlayCircleFilledWhiteIcon />}
-                            className={`${classes.startBtn} + ${classes.restartBtn}`}
-                            onClick={handleOnRestartGame}
-                          >
-                            {config.string.D_READY}
-                          </Button>
-                        ) : (
-                          <Button
+                        <Button
                             className={`${classes.waitBtn} ${classes.waitAnotherBtn2}`}
                           >
-                            {config.string.D_WAITING_READY}
-                          </Button>
-                        )
+                            {config.string.D_WAITING_READY_SPEC}
+                        </Button>
                       ) : (
                         // Waiting another player message
                         <Button
@@ -631,27 +544,22 @@ export default function Game(props) {
               spacing={2}
             >
               <Grid item>
-                <UserInfo
-                  user={secondPlayer}
-                  playerNum={2}
-                  type={location.state.turn === 1 ? "O" : "X"}
-                  time={player2Time}
-                />
+                {(roomUsers[1])?
+                    <UserInfo
+                      user={roomUsers[1].user}
+                      playerNum={2}
+                      type="O"
+                      time={player2Time}
+                    />
+                    :
+                    <JoinPlaying onClick={handleJoinPlaying}/>
+                  }
               </Grid>
               <Grid item>
                 <ListUser roomData={roomUsers} spectators={spectators} onInvite={handleOnInviteUser} />
               </Grid>
             </Grid>
           </Grid>
-          <ConfirmDialog
-            open={openConfirmWithdrawDialog}
-            action={handleWithDraw}
-            setOpen={setOpenConfirmWithdrawDialog}
-          >
-            <div align="center">
-              {config.string.D_ASKING} <b>{config.string.MT_WITHDRAW}</b>
-            </div>
-          </ConfirmDialog>
           <ConfirmDialog
             open={openConfirmLeaveDialog}
             action={handleLeave}
@@ -663,9 +571,6 @@ export default function Game(props) {
           </ConfirmDialog>
           <SettingDialog
             value={openSetting}
-            onWithdraw={
-              (board.squares.length > 0 && !winner) ? handleOnWithDraw : null
-            }
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
           />

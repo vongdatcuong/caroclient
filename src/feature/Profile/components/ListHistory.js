@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: "auto",
     height: "50%",
   },
+  itemIcon: {
+    cursor: 'pointer'
+  }
 }));
 
 function ListHistory({ data, user, onClick }) {
@@ -42,6 +45,7 @@ function ListHistory({ data, user, onClick }) {
 }
 
 function CustomListItem({ key, value, userID, onClick }) {
+  const classes = useStyles();
   const [winner, setWinner] = useState("");
   const [isWin, setIsWin] = useState("");
 
@@ -63,10 +67,9 @@ function CustomListItem({ key, value, userID, onClick }) {
       setIsWin("LOSE");
     }
   }, []);
-
   return (
     <ListItem key={key}>
-      <ListItemIcon onClick={onClick}>
+      <ListItemIcon className={classes.itemIcon} onClick={(evt) => onClick(value._id)}>
         <HistoryIcon />
       </ListItemIcon>
       <ListItemText

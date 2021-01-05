@@ -26,6 +26,8 @@ import AccountValidation from "../../../feature/Authentication/AccountValidation
 import ResetPassword from "../../../feature/Authentication/ResetPassword";
 import ForgetPassword from "../../../feature/Authentication/ForgetPassword";
 import History from "../../../feature/History";
+import Reconnect from "../../../feature/Main/Reconnect";
+import Spectator from "../../../feature/Main/Spectator";
 import { initializeAPIService } from "../../../services/api/base-api";
 import { config } from "../../../config";
 
@@ -58,9 +60,10 @@ function App() {
                 <Profile />
               </Route>
               <Route path={config.route.dashboard}>
+                <Reconnect/>
                 {/* Header */}
-                {/* End Header */}
                 <Header />
+                {/* End Header */}
                 <DashBoard />
                 {/* Footer */}
                 <Footer />
@@ -70,7 +73,11 @@ function App() {
                 {/*<Header />*/}
                 <Game />
               </Route>
-              <Route path={config.route.history}>
+              <Route path={config.route.spectatorPath}>
+                {/*<Header />*/}
+                <Spectator />
+              </Route>
+              <Route path={config.route.historyGame}>
                 <History />
               </Route>
               <Route path={config.route.accountValidate}>
