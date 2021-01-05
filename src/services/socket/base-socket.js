@@ -74,10 +74,17 @@ const CloseRoom = (socket, roomID, onCloseRoom) => {
 };
 
 //JOIN ROOM
-const JoinRoom = (socket, roomID, player) => {
+const JoinRoom = (socket, roomID, player, password) => {
   socket.emit("Join-Room", {
     roomID: roomID,
     player: player,
+    password: password,
+  });
+};
+
+const JoinRoomCallBack = (socket, callback) => {
+  socket.on("Join-Room-Callback", (value) => {
+    callback(value);
   });
 };
 
@@ -196,6 +203,11 @@ const QuickPlay = (socket, room) => {
   socket.emit("Quick-Play", room);
 };
 
+//CANCEL QUICK PLAY ROOM
+const CancelQuickPlayRoom = (socket, user) => {
+  socket.emit("Cancel-Room", user);
+};
+
 //QUICK PLAY RESPONSE SEARCHED ROOM
 const SearchedRoom = (socket, callback) => {
   socket.on("Searched-Room", (value) => {
@@ -244,4 +256,6 @@ export {
   QuickPlay,
   SearchedRoom,
   NotifyQuickPlay,
+  JoinRoomCallBack,
+  CancelQuickPlayRoom,
 };

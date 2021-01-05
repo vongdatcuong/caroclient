@@ -200,7 +200,7 @@ export default function Game(props) {
   const [roomOwner, setRoomOwner] = useState("");
   const [isReady, setIsReady] = useState(false);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
-  const [turnTime, setTurnTime] = useState(180000); // Millisecond
+  const [turnTime, setTurnTime] = useState(location.state.time); // Millisecond
   const [player1Time, setPlayer1Time] = useState(turnTime);
   const [player2Time, setPlayer2Time] = useState(turnTime);
   let countDownInterval = null;
@@ -245,7 +245,7 @@ export default function Game(props) {
     setOpenSetting(false);
     LeaveRoom(socket, location.state.roomID, user);
     JoinGlobalRoom(socket, user);
-    historyPages.push("/dashboard");
+    historyPages.replace("/dashboard");
   };
 
   const handleClick = (i) => {
@@ -320,7 +320,7 @@ export default function Game(props) {
   };
 
   const handleCloseRoom = () => {
-    historyPages.push("/dashboard");
+    historyPages.replace("/dashboard");
     JoinGlobalRoom(socket, user);
   };
 
@@ -333,13 +333,14 @@ export default function Game(props) {
   };
 
   const handleOnInviteUser = (socketID) => {
-    console.log(socketID);
     InviteUser(socket, {
       id: socketID,
       room: {
         id: location.state.roomID,
         title: location.state.title,
         creator: location.state.creator,
+        time: location.state.time,
+        password: location.state.password,
       },
     });
   };

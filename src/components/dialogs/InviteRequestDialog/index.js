@@ -35,6 +35,10 @@ const useStyles = makeStyles((theme) => ({
 function InviteRequestDialog({ value, onAccept, onClose, room }) {
   const classes = useStyles();
   console.log(room.creator);
+  const hanleOnAccept = () => {
+    console.log(room);
+    onAccept(room.creator._id, room.password);
+  };
   return (
     <div>
       <Dialog
@@ -64,7 +68,7 @@ function InviteRequestDialog({ value, onAccept, onClose, room }) {
         </DialogContent>
         <DialogActions className={classes.action}>
           <Button
-            onClick={onAccept}
+            onClick={hanleOnAccept}
             variant="contained"
             color="primary"
             className={classes.button}

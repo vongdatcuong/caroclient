@@ -16,15 +16,16 @@ function queryParams(params) {
     .join("&");
 }
 
-// Convert milliseconds to minutes & seconds 
+// Convert milliseconds to minutes & seconds
 const milliSecondToMinSecFormat = (millisecond) => {
-  millisecond = 1000*Math.round(millisecond/1000);
+  millisecond = 1000 * Math.round(millisecond / 1000);
+  console.log(millisecond);
   const d = new Date(millisecond);
   const min = d.getUTCMinutes();
   let second = d.getUTCSeconds();
-  second = (second >= 10)? second : "0" + second;
-  return min + ':' + second;
-}
+  second = second >= 10 ? second : "0" + second;
+  return min + ":" + second;
+};
 
 export default {
   api,
@@ -41,7 +42,7 @@ export default {
   resetPassword,
   //
   queryParams,
-  milliSecondToMinSecFormat
+  milliSecondToMinSecFormat,
 };
 export const config = {
   google_auth_client_id: "305153341920-na9skb2rrfi5tq5tce99v8bphj5ar4b1",

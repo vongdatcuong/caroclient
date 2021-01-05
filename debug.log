@@ -12,3 +12,6 @@
 [0102/104333.249:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [0102/112851.406:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
 [0102/131313.306:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\ADMIN\AppData\Local\AVG\Browser\User Data\Crashpad\attachments\f016f6a1-6171-4a43-8fbd-8731d5b39b7d: The system cannot find the path specified. (0x3)
+[0102/154102.638:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0105/170933.494:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)
+[0105/232736.020:ERROR:directory_reader_win.cc(43)] FindFirstFile: The system cannot find the path specified. (0x3)

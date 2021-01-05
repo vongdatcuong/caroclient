@@ -32,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   gameID: {
-    fontSize: '16px'
+    fontSize: "16px",
   },
   iconHeader: {
     marginRight: "5px",
@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: "5px",
     overflow: "hidden",
     textOverflow: "ellipsis",
-    fontSize: '20px'
+    fontSize: "20px",
   },
   username: {
     color: "#666666",
@@ -86,7 +86,7 @@ const GameEntrance = ({ onClick, data }) => {
           variant="contained"
           size="small"
           color="primary"
-          onClick={() => onClick(data.roomID)}
+          onClick={() => onClick(data.roomID, data.time, data.password)}
         >
           Play
         </Button>

@@ -56,6 +56,8 @@ import {
   QuickPlay,
   SearchedRoom,
   NotifyQuickPlay,
+  JoinRoomCallBack,
+  CancelQuickPlayRoom,
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
@@ -71,6 +73,7 @@ import { config } from "../../../config/index";
 import ListRanking from "../../../components/custom-components/CustomBox/components/ListRanking";
 
 import { httpGet } from "../../../services/api/base-api";
+import { Cancel } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -180,6 +183,7 @@ const DashBoard = (props) => {
   const [countTime, setCountTime] = useState(null);
   const countDownInterval = useRef(null);
   const [rankingList, setRankingList] = useState([]);
+  const [roomChoosen, setRoomChoosen] = useState("");
 
   if (!AuthService.getCurrentUser()) {
     history.push(config.route.login);
@@ -187,12 +191,30 @@ const DashBoard = (props) => {
   const classes = useStyles();
   const user = AuthService.getCurrentUser();
 
-  const handleOnChooseRoom = (roomID) => {
-    history.push({
-      pathname: config.route.game,
-      state: { roomID: roomID, turn: 2 },
-    });
-    JoinRoom(socket, roomID, user);
+  const handleOnChooseRoom = (roomID, time, password) => {
+    if (password === "") {
+      JoinRoom(socket, roomID, user, password);
+    } else {
+      setRoomChoosen(roomID);
+      setOpenJoinDialog(true);
+    }
+  };
+
+  const handleOnJoinRoom = (roomID, password) => {
+    JoinRoom(socket, roomID, user, password);
+    setOpenJoinDialog(false);
+    handleOnCloseInviteDialog();
+  };
+
+  const joinRoomCallback = (value) => {
+    if (value.success) {
+      history.replace({
+        pathname: config.route.game,
+        state: { roomID: value.room.roomID, turn: 2, time: value.room.time },
+      });
+    } else {
+      alert("Mật khẩu phòng không đúng");
+    }
   };
 
   const handleOnChatChange = (e) => {
@@ -208,6 +230,7 @@ const DashBoard = (props) => {
   };
 
   const handleClickOpenJoinDialog = () => {
+    setRoomChoosen("");
     setOpenJoinDialog(true);
   };
 
@@ -219,19 +242,23 @@ const DashBoard = (props) => {
     setOpenInviteDialog(false);
   };
 
-  const handleOnCreateRoom = (title) => {
+  const handleOnCreateRoom = (title, password, time) => {
     handleCloseCreateDialog();
     CreatePlayingRoom(socket, {
       title: title,
       creator: user,
+      password: password,
+      time: time,
     });
-    history.push({
+    history.replace({
       pathname: config.route.game,
       state: {
         roomID: user._id,
         title: title,
         creator: user,
         turn: 1,
+        time: time,
+        password: password,
       },
     });
   };
@@ -258,20 +285,22 @@ const DashBoard = (props) => {
         _id: user ? user._id : 0,
         username: user.username,
       });
-      GetInviteRequest(socket, handleOnInvite);
+
       GetGlobalUsers(socket, dispatch);
       GetChatGlobalRoom(socket, dispatch);
       GetListRoom(socket, dispatch);
       LoadingRes(socket, dispatchLoading);
+      JoinRoomCallBack(socket, joinRoomCallback);
       dispatch({ type: "Check-listener" });
     }
+    GetInviteRequest(socket, handleOnInvite);
     httpGet({ url: "/user/ranking" }).then((value) => {
       setRankingList(value.payload);
     });
   }, []);
 
   const callbackQuickPlay = (value) => {
-    history.push(config.route.game, value);
+    history.replace(config.route.game, value);
   };
 
   const handleOnQuickPlay = () => {
@@ -288,6 +317,7 @@ const DashBoard = (props) => {
     } else {
       setCountTime(null);
       clearCountDown();
+      CancelQuickPlayRoom(socket, user);
     }
   };
 
@@ -302,7 +332,6 @@ const DashBoard = (props) => {
   };
   const clearCountDown = () => {
     // Clear interval
-    console.log(countDownInterval);
     if (countDownInterval.current) {
       clearInterval(countDownInterval.current);
     }
@@ -442,22 +471,27 @@ const DashBoard = (props) => {
           </Grid>
         </Grid>
       </Container>
-      <CreateFormDialog
-        value={openCreateDialog}
-        onCreate={handleOnCreateRoom}
-        onClose={handleCloseCreateDialog}
-      />
-      <JoinRoomDialog
-        value={openJoinDialog}
-        onClose={handleCloseJoinDialog}
-        onJoin={handleOnChooseRoom}
-      />
-      {inviteRoom ? (
+      {openCreateDialog && (
+        <CreateFormDialog
+          value={openCreateDialog}
+          onCreate={handleOnCreateRoom}
+          onClose={handleCloseCreateDialog}
+        />
+      )}
+      {openJoinDialog && (
+        <JoinRoomDialog
+          value={openJoinDialog}
+          onClose={handleCloseJoinDialog}
+          onJoin={handleOnJoinRoom}
+          initialRoomID={roomChoosen}
+        />
+      )}
+      {openInviteDialog ? (
         <InviteRequestDialog
           room={inviteRoom}
           value={openInviteDialog}
           onClose={handleOnCloseInviteDialog}
-          onAccept={() => handleOnChooseRoom(inviteRoom.id)}
+          onAccept={handleOnJoinRoom}
         />
       ) : (
         ""
