@@ -68,7 +68,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-function ListUser({ roomData, spectators, onInvite }) { console.log(spectators)
+function ListUser({ roomData, spectators, onInvite }) {
   const classes = useStyles();
   const { state, dispatch } = useContext(store);
   const [socket, setSocket] = useState(state.socket);

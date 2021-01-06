@@ -20,7 +20,6 @@ function queryParams(params) {
 // Convert milliseconds to minutes & seconds
 const milliSecondToMinSecFormat = (millisecond) => {
   millisecond = 1000 * Math.round(millisecond / 1000);
-  console.log(millisecond);
   const d = new Date(millisecond);
   const min = d.getUTCMinutes();
   let second = d.getUTCSeconds();

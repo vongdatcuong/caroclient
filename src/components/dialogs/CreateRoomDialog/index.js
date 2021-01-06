@@ -63,7 +63,7 @@ export default function CreateFormDialog({ value, onCreate, onClose }) {
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title">
+        <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
           {config.string.MT_CREATE_ROOM}
         </DialogTitle>
         <DialogContent>

@@ -73,7 +73,7 @@ const ReconnectC = (props) => {
     })
   
     const handleAction = async () => {
-        historyPages.push({ pathname: "/game", state: { roomID: room.roomID, turn: room.type } });
+        historyPages.push({ pathname: "/game", state: { roomID: room.roomID, turn: room.type, time: room.time } });
       Reconnect(socket, room.roomID, user);
     };
   

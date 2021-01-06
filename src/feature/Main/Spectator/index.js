@@ -195,7 +195,7 @@ export default function Spectator(props) {
   const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
   const [roomOwner, setRoomOwner] = useState("");
   const [isRoomClosed, setIsRoomClosed] = useState(false);
-  const [turnTime, setTurnTime] = useState(180000); // Millisecond
+  const [turnTime, setTurnTime] = useState(location.state.time); // Millisecond
   const [player1Time, setPlayer1Time] = useState(turnTime);
   const [player2Time, setPlayer2Time] = useState(turnTime);
   let countDownInterval = null;
@@ -326,14 +326,16 @@ export default function Spectator(props) {
     if (board.total % 2 === 0) {
       // Reset other player time
       setPlayer2Time(turnTime);
-      const timeLeft = player1Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      const timeLeft = player1Time - ((board.total > 0)? (Date.now() - board.timeStart - board.moves[board.total - 1].time) :  0)
+        + ((board.turnTimeUsed)? board.turnTimeUsed: 0);
       countDown(timeLeft, setPlayer1Time);
     }
     // Player 2 Turn (board.turn != 0)
     else {
       // Reset other player time
       setPlayer1Time(turnTime);
-      const timeLeft = player2Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      const timeLeft = player2Time - ((board.total > 0)? (Date.now() - board.timeStart - board.moves[board.total - 1].time) :  0)
+      + ((board.turnTimeUsed)? board.turnTimeUsed: 0);
       countDown(timeLeft, setPlayer2Time);
     }
   };
@@ -401,7 +403,7 @@ export default function Spectator(props) {
   const handleJoinPlaying = () => { console.log(location)
     historyPages.push({
       pathname: config.route.game,
-      state: { roomID: location.state.roomID, turn: 2 },
+      state: { roomID: location.state.roomID, turn: 2, time: location.state.time },
     });
     JoinRoomFromSpec(socket, location.state.roomID, user);
   }

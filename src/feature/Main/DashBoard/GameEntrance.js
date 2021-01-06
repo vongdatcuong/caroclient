@@ -15,6 +15,7 @@ import GameAvatar from "../../../vendors/images/game-avatar.png";
 import VpnKeyIcon from "@material-ui/icons/VpnKey";
 import VideogameAssetIcon from "@material-ui/icons/VideogameAsset";
 import StarsIcon from "@material-ui/icons/Stars";
+import LockIcon from '@material-ui/icons/Lock';
 
 const useStyles = makeStyles((theme) => ({
   card: {
@@ -48,10 +49,17 @@ const useStyles = makeStyles((theme) => ({
     overflow: "hidden",
     textOverflow: "ellipsis",
     fontSize: "20px",
+    position: 'relative'
   },
   username: {
     color: "#666666",
   },
+  lockIcon: {
+    color: "#d4af37",
+    verticalAlign: 'middle',
+    position: 'absolute',
+    right: '0'
+  }
 }));
 
 const GameEntrance = ({ onClick, data, onClickWatch }) => {
@@ -69,7 +77,7 @@ const GameEntrance = ({ onClick, data, onClickWatch }) => {
       <CardContent className={classes.cardContent}>
         <Typography className={classes.roomName}>
           <VideogameAssetIcon className={classes.icon} />
-          <b>{data.title}</b>
+          <b>{data.title}</b> {(data.password)? <LockIcon className={classes.lockIcon}/> : ""}
         </Typography>
         <Typography gutterBottom className={classes.gameID} component="h6">
           <VpnKeyIcon className={classes.iconHeader} />
@@ -86,6 +94,7 @@ const GameEntrance = ({ onClick, data, onClickWatch }) => {
           variant="contained"
           size="small"
           color="primary"
+          disabled={((onClick)? false : true)}
           onClick={() => onClick(data.roomID, data.time, data.password)}
         >
           Play
@@ -95,7 +104,7 @@ const GameEntrance = ({ onClick, data, onClickWatch }) => {
           variant="contained"
           size="small"
           color="secondary"
-          onClick={() => onClickWatch(data.roomID)}
+          onClick={() => onClickWatch(data.roomID, data.time, data.password)}
         >
           Watch
         </Button>

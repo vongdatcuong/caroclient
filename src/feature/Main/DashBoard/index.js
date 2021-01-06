@@ -59,9 +59,11 @@ import {
   JoinRoomCallBack,
   CancelQuickPlayRoom,
   SpecRoom,
+  SpecRoomCallBack
 } from "../../../services/socket/base-socket";
 import JoinRoomDialog from "../../../components/dialogs/JoinRoomDialog";
 import InviteRequestDialog from "../../../components/dialogs/InviteRequestDialog";
+import SpectateRoomDialog from "../../../components/dialogs/SpectateRoomDialog";
 import { FormControl, InputLabel, MenuItem, Select } from "@material-ui/core";
 import { formatTime } from "../../../Utils/datetimeHelper";
 import CustomBox from "../../../components/custom-components/CustomBox";
@@ -178,6 +180,7 @@ const DashBoard = (props) => {
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [openJoinDialog, setOpenJoinDialog] = useState(false);
   const [openInviteDialog, setOpenInviteDialog] = useState(false);
+  const [openSpecRoomDialog, setOpenSpecRoomDialog] = useState(false);
   const [inviteRoom, setInviteRoom] = useState();
   const [roomOption, setRoomOption] = useState("Waiting");
   const isWaitingRoom = useRef(false);
@@ -214,16 +217,39 @@ const DashBoard = (props) => {
         state: { roomID: value.room.roomID, turn: 2, time: value.room.time },
       });
     } else {
-      alert("Mật khẩu phòng không đúng");
+      alert(value.msg);
     }
   };
 
-  const handleOnWatchRoom = (roomID) => {
-    history.push({
-      pathname: config.route.spectatorPath,
-      state: { roomID: roomID, turn: 2 },
-    });
-    SpecRoom(socket, roomID, user);
+  const handleOnChooseRoomToSpec = (roomID, time, password) => {
+    if (!password) {
+      SpecRoom(socket, roomID, user, password);
+    } else {
+      setRoomChoosen(roomID);
+      setOpenSpecRoomDialog(true);
+    }
+  };
+
+  const handleCloseSpecRoomDialog = () => {
+    setOpenSpecRoomDialog(false);
+    setRoomChoosen("");
+  };
+
+  const handleOnWatchRoom = (roomID, password) => {
+    SpecRoom(socket, roomID, user, password);
+    setOpenSpecRoomDialog(false);
+    handleOnCloseInviteDialog();
+  };
+
+  const specRoomCallback = (value) => {
+    if (value.success) {
+      history.replace({
+        pathname: config.route.spectatorPath,
+        state: { roomID: value.room.roomID, turn: 2, time: value.room.time },
+      });
+    } else {
+      alert(value.msg);
+    }
   };
 
   const handleOnChatChange = (e) => {
@@ -300,6 +326,7 @@ const DashBoard = (props) => {
       GetListRoom(socket, dispatch);
       LoadingRes(socket, dispatchLoading);
       JoinRoomCallBack(socket, joinRoomCallback);
+      SpecRoomCallBack(socket, specRoomCallback);
       dispatch({ type: "Check-listener" });
     }
     GetInviteRequest(socket, handleOnInvite);
@@ -451,7 +478,7 @@ const DashBoard = (props) => {
                           <GameEntrance
                             data={game}
                             onClick={handleOnChooseRoom}
-                            onClickWatch={handleOnWatchRoom}
+                            onClickWatch={handleOnChooseRoomToSpec}
                           />
                         </Grid>
                       )
@@ -463,7 +490,7 @@ const DashBoard = (props) => {
                         <Grid item md={4} key={index}>
                           <GameEntrance
                             data={game}
-                            onClickWatch={handleOnWatchRoom}
+                            onClickWatch={handleOnChooseRoomToSpec}
                           />
                         </Grid>
                       )
@@ -502,6 +529,16 @@ const DashBoard = (props) => {
           value={openInviteDialog}
           onClose={handleOnCloseInviteDialog}
           onAccept={handleOnJoinRoom}
+        />
+      ) : (
+        ""
+      )}
+      {openSpecRoomDialog ? (
+        <SpectateRoomDialog
+          value={openSpecRoomDialog}
+          onClose={handleCloseSpecRoomDialog}
+          onSpec={handleOnWatchRoom}
+          initialRoomID={roomChoosen}
         />
       ) : (
         ""

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { makeStyles, rgbToHex } from "@material-ui/core/styles";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
 import Dialog from "@material-ui/core/Dialog";
@@ -11,24 +12,22 @@ import LockOpenIcon from "@material-ui/icons/LockOpen";
 import { config } from "../../../config";
 import { IconButton } from "@material-ui/core";
 
-export default function JoinRoomDialog({
+const useStyles = makeStyles((theme) => ({
+  title: {
+    textAlign: 'center'
+  }
+}));
+
+export default function SpectateRoomDialog({
   value,
-  onJoin,
+  onSpec,
   onClose,
   initialRoomID,
 }) {
+
+  const classes = useStyles();
   const [roomID, setRoomID] = useState(`${initialRoomID}`);
-  const [checkPassword, setCheckPassword] = useState(false);
   const [password, setPassword] = useState("");
-
-  const handleOnChange = (e) => {
-    setRoomID(e.target.value);
-  };
-
-  const handleOnCheckPassword = (event) => {
-    setPassword("");
-    setCheckPassword(!checkPassword);
-  };
 
   const handleOnChangePassword = (event) => {
     setPassword(event.target.value);
@@ -42,8 +41,8 @@ export default function JoinRoomDialog({
         onClose={onClose}
         aria-labelledby="form-dialog-title"
       >
-        <DialogTitle id="form-dialog-title" style={{ textAlign: 'center' }}>
-          {config.string.MT_JOIN_ROOM}
+        <DialogTitle id="form-dialog-title" className={classes.title}>
+          {config.string.MT_SPEC_ROOM}
         </DialogTitle>
         <DialogContent>
           <TextField
@@ -54,7 +53,7 @@ export default function JoinRoomDialog({
             label={config.string.PH_ROOM_ID}
             type="text"
             fullWidth
-            onChange={handleOnChange}
+            disabled={true}
             value={roomID}
             defaultValue={initialRoomID}
           />
@@ -67,19 +66,15 @@ export default function JoinRoomDialog({
             label={config.string.PH_PASSWORD}
             type="password"
             fullWidth
-            disabled={checkPassword}
             onChange={handleOnChangePassword}
             value={password}
           />
-          <IconButton onClick={handleOnCheckPassword}>
-            {checkPassword ? <LockIcon /> : <LockOpenIcon />}
-          </IconButton>
         </DialogContent>
         <DialogActions>
           <Button onClick={onClose} color="primary">
             {config.string.MT_CANCEL}
           </Button>
-          <Button onClick={() => onJoin(roomID, password)} color="primary">
+          <Button onClick={() => onSpec(roomID, password)} color="primary">
             {config.string.MT_JOIN}
           </Button>
         </DialogActions>

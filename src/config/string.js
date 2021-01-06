@@ -34,6 +34,7 @@ const MT_HISTORY_LIST = "History List";
 const MT_PLAYER = "Player";
 const MT_SPECTATOR = "Spectator";
 const MT_JOINPLAY = "JOIN PlAYING";
+const MT_SPEC_ROOM = "SPECTATE ROOM";
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -105,5 +106,6 @@ export const string = {
   MT_SPECTATOR,
   MT_PLAYER,
   MT_JOINPLAY,
-  D_WAITING_READY_SPEC
+  D_WAITING_READY_SPEC,
+  MT_SPEC_ROOM
 };

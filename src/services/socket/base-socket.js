@@ -31,7 +31,7 @@ const LogOut = (socket, user) => {
 //CREATE NEW ROOM
 const CreatePlayingRoom = (socket, room) => {
   //room({title:string,creator:string})
-  console.log(room);
+  //console.log(room);
   socket.emit("Create", room);
 };
 
@@ -260,10 +260,17 @@ const DisconnectedPlayerLose = (socket, roomID, user) => {
 // SPECTATOR
 //SPEC ROOM
 // In Spectator
-const SpecRoom = (socket, roomID, player) => {
+const SpecRoom = (socket, roomID, player, password) => {
   socket.emit("Spec-Room", {
     roomID: roomID,
     player: player,
+    password: password
+  });
+};
+
+const SpecRoomCallBack = (socket, callback) => {
+  socket.on("Spec-Room-Callback", (value) => {
+    callback(value);
   });
 };
 
@@ -358,4 +365,5 @@ export {
   LeaveRoomPlayerSpec,
   GameStartSpec,
   JoinRoomFromSpec,
+  SpecRoomCallBack
 };

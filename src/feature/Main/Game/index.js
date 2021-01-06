@@ -207,8 +207,8 @@ export default function Game(props) {
   const [isReady, setIsReady] = useState(false);
   const [isRoomClosed, setIsRoomClosed] = useState(false);
   const [turnTime, setTurnTime] = useState(location.state.time); // Millisecond
-  const [player1Time, setPlayer1Time] = useState(turnTime);
-  const [player2Time, setPlayer2Time] = useState(turnTime);
+  const [player1Time, setPlayer1Time] = useState(location.state.time);
+  const [player2Time, setPlayer2Time] = useState(location.state.time);
   let countDownInterval = null;
 
   const [isOtherDis, setIsOtherDis] = useState(false);
@@ -256,7 +256,7 @@ export default function Game(props) {
     setOpenSetting(false);
     LeaveRoom(socket, location.state.roomID, user);
     JoinGlobalRoom(socket, user);
-    historyPages.replace("/dashboard");
+    historyPages.push("/dashboard");
   };
 
   const handleClick = (i) => {

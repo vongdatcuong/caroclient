@@ -228,7 +228,6 @@ export default function History(props) {
           setPlayer2(result.game.player2);
           setMoves(result.game.moves);
           setRoomChat(result.game.chats);
-          console.log(result.game.chats);
           // Handle Board
           const newBoard = { squares: Array(boardSize * boardSize).fill(null) };
           result.game.moves.forEach((move, index) => {
@@ -255,7 +254,6 @@ export default function History(props) {
   };
 
   const handleOnInviteUser = (socketID) => {
-    console.log(socketID);
     InviteUser(socket, {
       id: socketID,
       room: {
