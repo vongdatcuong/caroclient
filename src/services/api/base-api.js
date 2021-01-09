@@ -49,4 +49,22 @@ const httpPost = async (requestModel) => {
   }
 };
 
-export { initializeAPIService, httpGet, httpPost };
+//PUT METHOD
+const httpPut = async (requestModel) => {
+  try {
+    const response = await fetch(BASE_URL_API + requestModel.url, {
+      ...requestModel.option,
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token,
+      },
+    });
+    const json = await response.json();
+    return json;
+  } catch (e) {
+    throw e;
+  }
+};
+
+export { initializeAPIService, httpGet, httpPost, httpPut };

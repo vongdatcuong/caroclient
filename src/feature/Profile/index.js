@@ -17,6 +17,8 @@ import RadioGroup from "@material-ui/core/RadioGroup";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import FormControl from "@material-ui/core/FormControl";
 import FormLabel from "@material-ui/core/FormLabel";
+import VideogameAssetIcon from "@material-ui/icons/VideogameAsset";
+import StarIcon from "@material-ui/icons/Star";
 
 // Material Icons
 import BorderColorIcon from "@material-ui/icons/BorderColor";
@@ -33,8 +35,9 @@ import { config } from "../../config";
 
 import { deepOrange } from "@material-ui/core/colors";
 import ImgurApiService from "../../services/api/imgur-api";
-import { httpGet } from "../../services/api/base-api";
+import { httpGet, httpPost, httpPut } from "../../services/api/base-api";
 import ListHistory from "./components/ListHistory";
+import EmojiEventsIcon from "@material-ui/icons/EmojiEvents";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -88,6 +91,15 @@ const useStyles = makeStyles((theme) => ({
     color: theme.palette.getContrastText(deepOrange[500]),
     backgroundColor: deepOrange[500],
   },
+  row: {
+    display: "flex",
+    flexDirection: "row",
+    paddingTop: 5,
+    paddingBottom: 5,
+  },
+  text: {
+    marginLeft: 10,
+  },
 }));
 
 export default function SignUp(props) {
@@ -105,6 +117,7 @@ export default function SignUp(props) {
   const [isSuccess, setIsSuccess] = useState(true);
   const [errorMsg, setErrMsg] = useState("");
   const [avatar, setAvatar] = useState(user.avatar);
+  const [data, setData] = useState({});
   const { loadingState, dispatchLoading } = useContext(loadingStore);
   const [historyData, setHistoryData] = useState([]);
 
@@ -148,12 +161,12 @@ export default function SignUp(props) {
   };
   const handleUpdate = (event) => {
     event.preventDefault();
-    if (!name || !email) {
+
+    if (!name) {
       return;
     }
     dispatchLoading({ type: "Set-Loading", isLoading: true });
     const requestOptions = {
-      method: "POST",
       headers: Object.assign(
         {
           "Content-Type": "application/json",
@@ -170,10 +183,7 @@ export default function SignUp(props) {
         ).toString("base64"),
       }),
     };
-    return fetch(
-      constant.api + constant.userPath + "/" + user._id,
-      requestOptions
-    )
+    httpPut({ url: `/user/${user._id}`, option: requestOptions })
       .then((response) => response.json())
       .then(
         (result) => {
@@ -203,9 +213,18 @@ export default function SignUp(props) {
   };
 
   useEffect(() => {
-    httpGet({ url: `/user/list-game?userID=${user._id}` }).then((value) => {
-      setHistoryData(value.payload);
+    const p = httpGet({ url: `/user/list-game?userID=${user._id}` }).then(
+      (value) => {
+        setHistoryData(value.payload);
+      }
+    );
+    const p2 = httpGet({ url: `/user/${user._id}` }).then((value) => {
+      setUsername(value.data.username);
+      setName(value.data.name);
+      setAvatar(value.data.avatar);
+      setData(value.data);
     });
+    Promise.all([p, p2]);
   }, []);
 
   //OnClick History
@@ -293,6 +312,27 @@ export default function SignUp(props) {
               />
             </Grid>
           </Grid>
+          <div>
+            <h2>{`Game Infomation`}</h2>
+            <div className={classes.row}>
+              <VideogameAssetIcon />
+              <Typography
+                className={classes.text}
+              >{`Win: ${data?.win} Lose:${data?.lose}`}</Typography>
+            </div>
+            <div className={classes.row}>
+              <StarIcon />
+              <Typography
+                className={classes.text}
+              >{`Ranking: ${data?.rank}`}</Typography>
+            </div>
+            <div className={classes.row}>
+              <EmojiEventsIcon />
+              <Typography
+                className={classes.text}
+              >{`Trophy: ${data?.trophy}`}</Typography>
+            </div>
+          </div>
           {disabled && (
             <ListHistory
               data={historyData}
@@ -316,6 +356,7 @@ export default function SignUp(props) {
               variant="contained"
               color="primary"
               className={classes.submit}
+              onClick={handleUpdate}
             >
               Update
             </Button>

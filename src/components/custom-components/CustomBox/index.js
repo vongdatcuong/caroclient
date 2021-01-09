@@ -56,7 +56,7 @@ const CustomBox = ({
     <Box className={classes.box}>
       <HeaderBox title={title} />
       <ListComponent data={data} />
-      {!isDisabled ? (
+      {ActionComponent && !isDisabled ? (
         <ActionComponent onSubmit={onSubmit} value={value} onType={onType} />
       ) : (
         ""

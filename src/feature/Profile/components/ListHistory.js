@@ -19,15 +19,15 @@ const useStyles = makeStyles((theme) => ({
     height: "50%",
   },
   itemIcon: {
-    cursor: 'pointer'
-  }
+    cursor: "pointer",
+  },
 }));
 
 function ListHistory({ data, user, onClick }) {
   const classes = useStyles();
   return (
     <div className={classes.list_container}>
-      <Typography>{config.string.MT_HISTORY_LIST}</Typography>
+      <h2>{config.string.MT_HISTORY_LIST}</h2>
       <List dense={true}>
         {data.map((game, index) => {
           return (
@@ -69,7 +69,10 @@ function CustomListItem({ key, value, userID, onClick }) {
   }, []);
   return (
     <ListItem key={key}>
-      <ListItemIcon className={classes.itemIcon} onClick={(evt) => onClick(value._id)}>
+      <ListItemIcon
+        className={classes.itemIcon}
+        onClick={(evt) => onClick(value._id)}
+      >
         <HistoryIcon />
       </ListItemIcon>
       <ListItemText

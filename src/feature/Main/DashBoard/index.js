@@ -384,7 +384,7 @@ const DashBoard = (props) => {
                 title={config.string.MT_GLOBAL}
                 data={state.globalUsers}
                 ListComponent={ListOnlineUser}
-                ActionComponent={MoreButton}
+               
               />
             </div>
             <div className="row">
@@ -402,7 +402,7 @@ const DashBoard = (props) => {
               <CustomBox
                 title={config.string.MT_RANKING}
                 ListComponent={ListRanking}
-                ActionComponent={MoreButton}
+                
                 data={rankingList}
                 value={chat}
               ></CustomBox>
