@@ -167,6 +167,7 @@ export default function SignUp(props) {
     }
     dispatchLoading({ type: "Set-Loading", isLoading: true });
     const requestOptions = {
+      method: "PUT",
       headers: Object.assign(
         {
           "Content-Type": "application/json",
@@ -189,11 +190,8 @@ export default function SignUp(props) {
         (result) => {
           console.log(result);
           if (result.isSuccess) {
-            AuthService.updateCurrentUser({
-              name: name,
-              email: email,
-              avatar: avatar,
-            });
+            localStorage.setItem("user", JSON.stringify(result.payload));
+            localStorage.setItem("token", result.token);
           }
           setIsSuccess(result.isSuccess);
           setErrMsg(result.message);
