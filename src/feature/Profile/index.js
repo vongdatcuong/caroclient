@@ -290,6 +290,22 @@ export default function SignUp(props) {
             </Grid>
             <Grid item xs={12}>
               <TextField
+                name="email"
+                variant="outlined"
+                required
+                fullWidth
+                id="email"
+                label="email"
+                autoFocus
+                InputProps={{
+                  className: classes.formControl,
+                }}
+                disabled={true}
+                value={email}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
                 autoComplete="fullName"
                 name="fullName"
                 variant="outlined"
@@ -316,7 +332,7 @@ export default function SignUp(props) {
               <VideogameAssetIcon />
               <Typography
                 className={classes.text}
-              >{`Win: ${data?.win} Lose:${data?.lose}`}</Typography>
+              >{`Win: ${data?.win} | Lose:${data?.lose} | Draw: ${data?.draw} | Winrate: ${100 * Math.round(((data?.win)/(data?.win + data?.lose + data?.draw) + Number.EPSILON) * 100) / 100}%`}</Typography>
             </div>
             <div className={classes.row}>
               <StarIcon />
