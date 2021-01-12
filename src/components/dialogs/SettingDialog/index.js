@@ -9,6 +9,7 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Settings from "../../../feature/Main/Game/components/settings";
 import { makeStyles } from "@material-ui/core/styles";
 import { config } from "../../../config";
+import HelpOutlineIcon from '@material-ui/icons/HelpOutline';
 
 const useStyles = makeStyles((theme) => ({
   withDrawBtn: {
@@ -27,6 +28,11 @@ const useStyles = makeStyles((theme) => ({
     color: "white",
     alignItems: "flex-end",
   },
+  helpIcon: {
+    position: 'absolute',
+    right: theme.spacing(3),
+    cursor: 'pointer'
+  }
 }));
 
 export default function SettingRoomDialog({
@@ -48,7 +54,13 @@ export default function SettingRoomDialog({
       >
         <div style={{ height: 300 }}>
           <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>
-            {config.string.MT_SETTING}
+            {config.string.MT_SETTING} 
+            {onSeeRule ? (
+              <HelpOutlineIcon className={classes.helpIcon} onClick={onSeeRule}/>
+            ) : (
+              ""
+            )}
+            
           </DialogTitle>
           <DialogContent>
             {onWithdraw ? (
@@ -58,14 +70,6 @@ export default function SettingRoomDialog({
             ) : (
               ""
             )}
-            {onSeeRule ? (
-              <Button onClick={onSeeRule} className={classes.withDrawBtn}>
-                {config.string.MT_GAME_RULE}
-              </Button>
-            ) : (
-              ""
-            )}
-
             <Button onClick={onLeave} className={classes.timeButton}>
               {config.string.MT_LEAVE_ROOM}
             </Button>

@@ -217,9 +217,9 @@ export default function SignUp(props) {
       }
     );
     const p2 = httpGet({ url: `/user/${user._id}` }).then((value) => {
-      setUsername(value.data.username);
-      setName(value.data.name);
-      setAvatar(value.data.avatar);
+      setUsername(value.data?.username);
+      setName(value.data?.name);
+      setAvatar(value.data?.avatar);
       setData(value.data);
     });
     Promise.all([p, p2]);

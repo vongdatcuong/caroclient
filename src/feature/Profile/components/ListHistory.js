@@ -29,7 +29,7 @@ function ListHistory({ data, user, onClick }) {
     <div className={classes.list_container}>
       <h2>{config.string.MT_HISTORY_LIST}</h2>
       <List dense={true}>
-        {data.map((game, index) => {
+        {data?.map((game, index) => {
           return (
             <CustomListItem
               key={index}

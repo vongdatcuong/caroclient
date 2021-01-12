@@ -57,7 +57,7 @@ const D_WAITING_READY_SPEC = "Waiting for the game to start ...";
 const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
 const D_GAME_RULE =
-  "Each player takes it in turn to place their X or O into one of the empty squares in the grid by clicking on it. To win the game get five of your symbols in a line horizontally, vertically or diagonally. Besides that if your winning line is blocked (head/tail), you can not win the game.";
+  "Each player takes turn to place their X or O on one of the empty squares in the grid by clicking on it. To win the game, get five of your symbols in a line horizontally, vertically or diagonally. However, you will not win if your winning line is blocked (head/tail).";
 
 export const string = {
   D_GAME_RULE,

@@ -171,6 +171,7 @@ export default function History(props) {
   const [player2, setPlayer2] = useState({});
   const [moves, setMoves] = useState([]);
   const [winner, setWinner] = useState("");
+  const [winnerList, setWinnerList] = useState([]);
   const [openSetting, setOpenSetting] = useState(false);
   const [openConfirmLeaveDialog, setOpenConfirmLeaveDialog] = useState(false);
 
@@ -236,6 +237,14 @@ export default function History(props) {
           });
           setBoard(newBoard);
           setCurrentMoveIndex(result.game.moves.length - 1);
+
+          // Calculate winner
+          const lastMove = result.game.moves[result.game.moves.length - 1];
+          let temp = Utils.calculateWinner(winner, lastMove.row, lastMove.col, newBoard.squares); console.log(lastMove);
+          if (temp){
+            temp = temp.map((cell) => cell.row * boardSize + cell.col);
+            setWinnerList(temp);
+          }
         } else {
           historyPages.push("/dashboard");
         }
@@ -327,7 +336,7 @@ export default function History(props) {
                         moves[currentMoveIndex].col -
                         1
                   }
-                  winnerList={winner.winnerList}
+                  winnerList={(winnerList && currentMoveIndex === moves.length - 1)? winnerList : []}
                   onClick={fakeOnClick}
                 />
               </div>

@@ -45,6 +45,7 @@ import SettingDialog from "../../../components/dialogs/SettingDialog/index";
 import UserInfo from "../Game/components/user-info";
 import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
 import JoinPlaying from "../Game/components/join-playing";
+import GameRuleDialog from "../../../components/dialogs/GameRuleDialog/index";
 
 import {
   GetSecondPlayer,
@@ -185,7 +186,7 @@ export default function Spectator(props) {
   const nameRef = useRef();
 
   const [currentIndex, setCurrentIndex] = useState(-1);
-
+  const [openRule, setOpenRule] = useState(false);
   // board.squares.length === 0 => Chưa start game
   const [board, setBoard] = useState({ squares: [] });
   const [roomChat, setRoomChat] = useState([]);
@@ -408,6 +409,14 @@ export default function Spectator(props) {
     JoinRoomFromSpec(socket, location.state.roomID, user);
   }
 
+  const handleOnCloseRuleDialog = () => {
+    setOpenRule(false);
+  };
+
+  const handleOnSeeRule = () => {
+    setOpenRule(true);
+  };
+
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
@@ -575,7 +584,9 @@ export default function Spectator(props) {
             value={openSetting}
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
+            onSeeRule={handleOnSeeRule}
           />
+          <GameRuleDialog open={openRule} onClose={handleOnCloseRuleDialog} />
         </Grid>
       </div>
     </Container>
