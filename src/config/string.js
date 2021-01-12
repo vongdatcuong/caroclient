@@ -29,12 +29,13 @@ const MT_DRAW = "DRAW";
 const MT_MORE = "MORE";
 const MT_PROFILE = "PROFILE";
 const MT_LOGOUT = "LOGOUT";
-const MT_RECONNECT = "RECONNECT"
+const MT_RECONNECT = "RECONNECT";
 const MT_HISTORY_LIST = "History List";
 const MT_PLAYER = "Player";
 const MT_SPECTATOR = "Spectator";
 const MT_JOINPLAY = "JOIN PlAYING";
 const MT_SPEC_ROOM = "SPECTATE ROOM";
+const MT_GAME_RULE = "GAME RULE";
 
 //PLACEHOLDER
 const PH_PLAYING = "Playing";
@@ -55,8 +56,11 @@ const D_WAITING_READY = "Waiting for the other player to be ready ...";
 const D_WAITING_READY_SPEC = "Waiting for the game to start ...";
 const D_WAITING_PLAYER = "Waiting for another player ...";
 const D_ASKING = "Do you want to ";
+const D_GAME_RULE =
+  "Each player takes it in turn to place their X or O into one of the empty squares in the grid by clicking on it. To win the game get five of your symbols in a line horizontally, vertically or diagonally. Besides that if your winning line is blocked (head/tail), you can not win the game.";
 
 export const string = {
+  D_GAME_RULE,
   MT_HISTORY_LIST,
   MT_SIGN_UP,
   APP_NAME,
@@ -107,5 +111,6 @@ export const string = {
   MT_PLAYER,
   MT_JOINPLAY,
   D_WAITING_READY_SPEC,
-  MT_SPEC_ROOM
+  MT_SPEC_ROOM,
+  MT_GAME_RULE,
 };
