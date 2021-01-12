@@ -27,7 +27,7 @@ class AuthService {
         } else {
           return {
             isSuccess: false,
-            message: result.message,
+            message: result.errors[0].msg,
           };
         }
       });

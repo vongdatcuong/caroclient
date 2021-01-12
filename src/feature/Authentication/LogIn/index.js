@@ -108,7 +108,7 @@ export default function LogIn(props) {
     dispatchLoading({ type: "Set-Loading", isLoading: true });
     const fetch = AuthService.logIn(username, password).then(
       (result) => {
-        if (result.isSuccess) {
+        if (result.isSuccess) { console.log(result);
           history.push({ pathname: "/dashboard" });
         } else {
           setPassword("");
@@ -170,7 +170,7 @@ export default function LogIn(props) {
       username: response.profileObj.email,
     };
     try {
-      let res = AuthService.googleLogin(googleresponse);
+      let res = await AuthService.googleLogin(googleresponse);
       let response = await res.json();
       if (response.success) {
         localStorage.setItem("token", response.token);
