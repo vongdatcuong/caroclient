@@ -51,6 +51,7 @@ import SettingDialog from "../../../components/dialogs/SettingDialog/index";
 import UserInfo from "./components/user-info";
 import ConfirmDialog from "../../../components/dialogs/ConfirmDialog";
 import JoinPlaying from "./components/join-playing";
+import GameRuleDialog from "../../../components/dialogs/GameRuleDialog/index";
 
 import {
   GetSecondPlayer,
@@ -173,7 +174,7 @@ const useStyles = makeStyles((theme) => ({
     paddingRight: theme.spacing(4),
     display: "inline-block",
     textAlign: "center",
-  }
+  },
 }));
 
 export default function Game(props) {
@@ -199,6 +200,7 @@ export default function Game(props) {
   const [chatText, setChatText] = useState("");
   const [winner, setWinner] = useState("");
   const [openSetting, setOpenSetting] = useState(false);
+  const [openRule, setOpenRule] = useState(false);
   const [openConfirmWithdrawDialog, setOpenConfirmWithdrawDialog] = useState(
     false
   );
@@ -248,6 +250,10 @@ export default function Game(props) {
     setOpenSetting(false);
   };
 
+  const handleOnSeeRule = () => {
+    setOpenRule(true);
+  };
+
   const handleOnLeave = () => {
     setOpenConfirmLeaveDialog(true);
   };
@@ -293,12 +299,16 @@ export default function Game(props) {
     UpdateUserRes(socket, handleUpdateUserRes);
     LoadingRes(socket, dispatchLoading);
     PlayerDisconnectRes(socket, handlePlayerDisRes);
-    PlayerReconnectRes(socket ,handlePlayerRecon);
+    PlayerReconnectRes(socket, handlePlayerRecon);
     SpecRoomRes(socket, setSpectators);
   }, []);
 
   const handleOnGetRoomChat = (msg) => {
     setRoomChat(msg);
+  };
+
+  const handleOnCloseRuleDialog = () => {
+    setOpenRule(false);
   };
 
   const handleOnChangeChat = (e) => {
@@ -392,7 +402,8 @@ export default function Game(props) {
     if (board.turn === user._id) {
       // Reset other player time
       setPlayer2Time(turnTime);
-      const timeLeft = player1Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      const timeLeft =
+        player1Time - (board.turnTimeUsed ? board.turnTimeUsed : 0);
       countDown(timeLeft, setPlayer1Time).then((value) => {
         WithDraw(socket, location.state.roomID, user);
       });
@@ -401,7 +412,8 @@ export default function Game(props) {
     else if (board.turn) {
       // Reset other player time
       setPlayer1Time(turnTime);
-      const timeLeft = player2Time - ((board.turnTimeUsed)? board.turnTimeUsed: 0);
+      const timeLeft =
+        player2Time - (board.turnTimeUsed ? board.turnTimeUsed : 0);
       countDown(timeLeft, setPlayer2Time).then((value) => {});
     }
   };
@@ -444,19 +456,19 @@ export default function Game(props) {
     clearCountDown();
     timeoutCountDown(timeout, setTimeout).then((result) => {
       handleDisTimeout();
-    })
-  }
+    });
+  };
 
   const handleDisTimeout = () => {
-    DisconnectedPlayerLose(socket, location.state.roomID, user)
+    DisconnectedPlayerLose(socket, location.state.roomID, user);
     setIsOtherDis(false);
     clearTimeoutCountDown();
-  }
+  };
 
   const handlePlayerRecon = () => {
     setIsOtherDis(false);
     clearTimeoutCountDown();
-  }
+  };
 
   const timeoutCountDown = (time, setTime) => {
     return new Promise((resolve, reject) => {
@@ -470,17 +482,17 @@ export default function Game(props) {
       }, 1000);
       timeoutInterval = interval;
     });
-  }
+  };
 
   const clearTimeoutCountDown = () => {
     clearInterval(timeoutInterval);
     setTimeout(Utils.disconnectTimeout);
-  }
+  };
 
   return (
     <Container className={classes.main} component="main" maxWidth="xl">
       <CssBaseline />
-      <PlayerDisconnect display={isOtherDis} time={timeout}/>
+      <PlayerDisconnect display={isOtherDis} time={timeout} />
       <div className={classes.paper}>
         <Grid container justify="center" spacing={2} className={classes.root}>
           <Grid key={0} item>
@@ -492,13 +504,13 @@ export default function Game(props) {
               spacing={2}
             >
               <Grid item>
-                  <UserInfo
+                <UserInfo
                   user={user}
                   playerNum={1}
                   type={location.state.turn === 1 ? "X" : "O"}
                   onSetting={handleOnSetting}
                   time={player1Time}
-                  />
+                />
               </Grid>
               <div className="row" style={{ width: 300 }}>
                 <div className={classes.boxChatWrapper}>
@@ -639,7 +651,11 @@ export default function Game(props) {
                 />
               </Grid>
               <Grid item>
-                <ListUser roomData={roomUsers} spectators={spectators} onInvite={handleOnInviteUser} />
+                <ListUser
+                  roomData={roomUsers}
+                  spectators={spectators}
+                  onInvite={handleOnInviteUser}
+                />
               </Grid>
             </Grid>
           </Grid>
@@ -664,11 +680,13 @@ export default function Game(props) {
           <SettingDialog
             value={openSetting}
             onWithdraw={
-              (board.squares.length > 0 && !winner) ? handleOnWithDraw : null
+              board.squares.length > 0 && !winner ? handleOnWithDraw : null
             }
+            onSeeRule={handleOnSeeRule}
             onClose={handleOnCloseSetting}
             onLeave={handleOnLeave}
           />
+          <GameRuleDialog open={openRule} onClose={handleOnCloseRuleDialog} />
         </Grid>
       </div>
     </Container>

@@ -21,7 +21,7 @@ function ListRanking({ data }) {
   return (
     <div className={classes.container}>
       <List dense={true}>
-        {data.map((user, index) => {
+        {data?.map((user, index) => {
           return (
             <ListItem>
               {index < 3 ? (

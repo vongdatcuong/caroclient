@@ -32,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
 export default function SettingRoomDialog({
   value,
   onWithdraw,
+  onSeeRule,
   onLeave,
   onClose,
 }) {
@@ -57,6 +58,14 @@ export default function SettingRoomDialog({
             ) : (
               ""
             )}
+            {onSeeRule ? (
+              <Button onClick={onSeeRule} className={classes.withDrawBtn}>
+                {config.string.MT_GAME_RULE}
+              </Button>
+            ) : (
+              ""
+            )}
+
             <Button onClick={onLeave} className={classes.timeButton}>
               {config.string.MT_LEAVE_ROOM}
             </Button>
