@@ -9,7 +9,7 @@ let token = "";
 
 //INITIALIZE
 const initializeAPIService = () => {
-  token = JSON.parse(localStorage.getItem("token"));
+  token = localStorage.getItem("token");
 };
 
 //GET METHOD
